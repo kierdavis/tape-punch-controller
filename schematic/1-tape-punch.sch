@@ -351,7 +351,7 @@ device=RESISTOR
 T 54900 47000 5 10 1 1 180 0 1
 refdes=R44
 T 54900 46800 5 10 1 1 180 0 1
-value=120k
+value=68k
 T 55200 46400 5 10 0 0 0 0 1
 x-power-rating=125m
 T 55200 46400 5 10 0 0 0 0 1
@@ -364,7 +364,7 @@ device=RESISTOR
 T 54900 45700 5 10 1 1 180 0 1
 refdes=R47
 T 54900 45500 5 10 1 1 180 0 1
-value=30k
+value=18k
 T 55200 45100 5 10 0 0 0 0 1
 x-power-rating=125m
 T 55200 45100 5 10 0 0 0 0 1
