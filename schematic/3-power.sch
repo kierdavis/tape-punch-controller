@@ -32,9 +32,9 @@ N 44400 49300 44400 49200 4
 N 41100 46700 41100 46600 4
 N 41100 46600 41400 46600 4
 C 40900 46700 1 0 0 27V-plus-1.sym
-C 41200 49100 1 0 0 conn-power-1.sym
+C 41200 48800 1 0 0 conn-power-1.sym
 {
-T 41400 50100 5 10 0 0 0 0 1
+T 41400 49800 5 10 0 0 0 0 1
 device=CONNECTOR_2
 T 41200 49900 5 10 1 1 0 0 1
 refdes=CONN6
@@ -51,7 +51,7 @@ symversion=0.1
 N 44400 49700 44400 49600 4
 N 44200 49600 44400 49600 4
 C 44200 49700 1 0 0 27V-plus-1.sym
-T 41100 48500 9 10 1 0 0 0 2
+T 41200 48300 9 10 1 0 0 0 2
 Power switch is
 externally wired.
 T 45500 50300 9 16 1 0 0 0 1
@@ -676,3 +676,12 @@ T 50000 40100 9 10 1 0 0 0 1
 T 51500 40100 9 10 1 0 0 0 1
 5
 C 40500 40000 0 0 0 title-A3.sym
+N 42900 49000 44000 49000 4
+{
+T 43000 49000 5 10 1 1 0 0 1
+netname=TP_EARTH
+}
+T 43100 48100 9 10 1 0 0 0 3
+TP_EARTH is the connection to the tape
+punch chassis, and should be wired to
+the common off-board grounding point.
