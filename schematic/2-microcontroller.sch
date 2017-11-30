@@ -121,9 +121,10 @@ N 50300 49100 50300 49200 4
 C 52100 50800 1 0 0 3.3V-plus-1.sym
 N 43700 51100 48300 51100 4
 N 48300 50700 52300 50700 4
-T 49200 50900 9 10 1 0 0 0 2
-Decoupling caps - place near
-microcontroller VCC pins.
+T 48700 50900 9 10 1 0 0 0 3
+Decoupling caps - place near ATxmega
+VCC pins. Values as recommended by
+document AT01607.
 N 42600 42200 40800 42200 4
 {
 T 41000 42200 5 10 1 1 0 0 1
