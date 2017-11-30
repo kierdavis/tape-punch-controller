@@ -257,7 +257,7 @@ footprint=0805
 T 48100 41800 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 48100 41800 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 C 48900 41800 1 90 0 capacitor-1.sym
 {
@@ -272,7 +272,7 @@ footprint=0805
 T 48900 41800 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 48900 41800 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 N 47500 43300 49800 43300 4
 {

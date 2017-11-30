@@ -172,7 +172,7 @@ footprint=0805
 T 42900 44900 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 42900 44900 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 N 42700 45800 42700 46100 4
 N 41000 46100 43000 46100 4
@@ -204,7 +204,7 @@ footprint=0805
 T 42900 41900 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 42900 41900 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 T 43000 42400 5 10 1 1 0 0 1
 refdes=C13
 T 43000 42200 5 10 1 1 0 0 1
@@ -417,7 +417,7 @@ footprint=0805
 T 55800 48800 5 10 0 0 90 0 1
 x-dielectric=X7R
 T 55800 48800 5 10 0 0 90 0 1
-x-voltage-rating=50
+x-min-voltage-rating=20
 }
 C 54400 48700 1 0 0 15V-plus-1.sym
 C 56000 48200 1 0 0 gnd-1.sym

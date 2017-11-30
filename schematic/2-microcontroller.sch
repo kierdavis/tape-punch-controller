@@ -26,7 +26,7 @@ footprint=0805
 T 48500 49500 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 48500 49500 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 C 49300 49500 1 90 0 capacitor-1.sym
 {
@@ -41,7 +41,7 @@ footprint=0805
 T 49300 49500 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 49300 49500 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 C 50100 49500 1 90 0 capacitor-1.sym
 {
@@ -56,7 +56,7 @@ footprint=0805
 T 50100 49500 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 50100 49500 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 C 50900 49500 1 90 0 capacitor-1.sym
 {
@@ -71,7 +71,7 @@ footprint=0805
 T 50900 49500 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 50900 49500 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 C 51700 49500 1 90 0 capacitor-1.sym
 {
@@ -86,7 +86,7 @@ footprint=0805
 T 51700 49500 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 51700 49500 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 C 52500 49500 1 90 0 capacitor-1.sym
 {
@@ -101,7 +101,7 @@ footprint=0805
 T 52500 49500 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 52500 49500 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=5
 }
 N 48300 50400 48300 51100 4
 N 49100 50400 49100 50700 4
@@ -436,7 +436,7 @@ footprint=0805
 T 54500 43200 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 54500 43200 5 10 0 0 0 0 1
-x-voltage-rating=16
+x-min-voltage-rating=10
 }
 C 54600 41900 1 0 0 gnd-1.sym
 N 54700 42200 54700 42300 4
@@ -525,7 +525,7 @@ footprint=0805
 T 48300 41600 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 48300 41600 5 10 0 0 0 0 1
-x-voltage-rating=50
+x-min-voltage-rating=50
 }
 N 47900 41600 47900 41700 4
 N 47900 41700 48500 41700 4

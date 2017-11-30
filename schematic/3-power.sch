@@ -22,7 +22,7 @@ footprint=0805
 T 43700 45400 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 43700 45400 5 10 0 0 0 0 1
-x-voltage-rating=10
+x-min-voltage-rating=5
 }
 T 41700 50800 9 16 1 0 0 0 1
 27V input connector
@@ -648,7 +648,7 @@ footprint=0805
 T 47500 45400 5 10 0 0 0 0 1
 x-dielectric=X7R
 T 47500 45400 5 10 0 0 0 0 1
-x-voltage-rating=10
+x-min-voltage-rating=20
 T 47000 45600 5 10 1 1 90 0 1
 refdes=C11
 T 47000 46000 5 10 1 1 90 0 1
