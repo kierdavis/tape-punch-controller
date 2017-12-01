@@ -374,8 +374,8 @@ device=TESTPOINT
 T 48000 41500 5 10 1 1 0 0 1
 refdes=TP39
 }
-T 41900 45800 9 10 1 0 0 0 1
-Front panel LEDs & buttons
+T 42500 45800 9 10 1 0 0 0 1
+Front panel buttons
 T 46200 42600 9 10 1 0 0 0 1
 Tape punch switches
 T 46400 50200 9 10 1 0 0 0 1
