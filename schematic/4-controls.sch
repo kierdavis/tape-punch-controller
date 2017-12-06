@@ -338,7 +338,11 @@ refdes=LED2
 T 43000 48800 5 10 0 0 0 0 1
 footprint=0805
 T 43000 48800 5 10 0 0 0 0 1
-x-colour=GREEN
+x-led-colour=GREEN
+T 43000 48800 5 10 0 0 0 0 1
+x-led-voltage=2
+T 43000 48800 5 10 0 0 0 0 1
+x-led-current=20m
 }
 N 43200 49100 43200 48800 4
 C 43100 47500 1 0 0 gnd-1.sym
@@ -370,7 +374,11 @@ refdes=LED1
 T 41900 48800 5 10 0 0 0 0 1
 footprint=0805
 T 41900 48800 5 10 0 0 0 0 1
-x-colour=GREEN
+x-led-colour=GREEN
+T 41900 48800 5 10 0 0 0 0 1
+x-led-voltage=2
+T 41900 48800 5 10 0 0 0 0 1
+x-led-current=20m
 }
 N 42100 49100 42100 48800 4
 C 42000 47500 1 0 0 gnd-1.sym
@@ -414,9 +422,13 @@ symversion=0.1
 T 44100 48800 5 10 0 0 0 0 1
 footprint=0805
 T 44100 48800 5 10 0 0 0 0 1
-x-colour=GREEN
+x-led-colour=GREEN
 T 44500 48000 5 10 1 1 270 0 1
 refdes=LED3
+T 44100 48800 5 10 0 0 0 0 1
+x-led-voltage=2
+T 44100 48800 5 10 0 0 0 0 1
+x-led-current=20m
 }
 N 44300 49100 44300 48800 4
 C 44200 47500 1 0 0 gnd-1.sym
