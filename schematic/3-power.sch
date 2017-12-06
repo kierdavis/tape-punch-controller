@@ -35,7 +35,7 @@ C 40900 46700 1 0 0 27V-plus-1.sym
 C 41200 48800 1 0 0 conn-power-1.sym
 {
 T 41400 49800 5 10 0 0 0 0 1
-device=CONNECTOR_2
+device=CONNECTOR_3
 T 41200 49900 5 10 1 1 0 0 1
 refdes=CONN6
 }
