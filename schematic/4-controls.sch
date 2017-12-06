@@ -238,7 +238,7 @@ device=RESISTOR
 T 46800 43500 5 10 1 1 0 0 1
 refdes=R10
 T 47200 43500 5 10 1 1 0 0 1
-value=33k
+value=68k
 T 46600 43200 5 10 0 0 0 0 1
 footprint=0805
 T 46600 43200 5 10 0 0 0 0 1
@@ -300,7 +300,7 @@ device=RESISTOR
 T 46800 42650 5 10 1 1 0 0 1
 refdes=R11
 T 47200 42650 5 10 1 1 0 0 1
-value=33k
+value=68k
 T 46600 42900 5 10 0 0 0 0 1
 footprint=0805
 T 46600 42900 5 10 0 0 0 0 1

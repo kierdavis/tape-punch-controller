@@ -153,7 +153,7 @@ device=RESISTOR
 T 43100 46250 5 10 1 1 0 0 1
 refdes=R37
 T 43500 46250 5 10 1 1 0 0 1
-value=33k
+value=68k
 T 43900 46200 5 10 0 0 180 0 1
 footprint=0805
 T 43900 46200 5 10 0 0 180 0 1
@@ -193,7 +193,7 @@ x-power-rating=125m
 T 43100 43250 5 10 1 1 0 0 1
 refdes=R40
 T 43500 43250 5 10 1 1 0 0 1
-value=33k
+value=68k
 }
 C 42900 41900 1 90 0 capacitor-1.sym
 {
