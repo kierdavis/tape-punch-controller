@@ -11,5 +11,5 @@ The project involves designing a system that can interface a restored [Teletype 
 - *more to come...*
 
 [tapepunch]: http://www.computinghistory.org.uk/det/2312/teletype-brpe-20-high-speed-tape-punch/
-[repo-schematic]: https://github.com/kierdavis/tape-punch-controller/blob/master/schematic/README.md
-[repo-lasercut]: https://github.com/kierdavis/tape-punch-controller/blob/master/lasercut/README.md
+[repo-schematic]: https://github.com/kierdavis/tape-punch-controller/tree/master/schematic
+[repo-lasercut]: https://github.com/kierdavis/tape-punch-controller/tree/master/lasercut
