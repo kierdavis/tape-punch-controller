@@ -1,11 +1,11 @@
-// Type Port represents one of the microcontroller's I/O ports. Since different
-// microcontrollers have different numbers of, sizes of and interfaces to their
-// I/O ports, this is heavily device-dependent.
-
 #ifndef __TPC_PORT_HPP
 #define __TPC_PORT_HPP
 
 #include <stdint.h>
+
+// Type Port represents one of the microcontroller's I/O ports. Since different
+// microcontrollers have different numbers of, sizes of and interfaces to their
+// I/O ports, this is heavily device-dependent.
 
 #ifdef __AVR_ATmega644P__
   class Port {
@@ -24,5 +24,12 @@
 #else
   #error "unsupported target device"
 #endif
+
+// Type Pin represents one of the pins on a microcontroller I/O port.
+class Pin {
+public:
+  const Port &port;
+  uint8_t index;
+};
 
 #endif // #ifndef __TPC_PORT_HPP
