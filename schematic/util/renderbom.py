@@ -16,8 +16,8 @@ ATTRIBS = [
 
 IC_SUMMARIES = {
   "ATXMEGA192C3": "Atmel AVR microcontroller",
-  "TSR_1-24150": "15V switching regulator",
-  "TSR_1-2433": "3.3V switching regulator",
+  "TSR_1-24150": "15V switched-mode regulator",
+  "TSR_1-2433": "3.3V switched-mode regulator",
   "USBLC6-2": "ESD protection IC",
 }
 
@@ -147,12 +147,12 @@ def annotate(components):
     elif device == "USB_CON" and footprint == "USB_B":
       component["summary"] = "Connector"
       component["specification"] = component["footprint"] = "USB, type B"
-      component["footprint"] = "-"
+      component["footprint"] = "unknown"
       component["sortkey"] = (1600, component["specification"], footprint)
     elif device == "DB25":
       component["summary"] = "Connector"
       component["specification"] = "DB-25"
-      component["footprint"] = "-"
+      component["footprint"] = "unknown"
       component["sortkey"] = (1600, component["specification"], footprint)
     elif device.startswith("CONNECTOR_") and footprint.startswith("JUMPER"):
       pins = footprint[6:]
@@ -161,8 +161,8 @@ def annotate(components):
         pins + " pins",
         "1 row",
       ))
-      component["footprint"] = "-"
-      component["sortkey"] = (1500, component["specification"], footprint)
+      component["footprint"] = "pin header"
+      component["sortkey"] = (1500, int(pins), 1, footprint)
     elif device.startswith("CONNECTOR_") and footprint.startswith("HEADER"):
       pins, rows = footprint[6:].split("_")
       component["summary"] = "Connector"
@@ -170,8 +170,8 @@ def annotate(components):
         pins + " pins",
         rows + " rows",
       ))
-      component["footprint"] = "-"
-      component["sortkey"] = (1500, component["specification"], footprint)
+      component["footprint"] = "pin header"
+      component["sortkey"] = (1500, int(pins), int(rows), footprint)
     else:
       print("unmatched component:", file=sys.stderr)
       print(component, file=sys.stderr)
