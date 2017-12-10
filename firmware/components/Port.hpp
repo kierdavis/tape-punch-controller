@@ -2,6 +2,9 @@
 // microcontrollers have different numbers of, sizes of and interfaces to their
 // I/O ports, this is heavily device-dependent.
 
+#ifndef __TPC_PORT_HPP
+#define __TPC_PORT_HPP
+
 #include <stdint.h>
 
 #ifdef __AVR_ATmega644P__
@@ -21,3 +24,5 @@
 #else
   #error "unsupported target device"
 #endif
+
+#endif // #ifndef __TPC_PORT_HPP
