@@ -26,7 +26,8 @@ if [ -z "$f_cpu" ]; then
 fi
 
 cflags="-Wall"                     # Enable all warnings
-cflags="$cflags -O2"               # Enable optimisations
+cflags="$cflags -O2"               # Enable standard optimisations
+cflags="$cflags -flto"             # Enable link-time- (aka whole-program-) optimisation
 cflags="$cflags -mmcu=$device"     # Inform the compiler of the target device
 cflags="$cflags -DF_CPU=$f_cpu"    # Inform library code of the CPU frequency
 cflags="$cflags -I$components_dir" # Add components directory to include path
