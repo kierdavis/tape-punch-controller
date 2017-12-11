@@ -6,7 +6,7 @@ set -o nounset  # Exit script if an undefined variable is used.
 
 self="$(realpath $0)"
 firmware_dir="$(dirname $self)"
-components_dir="$firmware_dir/components"
+modules_dir="$firmware_dir/modules"
 build_dir="$firmware_dir/build"
 
 device="${DEVICE:-}"
@@ -30,7 +30,7 @@ cflags="$cflags -O2"               # Enable standard optimisations
 cflags="$cflags -flto"             # Enable link-time- (aka whole-program-) optimisation
 cflags="$cflags -mmcu=$device"     # Inform the compiler of the target device
 cflags="$cflags -DF_CPU=$f_cpu"    # Inform library code of the CPU frequency
-cflags="$cflags -I$components_dir" # Add components directory to include path
+cflags="$cflags -I$modules_dir"    # Add modules directory to include path
 cflags="$cflags ${CFLAGS:-}"       # Append user's CFLAGS variable if present
 
 ldflags="-Wall"                    # Enable all warnings
@@ -43,7 +43,7 @@ mkdir -p "$build_dir"
 rm -rf $build_dir/*
 
 # Compile each of the component modules.
-for src_file in $(find "$components_dir" -name '*.cpp'); do
+for src_file in $(find "$modules_dir" -name '*.cpp'); do
   obj_file="$build_dir/$(basename $src_file | sed s/.cpp/.o/)"
   echo "Compiling $(realpath --relative-base=$PWD $src_file)"
   echo "       to $(realpath --relative-base=$PWD $obj_file)"
