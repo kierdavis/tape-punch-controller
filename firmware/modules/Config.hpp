@@ -1,16 +1,11 @@
-#ifndef __TPC_CONFIG_HPP
-#define __TPC_CONFIG_HPP
+#ifndef __CONFIG_HPP
+#define __CONFIG_HPP
 
-#include "Port.hpp"
+#include "IO.hpp"
 
 namespace Config {
-  // The IO port to which the eight code solenoid drivers are attached. It is
-  // assumed they are attached in order (i.e. code solenoid N is wired to
-  // pin N on this port).
-  extern const Port &codeSolenoidPort;
-
-  // The IO pin to which the feed solenoid driver is attached.
-  extern const Pin feedSolenoidPin;
+  extern const IO::Port &codeSolenoidPort;
+  extern const IO::Pin feedSolenoidPin;
 }
 
-#endif // #ifndef __TPC_CONFIG_HPP
+#endif // #ifndef __CONFIG_HPP

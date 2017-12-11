@@ -2,7 +2,6 @@
 #include <stdint.h>
 
 #include "Config.hpp"
-
 #include "DigitalOutput.hpp"
 #include "Solenoids.hpp"
 

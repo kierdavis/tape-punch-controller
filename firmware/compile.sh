@@ -25,12 +25,16 @@ if [ -z "$f_cpu" ]; then
   echo
 fi
 
+device_modules_dir="$modules_dir/device-specific/$device"
+
+include_path="-I$modules_dir -I$device_modules_dir"
+
 cflags="-Wall"                     # Enable all warnings
 cflags="$cflags -O2"               # Enable standard optimisations
 cflags="$cflags -flto"             # Enable link-time- (aka whole-program-) optimisation
 cflags="$cflags -mmcu=$device"     # Inform the compiler of the target device
 cflags="$cflags -DF_CPU=$f_cpu"    # Inform library code of the CPU frequency
-cflags="$cflags -I$modules_dir"    # Add modules directory to include path
+cflags="$cflags $include_path"     # Add -I flags
 cflags="$cflags ${CFLAGS:-}"       # Append user's CFLAGS variable if present
 
 ldflags="-Wall"                    # Enable all warnings
@@ -42,22 +46,15 @@ ldflags="$ldflags ${LDFLAGS:-}"    # Append user's LDFLAGS variable if present
 mkdir -p "$build_dir"
 rm -rf $build_dir/*
 
-# Compile each of the component modules.
-for src_file in $(find "$modules_dir" -name '*.cpp'); do
+# Compile source files.
+sources="$firmware_dir/main.cpp $(find $modules_dir $device_modules_dir -maxdepth 1 -name '*.cpp')"
+for src_file in $sources; do
   obj_file="$build_dir/$(basename $src_file | sed s/.cpp/.o/)"
   echo "Compiling $(realpath --relative-base=$PWD $src_file)"
   echo "       to $(realpath --relative-base=$PWD $obj_file)"
   echo
   avr-g++ $cflags -c -o "$obj_file" "$src_file"
 done
-
-# Compile main file.
-main_src="$firmware_dir/main.cpp"
-main_obj="$build_dir/main.o"
-echo "Compiling $(realpath --relative-base=$PWD $main_src)"
-echo "       to $(realpath --relative-base=$PWD $main_obj)"
-echo
-avr-g++ $cflags -c -o "$main_obj" "$main_src"
 
 # Link.
 elf_file="$build_dir/firmware.elf"
