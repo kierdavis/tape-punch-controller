@@ -3,7 +3,7 @@ with import <nixpkgs> {};
 stdenv.mkDerivation rec {
   name = "piii-project-firmware-env";
 
-  buildInputs = [ avrbinutils avrgcc avrlibc ];
+  buildInputs = [ avrbinutils avrdude avrgcc avrlibc ];
 
   DEVICE = "atmega644p";
   F_CPU = "12000000";
