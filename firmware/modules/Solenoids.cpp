@@ -4,6 +4,7 @@
 #include "Config.hpp"
 #include "DigitalOutput.hpp"
 #include "Solenoids.hpp"
+#include "SolenoidTimer.hpp"
 
 void Solenoids::init() {
   DigitalOutput::initPort(Config::codeSolenoidPort);
@@ -18,4 +19,9 @@ void Solenoids::activate(uint8_t pattern) {
 void Solenoids::deactivate() {
   DigitalOutput::setPort(Config::codeSolenoidPort, 0);
   DigitalOutput::setPin(Config::feedSolenoidPin, false);
+}
+
+void Solenoids::pulse(uint8_t pattern) {
+  Solenoids::activate(pattern);
+  SolenoidTimer::start();
 }
