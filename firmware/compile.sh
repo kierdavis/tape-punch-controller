@@ -30,6 +30,7 @@ device_modules_dir="$modules_dir/device-specific/$device"
 include_path="-I$modules_dir -I$device_modules_dir"
 
 cflags="-Wall"                     # Enable all warnings
+cflags="$cflags -std=c++11"        # Specify language version
 cflags="$cflags -O2"               # Enable standard optimisations
 cflags="$cflags -flto"             # Enable link-time- (aka whole-program-) optimisation
 cflags="$cflags -mmcu=$device"     # Inform the compiler of the target device
