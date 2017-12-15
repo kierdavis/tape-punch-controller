@@ -224,15 +224,15 @@ while True:
     break
   except EOFError:
     break
-  line = line.strip()
+  line = line.strip().upper()
   for char in line:
-    for row in reversed(alphabet[char]):
-      put(row)
+    if char in alphabet:
+      for row in reversed(alphabet[char]):
+        put(row)
+      put(0)
+      put(0)
+  for i in range(8):
     put(0)
-    put(0)
-  put(0)
-  put(0)
-  put(0)
 
 for i in range(70):
   put(0)
