@@ -3,7 +3,7 @@
 
 const IO::Port &Config::codeSolenoidPort = IO::Port::A;
 const IO::Pin Config::feedSolenoidPin =
-  { .port = IO::Port::B, .index = 0 };
+  { .port = IO::Port::B, .index = 1 };
 const IO::ExternalInterruptPin Config::feedbackPin =
   IO::ExternalInterruptPin::INT2_;
 

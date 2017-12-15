@@ -1,5 +1,7 @@
+import serial
 import sys
 import re
+import time
 
 letters = {
   "A": 0b01100,
@@ -30,8 +32,11 @@ letters = {
   "Z": 0b11101,
 }
 
+ser = serial.Serial("/dev/ttyUSB0", 9600)
+
 def put(row):
-  print "  0x%02x," % row
+  ser.write(chr(0x80 | row))
+  time.sleep(10e-3)
 
 with open(sys.argv[1], "r") as f:
   content = f.read()
@@ -60,3 +65,7 @@ for char in content:
     put(0b00000)
   elif char == "*":
     put(0b11111)
+
+for i in range(70):
+  put(0)
+ser.close()

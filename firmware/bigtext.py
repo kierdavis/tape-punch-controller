@@ -1,3 +1,6 @@
+import serial
+import time
+
 alphabet = {
   "A": [
     0b11110,
@@ -208,26 +211,29 @@ alphabet = {
   ],
 }
 
-# text = "EDSAC 123"
-text = "MERRY XMAS"
+ser = serial.Serial("/dev/ttyUSB0", 9600)
 
 def put(row):
-  print "  0x%02x," % row
+  ser.write(chr(0x80 | row))
+  time.sleep(10e-3)
 
-# put(0x1F)
-# put(0x1F)
-# put(0)
-# put(0)
-# put(0)
-# put(0)
-
-for char in text:
-  for row in reversed(alphabet[char]):
-    put(row)
+while True:
+  try:
+    line = raw_input("bigtext> ")
+  except KeyboardInterrupt:
+    break
+  except EOFError:
+    break
+  line = line.strip()
+  for char in line:
+    for row in reversed(alphabet[char]):
+      put(row)
+    put(0)
+    put(0)
   put(0)
   put(0)
+  put(0)
 
-# put(0)
-# put(0)
-# put(0x1F)
-# put(0x1F)
+for i in range(70):
+  put(0)
+ser.close()

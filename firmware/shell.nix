@@ -3,7 +3,7 @@ with import <nixpkgs> {};
 stdenv.mkDerivation rec {
   name = "piii-project-firmware-env";
 
-  buildInputs = [ avrbinutils avrdude avrgcc avrlibc ];
+  buildInputs = [ avrbinutils avrdude avrgcc avrlibc python27Packages.python python27Packages.pyserial ];
 
   DEVICE = "atmega644p";
   F_CPU = "12000000";
