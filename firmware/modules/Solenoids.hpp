@@ -16,10 +16,6 @@ namespace Solenoids {
 
   // Deactivate all solenoids.
   void deactivate();
-
-  // Asynchronously pulse the solenoids for the duration specified by
-  // Config::solenoidDuration. Requires SolenoidTimer to have been initialised.
-  void pulse(uint8_t pattern);
 }
 
 #endif // #ifndef __SOLENOIDS_HPP

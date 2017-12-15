@@ -20,8 +20,3 @@ void Solenoids::deactivate() {
   DigitalOutput::setPort(Config::codeSolenoidPort, 0);
   DigitalOutput::setPin(Config::feedSolenoidPin, false);
 }
-
-void Solenoids::pulse(uint8_t pattern) {
-  Solenoids::activate(pattern);
-  SolenoidTimer::start();
-}
