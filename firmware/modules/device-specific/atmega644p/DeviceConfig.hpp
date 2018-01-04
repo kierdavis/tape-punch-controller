@@ -13,10 +13,6 @@ namespace Config {
   // The pin to which the feed solenoid driver is attached.
   static const IO::Pin feedSolenoidPin =
     { .port = IO::Port::B, .index = 0 };
-
-  // The pin on which to listen for synchronisation pulses.
-  static const IO::ExternalInterruptPin feedbackPin =
-    IO::ExternalInterruptPin::INT2_;
 }
 
 #endif // #ifndef __DEVICECONFIG_HPP
