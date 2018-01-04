@@ -1,13 +1,10 @@
-#include "FeedbackSignal.hpp"
-#include "Hooks.hpp"
-#include "Solenoids.hpp"
+#include <avr/interrupt.h>
 
-void Hooks::onFeedbackPulse() {
-  Solenoids::activate(0x53);
-  Solenoids::deactivate();
-}
+#include "TapePunch.hpp"
 
 int main() {
-  Solenoids::init();
-  FeedbackSignal::init();
+  TapePunch::init();
+
+  sei();
+  while (1) {}
 }

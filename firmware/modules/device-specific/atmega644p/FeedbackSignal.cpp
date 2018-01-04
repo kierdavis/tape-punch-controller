@@ -2,7 +2,7 @@
 #include <avr/interrupt.h>
 
 #include "FeedbackSignal.hpp"
-#include "Hooks.hpp"
+#include "TapePunch.hpp"
 
 void FeedbackSignal::init() {
   EICRA |= _BV(ISC21) | _BV(ISC20);
@@ -10,5 +10,5 @@ void FeedbackSignal::init() {
 }
 
 ISR(INT2_vect) {
-  Hooks::onFeedbackPulse();
+  TapePunch::sync();
 }

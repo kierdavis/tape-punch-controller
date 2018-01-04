@@ -13,6 +13,10 @@ namespace Config {
   // The pin to which the feed solenoid driver is attached.
   static const IO::Pin feedSolenoidPin =
     { .port = IO::Port::B, .index = 0 };
+
+  // The clock prescaler used for the tape punch timer.
+  // Valid choices are 1, 8, 64, 256 or 1024.
+  static const uint16_t tapePunchTimerPrescaler = 1024;
 }
 
 #endif // #ifndef __DEVICECONFIG_HPP
