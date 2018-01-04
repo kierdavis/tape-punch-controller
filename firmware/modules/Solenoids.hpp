@@ -10,12 +10,12 @@ namespace Solenoids {
   // Initialise the microcontroller pins that drive the solenoids.
   void init();
 
-  // Activate the eight code solenoids according to the given bit pattern, and
-  // activate the feed solenoiod unconditionally.
-  void activate(uint8_t pattern);
+  // Energise the eight code solenoids according to the given bit pattern, and
+  // energise the feed solenoiod unconditionally.
+  void energise(uint8_t pattern);
 
-  // Deactivate all solenoids.
-  void deactivate();
+  // De-energise all solenoids.
+  void deenergise();
 }
 
 #endif // #ifndef __SOLENOIDS_HPP

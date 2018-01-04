@@ -10,12 +10,12 @@ void Solenoids::init() {
   DigitalOutput::initPin(Config::feedSolenoidPin);
 }
 
-void Solenoids::activate(uint8_t pattern) {
+void Solenoids::energise(uint8_t pattern) {
   DigitalOutput::setPort(Config::codeSolenoidPort, pattern);
   DigitalOutput::setPin(Config::feedSolenoidPin, true);
 }
 
-void Solenoids::deactivate() {
+void Solenoids::deenergise() {
   DigitalOutput::setPort(Config::codeSolenoidPort, 0);
   DigitalOutput::setPin(Config::feedSolenoidPin, false);
 }
