@@ -7,7 +7,9 @@
 
 void Solenoids::init() {
   DigitalOutput::initPort(Config::codeSolenoidPort);
+  DigitalOutput::setPort(Config::codeSolenoidPort, 0);
   DigitalOutput::initPin(Config::feedSolenoidPin);
+  DigitalOutput::setPin(Config::feedSolenoidPin, false);
 }
 
 void Solenoids::energise(uint8_t pattern) {
