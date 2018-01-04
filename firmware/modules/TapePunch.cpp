@@ -1,6 +1,9 @@
+#include <stdbool.h>
 #include <stdint.h>
 #include <avr/interrupt.h>
 
+#include "Config.hpp"
+#include "DigitalOutput.hpp"
 #include "FeedbackSignal.hpp"
 #include "Solenoids.hpp"
 #include "TapePunch.hpp"
@@ -13,6 +16,13 @@ void TapePunch::init() {
   FeedbackSignal::init();
   Solenoids::init();
   TapePunchTimer::init();
+
+  DigitalOutput::initPin(Config::enablePin);
+  DigitalOutput::setPin(Config::enablePin, false);
+}
+
+void TapePunch::setEnabled(bool state) {
+  DigitalOutput::setPin(Config::enablePin, state);
 }
 
 void TapePunch::setDataSource(uint8_t *pointer, uint16_t length) {

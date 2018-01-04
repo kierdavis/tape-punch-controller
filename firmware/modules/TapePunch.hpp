@@ -1,11 +1,15 @@
 #ifndef __TAPEPUNCH_HPP
 #define __TAPEPUNCH_HPP
 
+#include <stdbool.h>
 #include <stdint.h>
 
 namespace TapePunch {
   // Initialise the child modules: Solenoids, FeedbackSignal and TapePunchTimer.
   void init();
+
+  // Turn the tape punch on or off.
+  void setEnabled(bool state);
 
   // Provide a buffer of data to be written onto the tape asynchronously. If
   // there are still pending bytes from a previous call to setDataSource that

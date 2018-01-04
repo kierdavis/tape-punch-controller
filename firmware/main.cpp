@@ -16,6 +16,7 @@ static uint8_t test_data[] = {
 
 int main() {
   TapePunch::init();
+  TapePunch::setEnabled(true);
   TapePunch::setDataSource(test_data, sizeof(test_data)/sizeof(test_data[0]));
 
   sei();
