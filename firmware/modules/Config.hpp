@@ -1,12 +1,12 @@
+// Non-hardware-specific configuration settings.
+
 #ifndef __CONFIG_HPP
 #define __CONFIG_HPP
 
-#include "IO.hpp"
+#include "DeviceConfig.hpp"
 
 namespace Config {
-  extern const IO::Port &codeSolenoidPort;
-  extern const IO::Pin feedSolenoidPin;
-  extern const IO::ExternalInterruptPin feedbackPin;
+  // Nothing to see here...
 }
 
 #endif // #ifndef __CONFIG_HPP
