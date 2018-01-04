@@ -10,5 +10,5 @@ void FeedbackSignal::init() {
 }
 
 ISR(INT2_vect) {
-  TapePunch::sync();
+  TapePunch::Callbacks::sync();
 }

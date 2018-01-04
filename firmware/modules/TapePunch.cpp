@@ -9,18 +9,18 @@ void TapePunch::init() {
   TapePunchTimer::init();
 }
 
-void TapePunch::sync() {
+void TapePunch::Callbacks::sync() {
   TapePunchTimer::start();
 }
 
-void TapePunch::energiseSolenoids() {
+void TapePunch::Callbacks::energiseSolenoids() {
   Solenoids::energise(0xFF);
 }
 
-void TapePunch::deenergiseSolenoids() {
+void TapePunch::Callbacks::deenergiseSolenoids() {
   Solenoids::deenergise();
 }
 
-void TapePunch::flagSyncTimeout() {
+void TapePunch::Callbacks::flagSyncTimeout() {
   // TODO
 }

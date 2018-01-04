@@ -59,14 +59,14 @@ void TapePunchTimer::stop() {
 }
 
 ISR(TIMER0_COMPA_vect) {
-  TapePunch::energiseSolenoids();
+  TapePunch::Callbacks::energiseSolenoids();
 }
 
 ISR(TIMER0_COMPB_vect) {
-  TapePunch::deenergiseSolenoids();
+  TapePunch::Callbacks::deenergiseSolenoids();
 }
 
 ISR(TIMER0_OVF_vect) {
   TapePunchTimer::stop();
-  TapePunch::flagSyncTimeout();
+  TapePunch::Callbacks::flagSyncTimeout();
 }
