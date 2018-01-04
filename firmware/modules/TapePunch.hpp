@@ -1,6 +1,8 @@
 #ifndef __TAPEPUNCH_HPP
 #define __TAPEPUNCH_HPP
 
+#include <stdint.h>
+
 namespace TapePunch {
   // Initialise the child modules: Solenoids, FeedbackSignal and TapePunchTimer.
   void init();

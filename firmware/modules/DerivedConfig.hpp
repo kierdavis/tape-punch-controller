@@ -1,6 +1,8 @@
 #ifndef __DERIVEDCONFIG_HPP
 #define __DERIVEDCONFIG_HPP
 
+#include <stdint.h>
+
 static constexpr double normalise_angle(double x) {
   return (x < 0.0) ? (x + 360.0) :
          (x >= 360.0) ? (x - 360.0) : x;

@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <avr/interrupt.h>
 
 #include "FeedbackSignal.hpp"

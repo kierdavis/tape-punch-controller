@@ -3,6 +3,8 @@
 #ifndef __DEVICECONFIG_HPP
 #define __DEVICECONFIG_HPP
 
+#include <stdint.h>
+
 #include "IO.hpp"
 
 namespace Config {

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <avr/interrupt.h>
 
 #include "TapePunch.hpp"
