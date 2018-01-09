@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <avr/interrupt.h>
+#include <util/atomic.h>
 
 #include "Config.hpp"
 #include "DigitalOutput.hpp"
@@ -26,19 +27,17 @@ void TapePunch::setEnabled(bool state) {
 }
 
 void TapePunch::setDataSource(uint8_t *pointer, uint16_t length) {
-  // bufferPointer and bufferLength are used by interrupt service routines
-  // (via energiseSolenoids), so we should disable interrupts while we access
-  // them here to prevent inconsistent data access.
-  cli();
-  bufferPointer = pointer;
-  bufferLength = length;
-  sei();
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    bufferPointer = pointer;
+    bufferLength = length;
+  }
 }
 
 uint16_t TapePunch::getPending() {
-  cli();
-  uint16_t length = bufferLength;
-  sei();
+  uint16_t length;
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    length = bufferLength;
+  }
   return length;
 }
 
@@ -47,6 +46,8 @@ void TapePunch::Callbacks::sync() {
 }
 
 void TapePunch::Callbacks::energiseSolenoids() {
+  // Always called in an ISR, so we know interrupts are disabled and so there's
+  // no need for an ATOMIC_BLOCK.
   uint16_t length = bufferLength;
   if (length > 0) {
     bufferLength = length - 1;
