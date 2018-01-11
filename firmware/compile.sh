@@ -70,4 +70,8 @@ echo "        to $(realpath --relative-base=$PWD $hex_file)"
 echo
 avr-objcopy -O ihex "$elf_file" "$hex_file"
 
+# Print stats.
+avr-size "$elf_file" "$hex_file"
+
+echo
 echo "Done."
