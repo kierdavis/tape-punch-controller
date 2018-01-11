@@ -31,7 +31,7 @@ include_path="-I$modules_dir -I$device_modules_dir"
 
 cflags="-Wall"                     # Enable all warnings
 cflags="$cflags -std=c++11"        # Specify language version
-cflags="$cflags -O2"               # Enable standard optimisations
+cflags="$cflags -O3"               # Enable standard optimisations
 cflags="$cflags -flto"             # Enable link-time- (aka whole-program-) optimisation
 cflags="$cflags -mmcu=$device"     # Inform the compiler of the target device
 cflags="$cflags -DF_CPU=$f_cpu"    # Inform library code of the CPU frequency
@@ -39,7 +39,7 @@ cflags="$cflags $include_path"     # Add -I flags
 cflags="$cflags ${CFLAGS:-}"       # Append user's CFLAGS variable if present
 
 ldflags="-Wall"                    # Enable all warnings
-ldflags="$ldflags -O2"             # Enable optimisations
+ldflags="$ldflags -O3"             # Enable optimisations
 ldflags="$ldflags -mmcu=$device"   # Inform the compiler of the target device
 ldflags="$ldflags ${LDFLAGS:-}"    # Append user's LDFLAGS variable if present
 
