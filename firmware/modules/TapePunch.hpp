@@ -5,20 +5,29 @@
 #include <stdint.h>
 
 namespace TapePunch {
+  class Job {
+  public:
+    enum class Type : uint8_t {
+      NOP, BLANK, DATA,
+    };
+
+    Type type;
+    uint16_t count;
+    volatile uint8_t *data;
+    volatile Job *next;
+
+    Job(Type type_, uint16_t count_, volatile uint8_t *data_ = nullptr, volatile Job *_next = nullptr);
+  };
+
   // Initialise the child modules: Solenoids, FeedbackSignal and TapePunchTimer.
   void init();
 
   // Turn the tape punch on or off.
   void setEnabled(bool state);
 
-  // Provide a buffer of data to be written onto the tape asynchronously. If
-  // there are still pending bytes from a previous call to setDataSource that
-  // haven't been punched yet, they will be lost.
-  void setDataSource(uint8_t *pointer, uint16_t length);
+  void setJobs(volatile Job *firstJob);
 
-  // Returns the number of bytes from the last buffer provided to setDataSource
-  // that are still waiting to be punched.
-  uint16_t getPending();
+  bool busy();
 
   namespace Callbacks {
     // Called by FeedbackSignal whenever a synchronisation pulse is received.

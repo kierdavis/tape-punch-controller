@@ -10,35 +10,43 @@
 #include "TapePunch.hpp"
 #include "TapePunchTimer.hpp"
 
-static uint8_t *volatile bufferPointer = nullptr;
-static uint16_t volatile bufferLength = 0;
+TapePunch::Job::Job(TapePunch::Job::Type type_,
+                    uint16_t count_,
+                    volatile uint8_t *data_,
+                    volatile TapePunch::Job *next_)
+  : type(type_), count(count_), data(data_), next(next_) {}
+
+// A variable with static linkage whose values is a volatile pointer to a volatile Job.
+static volatile TapePunch::Job * volatile currentJob = nullptr;
+
+static void initEnablePin() {
+  DigitalOutput::initPin(Config::enablePin);
+  DigitalOutput::setPin(Config::enablePin, false);
+}
 
 void TapePunch::init() {
   FeedbackSignal::init();
   Solenoids::init();
   TapePunchTimer::init();
-
-  DigitalOutput::initPin(Config::enablePin);
-  DigitalOutput::setPin(Config::enablePin, false);
+  initEnablePin();
 }
 
 void TapePunch::setEnabled(bool state) {
   DigitalOutput::setPin(Config::enablePin, state);
 }
 
-void TapePunch::setDataSource(uint8_t *pointer, uint16_t length) {
+void TapePunch::setJobs(volatile TapePunch::Job *firstJob) {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    bufferPointer = pointer;
-    bufferLength = length;
+    currentJob = firstJob;
   }
 }
 
-uint16_t TapePunch::getPending() {
-  uint16_t length;
+bool TapePunch::busy() {
+  volatile TapePunch::Job *currentJob_;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    length = bufferLength;
+    currentJob_ = currentJob;
   }
-  return length;
+  return currentJob_ != nullptr;
 }
 
 void TapePunch::Callbacks::sync() {
@@ -48,12 +56,31 @@ void TapePunch::Callbacks::sync() {
 void TapePunch::Callbacks::energiseSolenoids() {
   // Always called in an ISR, so we know interrupts are disabled and so there's
   // no need for an ATOMIC_BLOCK.
-  uint16_t length = bufferLength;
-  if (length > 0) {
-    bufferLength = length - 1;
-    uint8_t *pointer = bufferPointer;
-    Solenoids::energise(*pointer);
-    bufferPointer = pointer + 1;
+  volatile TapePunch::Job *currentJob_ = currentJob;
+  if (currentJob_ != nullptr) {
+    switch (currentJob_->type) {
+    case TapePunch::Job::Type::NOP:
+      // do nothing
+      break;
+    case TapePunch::Job::Type::BLANK:
+      Solenoids::energise(0);
+      break;
+    case TapePunch::Job::Type::DATA:
+      volatile uint8_t *pointer = currentJob_->data;
+      Solenoids::energise(*pointer);
+      currentJob_->data = pointer + 1;
+      break;
+    }
+    uint16_t count = currentJob_->count;
+    count--;
+    if (count == 0) {
+      // Job complete, move to next one.
+      currentJob = currentJob_->next;
+    }
+    else {
+      // Carry on with same job.
+      currentJob_->count = count;
+    }
   }
 }
 
