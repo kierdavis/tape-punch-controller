@@ -43,7 +43,7 @@ with open(sys.argv[1], "r") as f:
 
 content = re.sub("\\[.*?\\]", "", content)
 
-for i in range(100);
+for i in range(100):
   put(0)
 
 for char in content:
