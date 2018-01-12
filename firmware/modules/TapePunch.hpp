@@ -25,7 +25,7 @@ namespace TapePunch {
   // Turn the tape punch on or off.
   void setEnabled(bool state);
 
-  void setJobs(volatile Job *firstJob);
+  void queueJobs(volatile Job *firstJob);
 
   bool busy();
 

@@ -24,7 +24,7 @@ int main() {
   TapePunch::init();
   sei();
 
-  TapePunch::setJobs(&job1);
+  TapePunch::queueJobs(&job1);
   TapePunch::setEnabled(true);
   while (TapePunch::busy()) {
     _delay_ms(100);

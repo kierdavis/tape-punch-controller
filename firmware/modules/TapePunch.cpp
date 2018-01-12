@@ -35,9 +35,23 @@ void TapePunch::setEnabled(bool state) {
   DigitalOutput::setPin(Config::enablePin, state);
 }
 
-void TapePunch::setJobs(volatile TapePunch::Job *firstJob) {
+void TapePunch::queueJobs(volatile TapePunch::Job *firstJob) {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    currentJob = firstJob;
+    volatile TapePunch::Job *j = currentJob;
+    if (j == nullptr) {
+      // Queue is already empty.
+      currentJob = firstJob;
+    }
+    else {
+      // Find the last job currently in the queue.
+      volatile TapePunch::Job *next = j->next;
+      while (next != nullptr) {
+        j = next;
+        next = j->next;
+      }
+      // Chain the argument to the last job currently in the queue.
+      j->next = firstJob;
+    }
   }
 }
 
