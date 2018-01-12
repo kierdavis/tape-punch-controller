@@ -43,6 +43,9 @@ with open(sys.argv[1], "r") as f:
 
 content = re.sub("\\[.*?\\]", "", content)
 
+for i in range(100);
+  put(0)
+
 for char in content:
   char = char.upper()
   if char in letters:
@@ -66,6 +69,6 @@ for char in content:
   elif char == "*":
     put(0b11111)
 
-for i in range(70):
+for i in range(200):
   put(0)
 ser.close()
