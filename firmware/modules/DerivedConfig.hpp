@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-static constexpr double normalise_angle(double x) {
+static constexpr double normaliseAngle(double x) {
   return (x < 0.0) ? (x + 360.0) :
          (x >= 360.0) ? (x - 360.0) : x;
 }
@@ -24,9 +24,9 @@ namespace Config {
   // passes under the feedback coil and the point at which the solenoids are
   // energised/deenergised.
   static const double energiseAngleOffset =
-    normalise_angle(energiseAngle - syncAngle);
+    normaliseAngle(energiseAngle - syncAngle);
   static const double deenergiseAngleOffset =
-    normalise_angle(deenergiseAngle - syncAngle);
+    normaliseAngle(deenergiseAngle - syncAngle);
 
   // Like shaftEnergiseAngleOffset, but is the duration of time passed between
   // the two points rather the angle moved by the shaft.
