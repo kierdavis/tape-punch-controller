@@ -32,7 +32,6 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:symbols
-LIBS:tape-punch-controller-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -207,10 +206,10 @@ Wire Wire Line
 Wire Wire Line
 	4200 4450 5150 4450
 $Comp
-L C C3
+L C C1
 U 1 1 5A3BD480
 P 8200 1900
-F 0 "C3" H 8225 2000 50  0000 L CNN
+F 0 "C1" H 8225 2000 50  0000 L CNN
 F 1 "100n" H 8225 1800 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 8238 1750 50  0001 C CNN
 F 3 "" H 8200 1900 50  0001 C CNN
@@ -218,10 +217,10 @@ F 3 "" H 8200 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C4
+L C C2
 U 1 1 5A3BD62D
 P 8600 1900
-F 0 "C4" H 8625 2000 50  0000 L CNN
+F 0 "C2" H 8625 2000 50  0000 L CNN
 F 1 "100n" H 8625 1800 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 8638 1750 50  0001 C CNN
 F 3 "" H 8600 1900 50  0001 C CNN
@@ -229,10 +228,10 @@ F 3 "" H 8600 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C5
+L C C3
 U 1 1 5A3BD7E3
 P 9000 1900
-F 0 "C5" H 9025 2000 50  0000 L CNN
+F 0 "C3" H 9025 2000 50  0000 L CNN
 F 1 "100n" H 9025 1800 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 9038 1750 50  0001 C CNN
 F 3 "" H 9000 1900 50  0001 C CNN
@@ -240,10 +239,10 @@ F 3 "" H 9000 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C6
+L C C4
 U 1 1 5A3BD7E9
 P 9400 1900
-F 0 "C6" H 9425 2000 50  0000 L CNN
+F 0 "C4" H 9425 2000 50  0000 L CNN
 F 1 "100n" H 9425 1800 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 9438 1750 50  0001 C CNN
 F 3 "" H 9400 1900 50  0001 C CNN
@@ -251,10 +250,10 @@ F 3 "" H 9400 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C7
+L C C5
 U 1 1 5A3BD8F0
 P 9800 1900
-F 0 "C7" H 9825 2000 50  0000 L CNN
+F 0 "C5" H 9825 2000 50  0000 L CNN
 F 1 "100n" H 9825 1800 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 9838 1750 50  0001 C CNN
 F 3 "" H 9800 1900 50  0001 C CNN
@@ -262,10 +261,10 @@ F 3 "" H 9800 1900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C8
+L C C6
 U 1 1 5A3BD8F6
 P 10200 1900
-F 0 "C8" H 10225 2000 50  0000 L CNN
+F 0 "C6" H 10225 2000 50  0000 L CNN
 F 1 "100n" H 10225 1800 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 10238 1750 50  0001 C CNN
 F 3 "" H 10200 1900 50  0001 C CNN
@@ -507,10 +506,10 @@ Wire Wire Line
 Wire Wire Line
 	5000 2150 5150 2150
 $Comp
-L Conn_01x04 J4
+L Conn_01x04 J8
 U 1 1 5A3CD68A
 P 2400 3650
-F 0 "J4" H 2400 3850 50  0000 C CNN
+F 0 "J8" H 2400 3850 50  0000 C CNN
 F 1 "Conn_01x04" H 2400 3350 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 2400 3650 50  0001 C CNN
 F 3 "" H 2400 3650 50  0001 C CNN
@@ -564,10 +563,10 @@ Wire Wire Line
 Wire Wire Line
 	2000 3850 2200 3850
 $Comp
-L Conn_02x03_Odd_Even J3
+L Conn_02x03_Odd_Even J7
 U 1 1 5A3CE0A6
 P 2400 1750
-F 0 "J3" H 2450 1950 50  0000 C CNN
+F 0 "J7" H 2450 1950 50  0000 C CNN
 F 1 "Conn_02x03_Odd_Even" H 2450 1550 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Straight_2x03_Pitch2.54mm" H 2400 1750 50  0001 C CNN
 F 3 "" H 2400 1750 50  0001 C CNN
@@ -619,12 +618,12 @@ UART (serial) connector.
 Text Notes 1400 1150 0    60   ~ 0
 PDI (program/debug interface) connector.\nPinout is same as suggested in Atmel\napplication note AT016017.
 $Comp
-L USB_B J5
+L USB_B J3
 U 1 1 5A3D0F19
 P 1550 5900
-F 0 "J5" H 1350 6350 50  0000 L CNN
+F 0 "J3" H 1350 6350 50  0000 L CNN
 F 1 "USB_B" H 1350 6250 50  0000 L CNN
-F 2 "Connectors:USB_B" H 1700 5850 50  0001 C CNN
+F 2 "Local:Multicomp_MC32597" H 1700 5850 50  0001 C CNN
 F 3 "" H 1700 5850 50  0001 C CNN
 	1    1550 5900
 	1    0    0    -1  
@@ -667,10 +666,10 @@ Wire Wire Line
 Wire Wire Line
 	3100 6050 3200 6050
 $Comp
-L R R31
+L R R1
 U 1 1 5A3D57D2
 P 1600 6700
-F 0 "R31" V 1680 6700 50  0000 C CNN
+F 0 "R1" V 1680 6700 50  0000 C CNN
 F 1 "1M" V 1600 6700 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 1530 6700 50  0001 C CNN
 F 3 "" H 1600 6700 50  0001 C CNN
@@ -678,10 +677,10 @@ F 3 "" H 1600 6700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C10
+L C C8
 U 1 1 5A3D5947
 P 1300 6700
-F 0 "C10" H 1325 6800 50  0000 L CNN
+F 0 "C8" H 1325 6800 50  0000 L CNN
 F 1 "4.7n" H 1325 6600 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0805_HandSoldering" H 1338 6550 50  0001 C CNN
 F 3 "" H 1300 6700 50  0001 C CNN
@@ -718,10 +717,10 @@ Wire Wire Line
 	1450 6950 1450 6900
 Connection ~ 1450 6900
 $Comp
-L R R32
+L R R2
 U 1 1 5A3D6831
 P 3850 5800
-F 0 "R32" V 3930 5800 50  0000 C CNN
+F 0 "R2" V 3930 5800 50  0000 C CNN
 F 1 "1k" V 3850 5800 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 3780 5800 50  0001 C CNN
 F 3 "" H 3850 5800 50  0001 C CNN
@@ -729,10 +728,10 @@ F 3 "" H 3850 5800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R33
+L R R3
 U 1 1 5A3D696C
 P 3850 6200
-F 0 "R33" V 3930 6200 50  0000 C CNN
+F 0 "R3" V 3930 6200 50  0000 C CNN
 F 1 "1k" V 3850 6200 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 3780 6200 50  0001 C CNN
 F 3 "" H 3850 6200 50  0001 C CNN
@@ -777,12 +776,12 @@ Connection ~ 3850 6000
 Text Notes 2600 5300 0    60   ~ 0
 USB connector.
 $Comp
-L C C11
+L C C9
 U 1 1 5A3D905C
 P 4250 6200
-F 0 "C11" H 4275 6300 50  0000 L CNN
+F 0 "C9" H 4275 6300 50  0000 L CNN
 F 1 "10u" H 4275 6100 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0805_HandSoldering" H 4288 6050 50  0001 C CNN
+F 2 "Capacitors_SMD:C_1206_HandSoldering" H 4288 6050 50  0001 C CNN
 F 3 "" H 4250 6200 50  0001 C CNN
 	1    4250 6200
 	-1   0    0    1   
@@ -802,12 +801,12 @@ Connection ~ 4050 6400
 Text Notes 3550 7200 0    60   ~ 0
 USB_SENSE is high when a\nUSB cable is plugged in. The\ncapacitor forms a debouncing\nfilter with the resistors in the\nvoltage divider.
 Text Notes 850  7500 0    60   ~ 0
-R31 and C10 form an EMI filter\nas recommended by Atmel\napplication note AVR1017.
+R1 and C8 form an EMI filter\nas recommended by Atmel\napplication note AVR1017.
 $Comp
-L R R34
+L R R4
 U 1 1 5A3DAF44
 P 9400 3950
-F 0 "R34" V 9480 3950 50  0000 C CNN
+F 0 "R4" V 9480 3950 50  0000 C CNN
 F 1 "10k" V 9400 3950 50  0000 C CNN
 F 2 "Resistors_SMD:R_0805_HandSoldering" V 9330 3950 50  0001 C CNN
 F 3 "" H 9400 3950 50  0001 C CNN
@@ -863,10 +862,10 @@ Reset button.
 Text Label 1450 6450 2    60   ~ 0
 USB_SHIELD
 $Comp
-L TEST TP37
+L TEST TP2
 U 1 1 5A43F555
 P 1900 1900
-F 0 "TP37" H 1900 2200 50  0000 C BNN
+F 0 "TP2" H 1900 2200 50  0000 C BNN
 F 1 "TEST" H 1900 2150 50  0000 C CNN
 F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 1900 1900 50  0001 C CNN
 F 3 "" H 1900 1900 50  0001 C CNN
@@ -874,10 +873,10 @@ F 3 "" H 1900 1900 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L TEST TP36
+L TEST TP1
 U 1 1 5A43F61C
 P 1900 1600
-F 0 "TP36" H 1900 1900 50  0000 C BNN
+F 0 "TP1" H 1900 1900 50  0000 C BNN
 F 1 "TEST" H 1900 1850 50  0000 C CNN
 F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 1900 1600 50  0001 C CNN
 F 3 "" H 1900 1600 50  0001 C CNN
@@ -891,10 +890,10 @@ Wire Wire Line
 	1900 1600 1900 1650
 Connection ~ 1900 1650
 $Comp
-L TEST TP39
+L TEST TP4
 U 1 1 5A4492E4
 P 4250 5950
-F 0 "TP39" H 4250 6250 50  0000 C BNN
+F 0 "TP4" H 4250 6250 50  0000 C BNN
 F 1 "TEST" H 4250 6200 50  0000 C CNN
 F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 4250 5950 50  0001 C CNN
 F 3 "" H 4250 5950 50  0001 C CNN
@@ -902,10 +901,10 @@ F 3 "" H 4250 5950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L TEST TP38
+L TEST TP3
 U 1 1 5A4493A9
 P 3850 5500
-F 0 "TP38" H 3850 5800 50  0000 C BNN
+F 0 "TP3" H 3850 5800 50  0000 C BNN
 F 1 "TEST" H 3850 5750 50  0000 C CNN
 F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 3850 5500 50  0001 C CNN
 F 3 "" H 3850 5500 50  0001 C CNN
