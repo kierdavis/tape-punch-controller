@@ -32,6 +32,7 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:symbols
+LIBS:tape-punch-controller-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -58,10 +59,10 @@ F 3 "" H 2200 4850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR066
+L +3.3V #PWR067
 U 1 1 5A3B26F7
 P 2200 4650
-F 0 "#PWR066" H 2200 4500 50  0001 C CNN
+F 0 "#PWR067" H 2200 4500 50  0001 C CNN
 F 1 "+3.3V" H 2200 4790 50  0000 C CNN
 F 2 "" H 2200 4650 50  0001 C CNN
 F 3 "" H 2200 4650 50  0001 C CNN
@@ -80,10 +81,10 @@ F 3 "" H 2200 6300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR067
+L +3.3V #PWR068
 U 1 1 5A3B2708
 P 2200 6100
-F 0 "#PWR067" H 2200 5950 50  0001 C CNN
+F 0 "#PWR068" H 2200 5950 50  0001 C CNN
 F 1 "+3.3V" H 2200 6240 50  0000 C CNN
 F 2 "" H 2200 6100 50  0001 C CNN
 F 3 "" H 2200 6100 50  0001 C CNN
@@ -135,10 +136,10 @@ F 3 "" H 2700 6800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR068
+L GND #PWR069
 U 1 1 5A3B2735
 P 2700 5550
-F 0 "#PWR068" H 2700 5300 50  0001 C CNN
+F 0 "#PWR069" H 2700 5300 50  0001 C CNN
 F 1 "GND" H 2700 5400 50  0000 C CNN
 F 2 "" H 2700 5550 50  0001 C CNN
 F 3 "" H 2700 5550 50  0001 C CNN
@@ -146,10 +147,10 @@ F 3 "" H 2700 5550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR069
+L GND #PWR070
 U 1 1 5A3B273B
 P 2700 7000
-F 0 "#PWR069" H 2700 6750 50  0001 C CNN
+F 0 "#PWR070" H 2700 6750 50  0001 C CNN
 F 1 "GND" H 2700 6850 50  0000 C CNN
 F 2 "" H 2700 7000 50  0001 C CNN
 F 3 "" H 2700 7000 50  0001 C CNN
@@ -187,10 +188,10 @@ NO_TAPE
 Text Notes 4200 6150 0    60   ~ 0
 LOW_TAPE_RAW/NO_TAPE_RAW are normally connected\nto ground by their respective switches. If a low tape or\nno tape condition occurs, the switch disconnects, allowing\nthe corresponding _RAW signal to be pulled high by the\n10k resistor.\n\nEach switch is debounced with an RC filter.
 $Comp
-L GND #PWR070
+L GND #PWR071
 U 1 1 5A3C33D9
 P 2700 3450
-F 0 "#PWR070" H 2700 3200 50  0001 C CNN
+F 0 "#PWR071" H 2700 3200 50  0001 C CNN
 F 1 "GND" H 2700 3300 50  0000 C CNN
 F 2 "" H 2700 3450 50  0001 C CNN
 F 3 "" H 2700 3450 50  0001 C CNN

@@ -32,6 +32,7 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:symbols
+LIBS:tape-punch-controller-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -70,7 +71,7 @@ U 1 1 5A3E86DB
 P 9800 4850
 F 0 "MH1" H 9800 4950 50  0000 C CNN
 F 1 "Screw_Terminal_01x01" H 9800 4750 50  0000 C CNN
-F 2 "Mounting_Holes:MountingHole_4.3mm_M4_Pad_Via" H 9800 4850 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_4.3mm_M4_Pad" H 9800 4850 50  0001 C CNN
 F 3 "" H 9800 4850 50  0001 C CNN
 	1    9800 4850
 	1    0    0    -1  
@@ -81,7 +82,7 @@ U 1 1 5A3E8774
 P 9800 5150
 F 0 "MH2" H 9800 5250 50  0000 C CNN
 F 1 "Screw_Terminal_01x01" H 9800 5050 50  0000 C CNN
-F 2 "Mounting_Holes:MountingHole_4.3mm_M4_Pad_Via" H 9800 5150 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_4.3mm_M4_Pad" H 9800 5150 50  0001 C CNN
 F 3 "" H 9800 5150 50  0001 C CNN
 	1    9800 5150
 	1    0    0    -1  
@@ -92,7 +93,7 @@ U 1 1 5A3E8794
 P 9800 5450
 F 0 "MH3" H 9800 5550 50  0000 C CNN
 F 1 "Screw_Terminal_01x01" H 9800 5350 50  0000 C CNN
-F 2 "Mounting_Holes:MountingHole_4.3mm_M4_Pad_Via" H 9800 5450 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_4.3mm_M4_Pad" H 9800 5450 50  0001 C CNN
 F 3 "" H 9800 5450 50  0001 C CNN
 	1    9800 5450
 	1    0    0    -1  
@@ -100,18 +101,18 @@ $EndComp
 $Comp
 L GND #PWR01
 U 1 1 5A3E882F
-P 9200 5850
-F 0 "#PWR01" H 9200 5600 50  0001 C CNN
-F 1 "GND" H 9200 5700 50  0000 C CNN
-F 2 "" H 9200 5850 50  0001 C CNN
-F 3 "" H 9200 5850 50  0001 C CNN
-	1    9200 5850
+P 9200 5550
+F 0 "#PWR01" H 9200 5300 50  0001 C CNN
+F 1 "GND" H 9200 5400 50  0000 C CNN
+F 2 "" H 9200 5550 50  0001 C CNN
+F 3 "" H 9200 5550 50  0001 C CNN
+	1    9200 5550
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	9600 4850 9200 4850
 Wire Wire Line
-	9200 4850 9200 5850
+	9200 4850 9200 5550
 Wire Wire Line
 	9600 5150 9200 5150
 Connection ~ 9200 5150
@@ -166,18 +167,4 @@ Text Notes 3900 2150 2    60   ~ 0
 Host computer\n(via USB)
 Text Notes 9600 2700 0    60   ~ 0
 Tape punch
-$Comp
-L Screw_Terminal_01x01 MH4
-U 1 1 5A5A3E45
-P 9800 5750
-F 0 "MH4" H 9800 5850 50  0000 C CNN
-F 1 "Screw_Terminal_01x01" H 9800 5650 50  0000 C CNN
-F 2 "Mounting_Holes:MountingHole_4.3mm_M4_Pad_Via" H 9800 5750 50  0001 C CNN
-F 3 "" H 9800 5750 50  0001 C CNN
-	1    9800 5750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9200 5750 9600 5750
-Connection ~ 9200 5750
 $EndSCHEMATC
