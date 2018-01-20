@@ -8,4 +8,4 @@ mcuname="atmega644p"
 mcufreq="12000000"
 
 # Append preprocessor flags.
-cppflags="$cppflags -DPLATFORM=IL_MATTO"
+cppflags="$cppflags -DPLATFORM=DEV_IL_MATTO"

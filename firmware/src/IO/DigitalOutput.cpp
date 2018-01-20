@@ -6,7 +6,7 @@
 
 static volatile uint8_t * directionReg(IO::Port port) {
   switch (port) {
-    #if PLATFORM == IL_MATTO
+    #if PLATFORM == DEV_IL_MATTO
       case IO::Port::A: { return &DDRA; }
       case IO::Port::B: { return &DDRB; }
       case IO::Port::C: { return &DDRC; }
@@ -20,7 +20,7 @@ static volatile uint8_t * directionReg(IO::Port port) {
 
 static volatile uint8_t * dataReg(IO::Port port) {
   switch (port) {
-    #if PLATFORM == IL_MATTO
+    #if PLATFORM == DEV_IL_MATTO
       case IO::Port::A: { return &PORTA; }
       case IO::Port::B: { return &PORTB; }
       case IO::Port::C: { return &PORTC; }

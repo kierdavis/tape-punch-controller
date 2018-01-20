@@ -3,7 +3,7 @@
 
 namespace IO {
   enum class Port {
-    #if PLATFORM == IL_MATTO
+    #if PLATFORM == DEV_IL_MATTO
       A, B, C, D
     #else
       #error "invalid or unsupported PLATFORM"
