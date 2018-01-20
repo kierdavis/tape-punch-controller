@@ -1,19 +1,20 @@
 with import <nixpkgs> {};
 
+let
+  device = "atmega644p";
+in
+
 stdenv.mkDerivation rec {
   name = "piii-project-firmware-env";
 
   buildInputs = [ avrbinutils avrdude avrgcc avrlibc ];
 
-  DEVICE = "atmega644p";
-  F_CPU = "12000000";
-
-  CFLAGS = [ "-isystem ${avrlibc}/avr/include" ];
+  CPPFLAGS = [ "-isystem ${avrlibc}/avr/include" ];
 
   shellHook = ''
-    lib=$(find ${avrlibc}/avr/lib -name "lib${DEVICE}.a" -print)
+    lib=$(find ${avrlibc}/avr/lib -name "lib${device}.a" -print)
     if [ -z "$lib" ]; then
-      echo >&2 "Could not find target-specific library in ${avrlibc}/avr/lib (bad DEVICE?)."
+      echo >&2 "Could not find target-specific library in ${avrlibc}/avr/lib (bad `device`?)."
       exit 1
     fi
     libdir=$(dirname $lib)

@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
@@ -30,4 +30,13 @@ int main() {
     _delay_ms(100);
   }
   TapePunch::setEnabled(false);
+}
+*/
+
+#include "Peripherals/Solenoids.hpp"
+
+int main() {
+  Peripherals::Solenoids::init();
+  Peripherals::Solenoids::energise(0x59);
+  Peripherals::Solenoids::deenergise();
 }
