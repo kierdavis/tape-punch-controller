@@ -3632,13 +3632,13 @@
       (net 49 /SolenoidDrivers/CODE3_GATE))
   )
 
-  (module Measurement_Points:Measurement_Point_Round-SMD-Pad_Small (layer F.Cu) (tedit 5A5D2A1B) (tstamp 5A593763)
+  (module Measurement_Points:Measurement_Point_Round-SMD-Pad_Small (layer F.Cu) (tedit 5A67476D) (tstamp 5A593763)
     (at 103.505 31.115)
     (descr "Mesurement Point, Round, SMD Pad, DM 1.5mm,")
     (tags "Mesurement Point Round SMD Pad 1.5mm")
     (path /5A3B4329/5A42EA4B)
     (attr virtual)
-    (fp_text reference TP23 (at 3.175 0) (layer F.SilkS)
+    (fp_text reference TP23 (at 0 1.905) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value TEST (at 0 2) (layer F.Fab) hide
