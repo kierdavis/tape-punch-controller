@@ -3751,13 +3751,13 @@
       (net 62 CODE4_SIG))
   )
 
-  (module Measurement_Points:Measurement_Point_Round-SMD-Pad_Small (layer F.Cu) (tedit 5A5D2A83) (tstamp 5A593786)
+  (module Measurement_Points:Measurement_Point_Round-SMD-Pad_Small (layer F.Cu) (tedit 5A6747B7) (tstamp 5A593786)
     (at 127 59.69)
     (descr "Mesurement Point, Round, SMD Pad, DM 1.5mm,")
     (tags "Mesurement Point Round SMD Pad 1.5mm")
     (path /5A3B4329/5A44699D)
     (attr virtual)
-    (fp_text reference TP30 (at -3.175 0) (layer F.SilkS)
+    (fp_text reference TP30 (at 0 -1.905) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value TEST (at 0 2) (layer F.Fab) hide
