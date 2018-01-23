@@ -3734,13 +3734,13 @@
       (net 15 FEED_SOL))
   )
 
-  (module Measurement_Points:Measurement_Point_Round-SMD-Pad_Small (layer F.Cu) (tedit 5A5D2AA0) (tstamp 5A593781)
+  (module Measurement_Points:Measurement_Point_Round-SMD-Pad_Small (layer F.Cu) (tedit 5A6747E0) (tstamp 5A593781)
     (at 132.715 75.565)
     (descr "Mesurement Point, Round, SMD Pad, DM 1.5mm,")
     (tags "Mesurement Point Round SMD Pad 1.5mm")
     (path /5A3B4329/5A4466AE)
     (attr virtual)
-    (fp_text reference TP29 (at 3.175 0) (layer F.SilkS)
+    (fp_text reference TP29 (at 3.175 0.635) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value TEST (at 0 2) (layer F.Fab) hide
