@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/kier/project-repo/pcb/tape-punch-controller.sch)
-    (date "Mon 22 Jan 2018 19:35:13 GMT")
+    (date "Thu 25 Jan 2018 21:04:54 GMT")
     (tool "Eeschema 4.0.7")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -1325,7 +1325,7 @@
       (node (ref SW1) (pin 2))
       (node (ref U1) (pin 58))
       (node (ref U1) (pin 59))
-      (node (ref U1) (pin 38))
+      (node (ref U1) (pin 39))
       (node (ref U1) (pin 37))
       (node (ref U1) (pin 27))
       (node (ref C4) (pin 2))
@@ -1687,7 +1687,7 @@
       (node (ref R31) (pin 1))
       (node (ref R32) (pin 1))
       (node (ref TP13) (pin 1))
-      (node (ref U1) (pin 39)))
+      (node (ref U1) (pin 38)))
     (net (code 63) (name "Net-(J7-Pad3)")
       (node (ref J7) (pin 3)))
     (net (code 64) (name +28V)

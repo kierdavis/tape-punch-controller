@@ -196,7 +196,7 @@ Text GLabel 4200 4250 0    60   Input ~ 0
 LOW_TAPE
 Text GLabel 7400 4150 2    60   Input ~ 0
 USB_SENSE
-Text GLabel 4200 4050 0    60   Input ~ 0
+Text GLabel 4900 3950 0    60   Input ~ 0
 SYNC
 Text GLabel 7400 2150 2    60   Input ~ 0
 CANCEL_n
@@ -910,8 +910,6 @@ Connection ~ 7200 3300
 Wire Wire Line
 	5050 3750 5150 3750
 Wire Wire Line
-	5100 3750 5100 3950
-Wire Wire Line
 	5100 3850 5150 3850
 Connection ~ 5100 3750
 Wire Wire Line
@@ -929,8 +927,10 @@ Connection ~ 7200 4350
 Wire Wire Line
 	7400 4150 7150 4150
 Wire Wire Line
-	5100 3950 5150 3950
+	5100 3750 5100 4050
+Wire Wire Line
+	5100 4050 5150 4050
 Connection ~ 5100 3850
 Wire Wire Line
-	5150 4050 4200 4050
+	4900 3950 5150 3950
 $EndSCHEMATC
