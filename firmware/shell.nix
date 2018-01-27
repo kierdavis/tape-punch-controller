@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, device ? "atmega644p" }:
+{ pkgs ? import <nixpkgs> {}, device ? "atmega644p", platform ? null }:
 
 with pkgs;
 
@@ -6,6 +6,8 @@ stdenv.mkDerivation rec {
   name = "piii-project-firmware-env";
 
   buildInputs = [ avrbinutils avrdude avrgcc avrlibc ];
+
+  PLATFORM = platform;
 
   CPPFLAGS = [ "-isystem ${avrlibc}/avr/include" ];
 
