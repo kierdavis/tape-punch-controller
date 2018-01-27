@@ -1,7 +1,9 @@
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 #include <util/delay.h>
 
 #include "Controller/TapePunch.hpp"
+#include "Peripheral/Serial.hpp"
 
 static uint8_t const DATA[] = {
   0b10000,
@@ -16,7 +18,15 @@ static uint8_t const DATA[] = {
 };
 
 int main() {
+  // First stage init.
+  Peripheral::Serial::init();
+
+  // Second stage init.
   Controller::TapePunch::init();
+
+  // Done.
+  static const char readyStr[] PROGMEM = "Ready.\r\n";
+  Peripheral::Serial::writeStringP(readyStr);
   sei();
 
   Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)

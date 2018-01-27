@@ -23,6 +23,8 @@ namespace Config {
   static double constexpr DEENERGISE_DELAY = (DEENERGISE_REL_ANGLE / 360.0) * SHAFT_PERIOD;
 
   static uint16_t constexpr STARTUP_CYCLES = 92;
+
+  static uint32_t constexpr SERIAL_BAUD_RATE = 19200;
 }
 
 #endif
