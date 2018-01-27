@@ -1,8 +1,6 @@
-with import <nixpkgs> {};
+{ pkgs ? import <nixpkgs> {}, device ? "atmega644p" }:
 
-let
-  device = "atmega644p";
-in
+with pkgs;
 
 stdenv.mkDerivation rec {
   name = "piii-project-firmware-env";

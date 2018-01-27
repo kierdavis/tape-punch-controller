@@ -2,10 +2,10 @@
 # and program.sh.
 
 # Microcontroller model name.
-mcuname="atmega644p"
+mcuname="atxmega192c3"
 
 # Microcontroller clock frequency.
 mcufreq="12000000"
 
 # Append preprocessor flags.
-cppflags="$cppflags -DPLATFORM=DEV_IL_MATTO"
+cppflags="$cppflags -DPLATFORM_PCB"

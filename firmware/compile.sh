@@ -9,7 +9,7 @@ firmware_dir="$(dirname $self)"
 
 platform="${PLATFORM:-}"
 if [ -z "$platform" ]; then
-  platform="dev-il-matto"
+  platform="il-matto"
   echo "Note: using the default value of PLATFORM, which is $platform."
   echo "If you want to change this (or squelch this warning), set the PLATFORM environment variable."
   echo

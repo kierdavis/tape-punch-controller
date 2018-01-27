@@ -1,10 +1,9 @@
-/*#include <stdio.h>
-#include <util/delay.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 
-#include "TapePunch.hpp"
+#include "Controller/TapePunch.hpp"
 
-static volatile uint8_t test_data[] = {
+static uint8_t const DATA[] = {
   0b10000,
   0b01000,
   0b00100,
@@ -13,30 +12,19 @@ static volatile uint8_t test_data[] = {
   0b00010,
   0b00100,
   0b01000,
+  0b10000,
 };
 
-static volatile TapePunch::Job job4(TapePunch::Job::Type::BLANK, 160, nullptr);
-static volatile TapePunch::Job job3(TapePunch::Job::Type::DATA,  160, test_data, &job4);
-static volatile TapePunch::Job job2(TapePunch::Job::Type::BLANK, 160, nullptr,   &job3);
-static volatile TapePunch::Job job1(TapePunch::Job::Type::NOP,   90,  nullptr,   &job2);
-
 int main() {
-  TapePunch::init();
+  Controller::TapePunch::init();
   sei();
 
-  TapePunch::queueJobs(&job1);
-  TapePunch::setEnabled(true);
-  while (TapePunch::busy()) {
-    _delay_ms(100);
+  Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)
+  Controller::TapePunch::addJob_IE(sizeof(DATA)/sizeof(DATA[0]), DATA);
+  Controller::TapePunch::addJob_IE(200); // trailer (200 blank rows)
+
+  while (1) {
+    Controller::TapePunch::tick_IE();
+    _delay_ms(20);
   }
-  TapePunch::setEnabled(false);
-}
-*/
-
-#include "Peripherals/Solenoids.hpp"
-
-int main() {
-  Peripherals::Solenoids::init();
-  Peripherals::Solenoids::energise(0x59);
-  Peripherals::Solenoids::deenergise();
 }
