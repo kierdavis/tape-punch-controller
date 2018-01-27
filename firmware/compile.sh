@@ -31,7 +31,7 @@ ldflags="$ldflags -mmcu=$mcuname"
 cppflags="$cppflags -DF_CPU=$mcufreq"
 
 # Specify language version.
-cxxflags="$cxxflags -std=c++11 -fno-threadsafe-statics"
+cxxflags="$cxxflags -std=c++14 -fno-threadsafe-statics"
 
 # Enable all warnings.
 cxxflags="$cxxflags -Wall"
