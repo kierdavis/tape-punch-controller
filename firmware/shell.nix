@@ -9,7 +9,7 @@ stdenv.mkDerivation rec {
 
   PLATFORM = platform;
 
-  CPPFLAGS = [ "-isystem ${avrlibc}/avr/include" ];
+  CC_FLAGS = [ "-isystem ${avrlibc}/avr/include" ];
 
   shellHook = ''
     lib=$(find ${avrlibc}/avr/lib -name "lib${device}.a" -print)
@@ -18,6 +18,6 @@ stdenv.mkDerivation rec {
       exit 1
     fi
     libdir=$(dirname $lib)
-    export LDFLAGS="-B $libdir -L $libdir"
+    export LD_FLAGS="-B $libdir -L $libdir"
   '';
 }
