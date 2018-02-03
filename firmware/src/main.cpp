@@ -4,6 +4,7 @@
 
 #include "Controller/TapePunch.hpp"
 #include "Peripheral/Serial.hpp"
+#include "USBInterface/Controller.hpp"
 
 static uint8_t const DATA[] = {
   0b10000,
@@ -23,6 +24,7 @@ int main() {
 
   // Second stage init.
   Controller::TapePunch::init();
+  USBInterface::Controller::init();
 
   // Done.
   static const char readyStr[] PROGMEM = "Ready.\r\n";
@@ -35,6 +37,7 @@ int main() {
 
   while (1) {
     Controller::TapePunch::tick_IE();
-    _delay_ms(20);
+    USBInterface::Controller::tick();
+    _delay_ms(1);
   }
 }

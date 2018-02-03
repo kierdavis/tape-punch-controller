@@ -30,7 +30,7 @@ TARGET_SRC = $(shell find src -name '*.cpp')
 SRC = $(TARGET_SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
 
 OPTIMIZATION = s
-CC_FLAGS += -flto -Isrc -Wall -Werror
+CC_FLAGS += -flto -Isrc -Wall -Werror -DUSE_LUFA_CONFIG_HEADER
 LD_FLAGS += -flto
 CPP_STANDARD = c++14
 
