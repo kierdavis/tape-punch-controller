@@ -16,6 +16,7 @@ void Peripheral::SyncTimer::init() {
 }
 
 void Peripheral::SyncTimer::stop() {
+  Controller::TapePunch::Hooks::deenergiseSolenoids_ID();
   setRunning(false);
 }
 
@@ -36,7 +37,10 @@ static void deenergise_ID() {
 }
 
 static void overflow_ID() {
-  // TODO
+  // TODO: flag an error
+  Controller::TapePunch::Hooks::deenergiseSolenoids_ID();
+  setRunning(false);
+
 }
 
 // Platform-specific code is below.
