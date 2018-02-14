@@ -10,7 +10,7 @@ MCU = atxmega192c3
 ARCH = XMEGA
 F_CPU = 12000000
 F_USB = 48000000
-CC_FLAGS += -DPLATFORM_PCB
+CC_FLAGS += -DPLATFORM_PCB -Werror
 WITH_USB ?= y
 else
 ifeq ($(PLATFORM),il-matto)
@@ -31,7 +31,7 @@ TARGET = firmware
 SRC = $(shell find src -name '*.cpp')
 
 OPTIMIZATION = s
-CC_FLAGS += -flto -Isrc -Wall -Werror -DUSE_LUFA_CONFIG_HEADER
+CC_FLAGS += -flto -Isrc -Wall -DUSE_LUFA_CONFIG_HEADER
 LD_FLAGS += -flto
 CPP_STANDARD = c++14
 
