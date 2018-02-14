@@ -4,6 +4,7 @@
 
 #include "Controller/TapePunch.hpp"
 #include "Peripheral/Serial.hpp"
+#include "Platform.hpp"
 #include "USBInterface/Controller.hpp"
 
 static uint8_t const DATA[] = {
@@ -20,6 +21,7 @@ static uint8_t const DATA[] = {
 
 int main() {
   // First stage init.
+  Platform::init();
   Peripheral::Serial::init();
 
   // Second stage init.
