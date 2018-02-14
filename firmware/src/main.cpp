@@ -25,11 +25,11 @@ int main() {
   // Second stage init.
   Controller::TapePunch::init();
   USBInterface::Controller::init();
+  sei();
 
   // Done.
   static const char readyStr[] PROGMEM = "Ready.\r\n";
   Peripheral::Serial::writeStringP(readyStr);
-  sei();
 
   Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)
   Controller::TapePunch::addJob_IE(sizeof(DATA)/sizeof(DATA[0]), DATA);
