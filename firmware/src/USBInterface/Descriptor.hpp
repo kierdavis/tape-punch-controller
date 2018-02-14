@@ -4,6 +4,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#if defined(WITH_USB)
+  #include <LUFA/Drivers/USB/USB.h>
+#else
+  #define ENDPOINT_DIR_IN 0
+  #define ENDPOINT_DIR_OUT 0
+#endif
+
 namespace USBInterface {
   namespace Descriptor {
     enum class InterfaceNumber : uint8_t {

@@ -11,6 +11,7 @@ ARCH = XMEGA
 F_CPU = 12000000
 F_USB = 48000000
 CC_FLAGS += -DPLATFORM_PCB
+WITH_USB ?= y
 else
 ifeq ($(PLATFORM),il-matto)
 MCU = atmega644p
@@ -18,6 +19,7 @@ ARCH = AVR8
 F_CPU = 12000000
 F_USB = 12000000
 CC_FLAGS += -DPLATFORM_IL_MATTO
+WITH_USB ?= n
 else
 $(error "Invalid PLATFORM")
 endif
@@ -26,13 +28,17 @@ endif
 BOARD = NONE
 TARGET = firmware
 
-TARGET_SRC = $(shell find src -name '*.cpp')
-SRC = $(TARGET_SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
+SRC = $(shell find src -name '*.cpp')
 
 OPTIMIZATION = s
 CC_FLAGS += -flto -Isrc -Wall -Werror -DUSE_LUFA_CONFIG_HEADER
 LD_FLAGS += -flto
 CPP_STANDARD = c++14
+
+ifeq ($(WITH_USB),y)
+SRC = $(SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
+CC_FLAGS += -DWITH_USB
+endif
 
 # TODO: http://www.fourwalledcubicle.com/files/LUFA/Doc/151115/html/_page__token_summary.html
 
