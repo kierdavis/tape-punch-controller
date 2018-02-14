@@ -61,6 +61,9 @@ void Peripheral::Serial::writeStringP(PGM_P str) {
 
 #elif defined(PLATFORM_PCB)
   static volatile USART_t * const USART = &USARTD0;
+  static volatile PORT_t * const PORT = &PORTD;
+  static uint8_t constexpr TXD_PIN = 3;
+  static uint8_t constexpr TXD_MASK = _BV(TXD_PIN);
 
   static int8_t constexpr BSCALE = -5;
 
@@ -91,6 +94,7 @@ void Peripheral::Serial::writeStringP(PGM_P str) {
                                      | (((uint8_t) (BSEL >> 8)) & 0x0F);
 
   static void initUART() {
+    PORT->DIRSET = TXD_MASK;
     USART->CTRLA = USART_RXCINTLVL_OFF_gc | USART_TXCINTLVL_OFF_gc | USART_DREINTLVL_OFF_gc;
     USART->CTRLB = USART_TXEN_bm;
     USART->CTRLC = USART_CMODE_ASYNCHRONOUS_gc | USART_PMODE_DISABLED_gc | USART_CHSIZE_8BIT_gc;
