@@ -28,7 +28,7 @@ endif
 BOARD = NONE
 TARGET = firmware
 
-SRC = $(shell find src -name '*.cpp')
+TARGET_SRC = $(shell find src -name '*.cpp')
 
 OPTIMIZATION = s
 CC_FLAGS += -flto -Isrc -Wall -DUSE_LUFA_CONFIG_HEADER
@@ -36,8 +36,10 @@ LD_FLAGS += -flto
 CPP_STANDARD = c++14
 
 ifeq ($(WITH_USB),y)
-SRC = $(SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
+SRC = $(TARGET_SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
 CC_FLAGS += -DWITH_USB
+else
+SRC = $(TARGET_SRC)
 endif
 
 # TODO: http://www.fourwalledcubicle.com/files/LUFA/Doc/151115/html/_page__token_summary.html
