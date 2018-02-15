@@ -4,6 +4,11 @@
 #include <stdint.h>
 #include <avr/pgmspace.h>
 
+#define SERIAL_WRITE(STR) { \
+  static const char str[] PROGMEM = STR; \
+  Peripheral::Serial::writeStringP(str); \
+}
+
 namespace Peripheral {
   namespace Serial {
     void init();
