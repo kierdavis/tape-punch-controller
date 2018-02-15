@@ -6,7 +6,7 @@
 #include "Peripheral/Serial.hpp"
 #include "USBInterface/Controller.hpp"
 #include "USBInterface/Descriptor.hpp"
-// #include "USBInterface/SCSI.hpp"
+#include "USBInterface/SCSI.hpp"
 
 #if defined(WITH_USB)
   #include <LUFA/Drivers/USB/USB.h>
@@ -85,10 +85,7 @@
     }
 
     bool CALLBACK_MS_Device_SCSICommandReceived(USB_ClassInfo_MS_Device_t * msdInfo) {
-      static const char str[] PROGMEM = "USB: SCSI command received\r\n";
-      Peripheral::Serial::writeStringP(str);
-      return true;
-      // return USBInterface::SCSI::handle(&msdInfo->State.CommandBlock);
+      return USBInterface::SCSI::handle(&msdInfo->State.CommandBlock);
     }
   };
 
