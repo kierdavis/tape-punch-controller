@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <avr/pgmspace.h>
+
 namespace USBInterface {
   namespace FAT {
     // Together these define the memory requirement.
@@ -20,8 +22,24 @@ namespace USBInterface {
     static constexpr uint16_t NUM_DATA_SECTORS = NUM_MUTABLE_SECTORS - SECTORS_PER_FAT - ROOT_DIR_SIZE_SECTORS;
     static constexpr uint16_t NUM_SECTORS = NUM_MUTABLE_SECTORS + 1;
 
-    void sendSector(const uint8_t addr);
-    void receiveSector(const uint8_t addr);
+    class Header {
+    public:
+      uint8_t bootCode[3];
+      char vendorStr[8];
+      uint16_t bytesPerSector;
+      uint8_t sectorsPerCluster;
+      uint16_t numReservedSectors;
+      uint8_t numFATs;
+      uint16_t numRootDirEntries;
+      uint16_t numSectors;
+      uint8_t mediaType;
+      uint16_t sectorsPerFat;
+      uint16_t sectorsPerTrack;
+      uint16_t numHeads;
+      uint16_t numHiddenSectors;
+    };
+
+    extern const Header header PROGMEM;
   }
 }
 

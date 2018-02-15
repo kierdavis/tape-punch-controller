@@ -7,13 +7,13 @@
 
 #include "Config.hpp"
 #include "Peripheral/Serial.hpp"
-#include "USBInterface/FAT.hpp"
+#include "USBInterface/BlockStorage.hpp"
 #include "USBInterface/SCSI.hpp"
 #include "Util/Arith.hpp"
 #include "Util/Word.hpp"
 
-using USBInterface::FAT::BYTES_PER_SECTOR;
-using USBInterface::FAT::NUM_SECTORS;
+using USBInterface::BlockStorage::BYTES_PER_BLOCK;
+using USBInterface::BlockStorage::NUM_BLOCKS;
 
 static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
   .ResponseCode = 0x70,
@@ -138,8 +138,8 @@ static bool handleTestUnitReady(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) {
-  const uint32_t addrOfLastBlock = NUM_SECTORS - 1;
-  const uint32_t blockSize = BYTES_PER_SECTOR;
+  const uint32_t addrOfLastBlock = NUM_BLOCKS - 1;
+  const uint32_t blockSize = BYTES_PER_BLOCK;
 
   uint8_t buffer[8];
   Util::Word::toBigEndian(addrOfLastBlock, &buffer[0]);
@@ -170,7 +170,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   uint16_t numBlocks16;
   Util::Word::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
   Util::Word::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
-  if (startAddr32 >= NUM_SECTORS || (startAddr32 + numBlocks16) > NUM_SECTORS) {
+  if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
     return error(
       SCSI_SENSE_KEY_ILLEGAL_REQUEST,
       SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
@@ -186,12 +186,12 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
       return false;
     }
 
-    // Receive a sector.
+    // Receive a block.
     const uint8_t addr = startAddr + i;
     SERIAL_WRITE("\r\n[SCSI] write: 0x");
     Peripheral::Serial::writeHex8(addr);
-    USBInterface::FAT::receiveSector(addr);
-    commandBlock->DataTransferLength -= BYTES_PER_SECTOR;
+    USBInterface::BlockStorage::receive(addr);
+    commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
 
     // Check if endpoint is full.
     if (!Endpoint_IsReadWriteAllowed()) {
@@ -208,7 +208,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   uint16_t numBlocks16;
   Util::Word::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
   Util::Word::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
-  if (startAddr32 >= NUM_SECTORS || (startAddr32 + numBlocks16) > NUM_SECTORS) {
+  if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
     return error(
       SCSI_SENSE_KEY_ILLEGAL_REQUEST,
       SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
@@ -224,12 +224,12 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
       return false;
     }
 
-    // Send a sector.
+    // Send a block.
     const uint8_t addr = startAddr + i;
     SERIAL_WRITE("\r\n[SCSI] read: 0x");
     Peripheral::Serial::writeHex8(addr);
-    USBInterface::FAT::sendSector(addr);
-    commandBlock->DataTransferLength -= BYTES_PER_SECTOR;
+    USBInterface::BlockStorage::send(addr);
+    commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
 
     // Check if endpoint is full.
     if (!Endpoint_IsReadWriteAllowed()) {
