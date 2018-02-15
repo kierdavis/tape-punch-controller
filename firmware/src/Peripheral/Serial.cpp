@@ -26,6 +26,17 @@ void Peripheral::Serial::writeStringP(PGM_P str) {
   }
 }
 
+void Peripheral::Serial::writeHex4(uint8_t val) {
+  val &= 0xF;
+  const char c = (val < 10) ? ('0' + val) : ('a' + val - 10);
+  Peripheral::Serial::write(c);
+}
+
+void Peripheral::Serial::writeHex8(uint8_t val) {
+  Peripheral::Serial::writeHex4(val >> 4);
+  Peripheral::Serial::writeHex4(val);
+}
+
 // Platform-specific code is below.
 
 #if defined(PLATFORM_IL_MATTO)

@@ -14,6 +14,8 @@ namespace Peripheral {
     void init();
     void write(uint8_t value);
     void writeStringP(PGM_P str);
+    void writeHex4(uint8_t val);
+    void writeHex8(uint8_t val);
   }
 }
 
