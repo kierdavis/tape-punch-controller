@@ -2,7 +2,7 @@
 #define __TPC_USB_INTERFACE_CONTROLLER_HPP
 
 namespace USBInterface {
-  namespace Controller {
+  namespace USBDevice {
     void init();
     void tick();
   }

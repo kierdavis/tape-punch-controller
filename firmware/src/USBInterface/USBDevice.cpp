@@ -4,7 +4,7 @@
 #include <avr/pgmspace.h>
 
 #include "Peripheral/Serial.hpp"
-#include "USBInterface/Controller.hpp"
+#include "USBInterface/USBDevice.hpp"
 #include "USBInterface/Descriptor.hpp"
 #include "USBInterface/SCSI.hpp"
 
@@ -32,12 +32,12 @@
     },
   };
 
-  void USBInterface::Controller::init() {
+  void USBInterface::USBDevice::init() {
     // Initialise LUFA.
     USB_Init();
   }
 
-  void USBInterface::Controller::tick() {
+  void USBInterface::USBDevice::tick() {
     MS_Device_USBTask(&msdInfo);
     USB_USBTask();
   }
@@ -92,6 +92,6 @@
 #else
   #warning "USB interface is not available on this platform; these functions will be stubbed out."
 
-  void USBInterface::Controller::init() {}
-  void USBInterface::Controller::tick() {}
+  void USBInterface::USBDevice::init() {}
+  void USBInterface::USBDevice::tick() {}
 #endif
