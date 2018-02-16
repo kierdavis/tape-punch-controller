@@ -42,6 +42,6 @@ int main() {
   while (1) {
     Controller::TapePunch::tick_IE();
     USBInterface::USBDevice::tick();
-    _delay_ms(1);
+    _delay_us(1000);
   }
 }
