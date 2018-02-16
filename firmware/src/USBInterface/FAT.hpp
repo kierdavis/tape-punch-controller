@@ -40,6 +40,8 @@ namespace USBInterface {
     };
 
     extern const Header header PROGMEM;
+
+    void scanFilesystem();
   }
 }
 

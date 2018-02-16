@@ -13,6 +13,7 @@ namespace USBInterface {
 
     void send(const uint8_t addr);
     void receive(const uint8_t addr);
+    uint8_t * get(const uint8_t addr);
   }
 }
 

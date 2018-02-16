@@ -61,3 +61,17 @@ void USBInterface::BlockStorage::receive(const uint8_t addr) {
   // Address out of range.
   receiveNullBlock();
 }
+
+uint8_t * USBInterface::BlockStorage::get(const uint8_t addr) {
+  if (addr == 0) {
+    // Boot sector is immutable, and shouldn't be used by the rest of the
+    // firmware anyway.
+    return nullptr;
+  }
+  const uint8_t maddr = addr - 1;
+  if (maddr < NUM_MUTABLE_BLOCKS) {
+    return &mutableBlocks[maddr][0];
+  }
+  // Address out of range.
+  return nullptr;
+}
