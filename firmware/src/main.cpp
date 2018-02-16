@@ -24,14 +24,16 @@ int main() {
   Platform::init();
   Peripheral::Serial::init();
 
+  static const char initStr1[] PROGMEM = "Init stage one complete.\r\n";
+  Peripheral::Serial::writeStringP(initStr1);
+
   // Second stage init.
   Controller::TapePunch::init();
   USBInterface::USBDevice::init();
   sei();
 
-  // Done.
-  static const char readyStr[] PROGMEM = "Ready.\r\n";
-  Peripheral::Serial::writeStringP(readyStr);
+  static const char initStr2[] PROGMEM = "Init stage two complete.\r\n";
+  Peripheral::Serial::writeStringP(initStr2);
 
   Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)
   Controller::TapePunch::addJob_IE(sizeof(DATA)/sizeof(DATA[0]), DATA);
