@@ -31,8 +31,8 @@ TARGET = firmware
 TARGET_SRC = $(shell find src -name '*.cpp')
 
 OPTIMIZATION = s
-CC_FLAGS += -flto -Isrc -Wall -DUSE_LUFA_CONFIG_HEADER
-LD_FLAGS += -flto
+LTO = Y
+CC_FLAGS += -Isrc -Wall -DUSE_LUFA_CONFIG_HEADER
 CPP_STANDARD = c++14
 
 ifeq ($(WITH_USB),y)
