@@ -5,7 +5,7 @@
 
 #include "Peripheral/Serial.hpp"
 #include "USBInterface/USBDevice.hpp"
-#include "USBInterface/Descriptor.hpp"
+#include "USBInterface/USBDescriptor.hpp"
 #include "USBInterface/SCSI.hpp"
 
 #if defined(WITH_USB)
@@ -15,16 +15,16 @@
   // Encapsulates runtime state of Mass Storage interface.
   static USB_ClassInfo_MS_Device_t msdInfo = {
     .Config = {
-      .InterfaceNumber = (uint8_t) USBInterface::Descriptor::InterfaceNumber::MASS_STORAGE,
+      .InterfaceNumber = (uint8_t) USBInterface::USBDescriptor::InterfaceNumber::MASS_STORAGE,
       .DataINEndpoint = {
-        .Address = (uint8_t) USBInterface::Descriptor::EndpointAddr::MASS_STORAGE_IN,
-        .Size    = USBInterface::Descriptor::MASS_STORAGE_EPSIZE,
+        .Address = (uint8_t) USBInterface::USBDescriptor::EndpointAddr::MASS_STORAGE_IN,
+        .Size    = USBInterface::USBDescriptor::MASS_STORAGE_EPSIZE,
         .Type    = EP_TYPE_BULK,
         .Banks   = 1,
       },
       .DataOUTEndpoint = {
-        .Address = (uint8_t) USBInterface::Descriptor::EndpointAddr::MASS_STORAGE_OUT,
-        .Size    = USBInterface::Descriptor::MASS_STORAGE_EPSIZE,
+        .Address = (uint8_t) USBInterface::USBDescriptor::EndpointAddr::MASS_STORAGE_OUT,
+        .Size    = USBInterface::USBDescriptor::MASS_STORAGE_EPSIZE,
         .Type    = EP_TYPE_BULK,
         .Banks   = 1,
       },
@@ -73,8 +73,8 @@
                                         uint8_t * memorySpaceDest) {
       uint8_t descriptorType = wValue >> 8;
       uint8_t descriptorNumber = wValue & 0xFF;
-      USBInterface::Descriptor::Ref ref;
-      bool ok = USBInterface::Descriptor::lookup(descriptorType, descriptorNumber, wIndex, &ref);
+      USBInterface::USBDescriptor::Ref ref;
+      bool ok = USBInterface::USBDescriptor::lookup(descriptorType, descriptorNumber, wIndex, &ref);
       if (ok) {
         *descriptorDest = ref.pointer;
         *memorySpaceDest = ref.memorySpace;

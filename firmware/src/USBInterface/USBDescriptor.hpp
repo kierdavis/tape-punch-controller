@@ -12,7 +12,7 @@
 #endif
 
 namespace USBInterface {
-  namespace Descriptor {
+  namespace USBDescriptor {
     enum class InterfaceNumber : uint8_t {
       MASS_STORAGE = 0,
     };

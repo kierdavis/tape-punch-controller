@@ -4,9 +4,9 @@
 #include <avr/pgmspace.h>
 
 #include "Config.hpp"
-#include "USBInterface/Descriptor.hpp"
+#include "USBInterface/USBDescriptor.hpp"
 
-using namespace USBInterface::Descriptor;
+using namespace USBInterface::USBDescriptor;
 
 #if defined(WITH_USB)
   #include <LUFA/Drivers/USB/USB.h>
@@ -132,7 +132,7 @@ using namespace USBInterface::Descriptor;
     }
   }
 
-  bool USBInterface::Descriptor::lookup(uint8_t type, uint8_t number, uint16_t index, USBInterface::Descriptor::Ref * ref) {
+  bool USBInterface::USBDescriptor::lookup(uint8_t type, uint8_t number, uint16_t index, Ref * ref) {
     switch (type) {
       case DTYPE_Device: {
         ref->pointer = &deviceDescriptor;
@@ -163,7 +163,7 @@ using namespace USBInterface::Descriptor;
 #else
   #warning "USB interface is not available on this platform; these functions will be stubbed out."
 
-  bool USBInterface::Descriptor::lookup(uint8_t type, uint8_t number, uint16_t index, USBInterface::Descriptor::Ref * ref) {
+  bool USBInterface::USBDescriptor::lookup(uint8_t type, uint8_t number, uint16_t index, Ref * ref) {
     return false;
   }
 #endif
