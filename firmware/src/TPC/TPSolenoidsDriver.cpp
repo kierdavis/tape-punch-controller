@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "Peripheral/Solenoids.hpp"
+#include "TPC/TPSolenoidsDriver.hpp"
 
 static volatile PORT_t * const CODE_PORT = &PORTF;
 
@@ -24,15 +24,15 @@ static void setPins(uint8_t codeValue, bool feedValue) {
   }
 }
 
-void Peripheral::Solenoids::init() {
+void TPC::TPSolenoidsDriver::init() {
   configurePins();
   setPins(0x00, false);
 }
 
-void Peripheral::Solenoids::energise(uint8_t codeValue) {
+void TPC::TPSolenoidsDriver::energise(uint8_t codeValue) {
   setPins(codeValue, true);
 }
 
-void Peripheral::Solenoids::deenergise() {
+void TPC::TPSolenoidsDriver::deenergise() {
   setPins(0x00, false);
 }

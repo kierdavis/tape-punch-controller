@@ -6,16 +6,16 @@
 #include "Controller/JobQueue.hpp"
 #include "Controller/TapePunch.hpp"
 #include "Peripheral/Motor.hpp"
-#include "Peripheral/Solenoids.hpp"
 #include "Peripheral/SyncSignal.hpp"
 #include "Peripheral/SyncTimer.hpp"
+#include "TPC/TPSolenoidsDriver.hpp"
 
 static volatile bool on = false;
 static volatile uint16_t waitCount = 0;
 
 void Controller::TapePunch::init() {
   // Initialise our peripherals.
-  Peripheral::Solenoids::init();
+  TPC::TPSolenoidsDriver::init();
   Peripheral::SyncSignal::init();
   Peripheral::SyncTimer::init();
   Peripheral::Motor::init();
@@ -61,12 +61,12 @@ void Controller::TapePunch::Hooks::energiseSolenoids_ID() {
   }
   Controller::JobQueue::PopByteResult result = Controller::JobQueue::popByte_ID();
   if (result.hasData) {
-    Peripheral::Solenoids::energise(result.data);
+    TPC::TPSolenoidsDriver::energise(result.data);
   } else {
     switchOff_ID();
   }
 }
 
 void Controller::TapePunch::Hooks::deenergiseSolenoids_ID() {
-  Peripheral::Solenoids::deenergise();
+  TPC::TPSolenoidsDriver::deenergise();
 }
