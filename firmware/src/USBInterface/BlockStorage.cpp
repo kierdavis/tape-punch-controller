@@ -27,6 +27,7 @@ static void sendNullBlock() {
 
 static void receiveMutableBlock(const uint8_t maddr) {
   Endpoint_Read_Stream_LE(&mutableBlocks[maddr][0], BYTES_PER_BLOCK, NULL);
+  USBInterface::FAT::scanFilesystem();
 }
 
 static void receiveNullBlock() {
