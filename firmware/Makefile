@@ -3,44 +3,22 @@
 
 # Run "make help" for target help.
 
-PLATFORM ?= pcb
-
-ifeq ($(PLATFORM),pcb)
 MCU = atxmega192c3
 ARCH = XMEGA
 F_CPU = 12000000
 F_USB = 48000000
 CC_FLAGS += -DPLATFORM_PCB -Werror
-WITH_USB ?= y
-else
-ifeq ($(PLATFORM),il-matto)
-MCU = atmega644p
-ARCH = AVR8
-F_CPU = 12000000
-F_USB = 12000000
-CC_FLAGS += -DPLATFORM_IL_MATTO
-WITH_USB ?= n
-else
-$(error "Invalid PLATFORM")
-endif
-endif
 
 BOARD = NONE
 TARGET = firmware
 
 TARGET_SRC = $(shell find src -name '*.cpp')
+SRC = $(TARGET_SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
 
 OPTIMIZATION = s
 LTO = Y
-CC_FLAGS += -Isrc -Wall -DUSE_LUFA_CONFIG_HEADER
+CC_FLAGS += -Isrc -Wall -DUSE_LUFA_CONFIG_HEADER -DWITH_USB
 CPP_STANDARD = c++14
-
-ifeq ($(WITH_USB),y)
-SRC = $(TARGET_SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
-CC_FLAGS += -DWITH_USB
-else
-SRC = $(TARGET_SRC)
-endif
 
 # TODO: http://www.fourwalledcubicle.com/files/LUFA/Doc/151115/html/_page__token_summary.html
 

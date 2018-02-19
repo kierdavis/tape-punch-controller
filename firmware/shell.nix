@@ -1,13 +1,14 @@
-{ pkgs ? import <nixpkgs> {}, device ? "atmega644p", platform ? null, buildInputs ? [] }:
+{ pkgs ? import <nixpkgs> {}, device ? "atxmega192c3", buildInputs ? [] }:
 
 with pkgs;
 
-stdenv.mkDerivation {
+let
+  pdiprog = pkgs.callPackage ./pdi-programmer/client {};
+
+in stdenv.mkDerivation {
   name = "piii-project-firmware-env";
 
-  buildInputs = buildInputs ++ [ avrbinutils avrdude avrgcc avrlibc ];
-
-  PLATFORM = platform;
+  buildInputs = [ avrbinutils avrdude avrgcc avrlibc pdiprog ];
 
   CC_FLAGS = [ "-isystem ${avrlibc}/avr/include" ];
 
