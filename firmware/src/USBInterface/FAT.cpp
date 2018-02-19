@@ -52,6 +52,8 @@ static void scanFile(DirectoryEntry * entry) {
 }
 
 static void scanDirectory(uint8_t * const clusterData) {
+  // TODO: follow the FAT if the directory doesn't fit into one cluster?
+
   static constexpr char END_OF_DIR_MARKER = '\x00';
   static constexpr char UNOCCUPIED_MARKER = '\xE5';
 
@@ -87,6 +89,7 @@ static void scanDirectory(uint8_t * const clusterData) {
         break;
       }
     }
+    currentEntry++;
   }
 }
 
