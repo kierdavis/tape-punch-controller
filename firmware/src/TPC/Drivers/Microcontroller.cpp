@@ -8,11 +8,11 @@
 // The production signature row has its own special address space, in which the
 // production signature values begin at offset zero. This structure should only
 // be accessed using `readProdSigByte`.
-static const volatile NVM_PROD_SIGNATURES_t * const prodSigs = (NVM_PROD_SIGNATURES_t *) 0;
+static const NVM_PROD_SIGNATURES_t * const prodSigs = (NVM_PROD_SIGNATURES_t *) 0;
 
 // Read a byte from the production signature row. `ptr` should point into
 // `prodSigs`.
-static uint8_t readProdSigByte(const volatile uint8_t * ptr) {
+static uint8_t readProdSigByte(const uint8_t * ptr) {
   // Switch the behaviour of `pgm_read_byte` to use the production signature
   // address space rather than the program flash space (the default).
   NVM.CMD = NVM_CMD_READ_CALIB_ROW_gc;
@@ -38,7 +38,11 @@ static void init32MHzOscillator() {
   // Calibrate oscillator for 48MHz operation. An appropriate calibration
   // setting was determined during production test of the microcontroller, and
   // can be retrieved from the production signature row.
-  DFLLRC32M.CALB = readProdSigByte(&prodSigs->USBRCOSC);
+  // The cast to a `const uint8_t *` is necessary because `USBRCOSC` is marked
+  // as `volatile` in the `NVM_PROD_SIGNATURES_t` structure despite it being
+  // read-only. As a result, `&prodSigs->USBRCOSC` has the somewhat odd type
+  // `const volatile uint8_t *`.
+  DFLLRC32M.CALB = readProdSigByte((const uint8_t *) &prodSigs->USBRCOSC);
   // More magic calibration values.
   // Source: ATxmega C-series manual, section 4.15.19.
   DFLLRC32M.COMP1 = 0x1B;
