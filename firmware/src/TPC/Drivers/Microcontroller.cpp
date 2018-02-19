@@ -44,7 +44,7 @@ static void init32MHzOscillator() {
   // `const volatile uint8_t *`.
   DFLLRC32M.CALB = readProdSigByte((const uint8_t *) &prodSigs->USBRCOSC);
   // More magic calibration values.
-  // Source: ATxmega C-series manual, section 4.15.19.
+  // Source: ATxmega C-series manual, section 4.15.19 (page 40).
   DFLLRC32M.COMP1 = 0x1B;
   DFLLRC32M.COMP2 = 0xB7;
   // Enable the oscillator.
