@@ -5,7 +5,7 @@
 #include <avr/io.h>
 
 #include "Peripheral/Buttons.hpp"
-#include "Peripheral/Serial.hpp"
+#include "UI/UIController.hpp"
 
 enum class State : uint8_t {
   NONE_PRESSED,
@@ -35,18 +35,6 @@ static State readState() {
   }
 }
 
-static void onConfirm_ID() {
-  SERIAL_WRITE("[Buttons] confirm\r\n");
-}
-
-static void onCancel_ID() {
-  SERIAL_WRITE("[Buttons] cancel\r\n");
-}
-
-static void onBoth_ID() {
-  SERIAL_WRITE("[Buttons] confirm+cancel\r\n");
-}
-
 static void update_ID() {
   static State savedState = State::NONE_PRESSED;
 
@@ -54,11 +42,11 @@ static void update_ID() {
   State newState = readState();
 
   if (oldState == State::CONFIRM_PRESSED && newState == State::NONE_PRESSED) {
-    onConfirm_ID();
+    UI::UIController::Hooks::confirm();
   } else if (oldState == State::CANCEL_PRESSED && newState == State::NONE_PRESSED) {
-    onCancel_ID();
+    UI::UIController::Hooks::cancel();
   } else if (oldState == State::BOTH_PRESSED && newState != State::BOTH_PRESSED) {
-    onBoth_ID();
+    UI::UIController::Hooks::both();
     newState = State::AFTER_BOTH_PRESSED;
   }
 

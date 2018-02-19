@@ -5,6 +5,7 @@
 #include "Controller/TapePunch.hpp"
 #include "Peripheral/Serial.hpp"
 #include "Platform.hpp"
+#include "UI/UIController.hpp"
 #include "USBInterface/USBDevice.hpp"
 
 static uint8_t const DATA[] = {
@@ -30,14 +31,15 @@ int main() {
   // Second stage init.
   Controller::TapePunch::init();
   USBInterface::USBDevice::init();
+  UI::UIController::init();
   sei();
 
   static const char initStr2[] PROGMEM = "Init stage two complete.\r\n";
   Peripheral::Serial::writeStringP(initStr2);
 
-  Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)
-  Controller::TapePunch::addJob_IE(sizeof(DATA)/sizeof(DATA[0]), DATA);
-  Controller::TapePunch::addJob_IE(200); // trailer (200 blank rows)
+  // Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)
+  // Controller::TapePunch::addJob_IE(sizeof(DATA)/sizeof(DATA[0]), DATA);
+  // Controller::TapePunch::addJob_IE(200); // trailer (200 blank rows)
 
   while (1) {
     Controller::TapePunch::tick_IE();
