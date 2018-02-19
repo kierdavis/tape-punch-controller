@@ -39,8 +39,6 @@ static uint8_t constexpr BAUDCTRLA = (uint8_t) BSEL;
 static uint8_t constexpr BAUDCTRLB = (((uint8_t) (BSCALE << 4)) & 0xF0)
                                    | (((uint8_t) (BSEL >> 8)) & 0x0F);
 
-static void transmit(uint8_t data);
-
 void TPC::SerialDriver::init() {
   PORT->DIRSET = TXD_MASK;
   USART->CTRLA = USART_RXCINTLVL_OFF_gc | USART_TXCINTLVL_OFF_gc | USART_DREINTLVL_OFF_gc;
@@ -56,8 +54,13 @@ void TPC::SerialDriver::init() {
   TPC::SerialDriver::writeNewline();
 }
 
+static bool transmitBufferEmpty() {
+  return USART->STATUS & USART_DREIF_bm;
+}
+
 void TPC::SerialDriver::write(uint8_t data) {
-  transmit(data);
+  while (!transmitBufferEmpty()) {}
+  USART->DATA = data;
 }
 
 void TPC::SerialDriver::writeNewline() {
@@ -88,13 +91,4 @@ void TPC::SerialDriver::writeHex8(uint8_t val) {
 void TPC::SerialDriver::writeHex16(uint16_t val) {
   TPC::SerialDriver::writeHex8(val >> 8);
   TPC::SerialDriver::writeHex8(val);
-}
-
-static bool transmitBufferEmpty() {
-  return USART->STATUS & USART_DREIF_bm;
-}
-
-static void transmit(uint8_t data) {
-  while (!transmitBufferEmpty()) {}
-  USART->DATA = data;
 }
