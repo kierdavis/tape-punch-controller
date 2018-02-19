@@ -4,6 +4,7 @@
 namespace TPC {
   namespace Drivers {
     namespace Microcontroller {
+      // Initialise the microcontroller's internal subsystems.
       void init();
     }
   }
