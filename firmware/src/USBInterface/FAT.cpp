@@ -29,20 +29,6 @@ const USBInterface::FAT::Header USBInterface::FAT::header PROGMEM = {
   .numHiddenSectors = 0
 };
 
-typedef struct {
-  char name[8];
-  char extension[3];
-  uint8_t attributes;
-  uint8_t reserved;
-  uint8_t createTime[5];
-  uint8_t accessTime[2];
-  uint16_t permissions;
-  uint8_t modifiedTime[4];
-  uint16_t startCluster;
-  uint32_t size;
-} DirectoryEntry;
-static_assert(sizeof(DirectoryEntry) == 32, "DirectoryEntry should be 32 bytes long");
-
 static void printPaddedStr(const char * const str, const uint8_t maxLen) {
   uint8_t len = maxLen;
   while (len != 0 && str[len-1] == ' ') {
