@@ -148,10 +148,10 @@ static void overflow_ID() {
     TCC0.INTCTRLA = TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_MED_gc;
     // CCDINTLVL = OFF (no compare match D interrupt)
     // CCCINTLVL = OFF (no compare match C interrupt)
-    // CCBINTLVL = OFF (medium priority compare match B interrupt)
-    // CCAINTLVL = OFF (medium priority compare match A interrupt)
+    // CCBINTLVL = OFF (high priority compare match B interrupt)
+    // CCAINTLVL = OFF (high priority compare match A interrupt)
     TCC0.INTCTRLB = TC_CCDINTLVL_OFF_gc | TC_CCCINTLVL_OFF_gc |
-                    TC_CCBINTLVL_MED_gc | TC_CCAINTLVL_MED_gc;
+                    TC_CCBINTLVL_HI_gc | TC_CCAINTLVL_HI_gc;
     // LUPD = 0 (updating is unlocked)
     // DIR = 0 (count upwards)
     TCC0.CTRLFCLR = TC0_LUPD_bm | TC0_DIR_bm;
