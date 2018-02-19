@@ -30,8 +30,7 @@ static void init32MHzOscillator() {
   while (!(OSC.STATUS & OSC_RC32MRDY_bm)) {}
 }
 
-static void initSystemClock() {
-  init32MHzOscillator();
+static void initClockSource() {
   // Configure system clock prescalers.
   writeWithCCP(&CLK.PSCTRL, CLK_PSADIV_4_gc | CLK_PSBCDIV_1_1_gc);
   // Switch system clock source to the 32MHz oscillator.
@@ -48,6 +47,7 @@ static void initInterruptController() {
 }
 
 void TPC::Drivers::Microcontroller::init() {
-  initSystemClock();
+  init32MHzOscillator();
+  initClockSource();
   initInterruptController();
 }
