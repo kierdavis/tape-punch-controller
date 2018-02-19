@@ -1,6 +1,7 @@
 #include <avr/pgmspace.h>
 
 #include "Peripheral/Serial.hpp"
+#include "UI/FileList.hpp"
 #include "USBInterface/BlockStorage.hpp"
 #include "USBInterface/FAT.hpp"
 
@@ -46,6 +47,7 @@ static void printFilename(DirectoryEntry * entry) {
 }
 
 static void scanFile(DirectoryEntry * entry) {
+  UI::FileList::add(entry);
   SERIAL_WRITE("[FAT] Found file: ");
   printFilename(entry);
   SERIAL_WRITE("\r\n");
@@ -95,6 +97,7 @@ static void scanDirectory(uint8_t * const clusterData) {
 
 void USBInterface::FAT::scanFilesystem() {
   SERIAL_WRITE("[FAT] Scanning...\r\n");
+  UI::FileList::reset();
   uint8_t * const clusterData = USBInterface::BlockStorage::get(ROOT_DIR_SECTOR);
   scanDirectory(clusterData);
 }

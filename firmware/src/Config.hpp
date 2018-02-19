@@ -28,6 +28,8 @@ namespace Config {
 
   static uint16_t constexpr USB_VENDOR_ID = 0x03EB; // Atmel
   static uint16_t constexpr USB_PRODUCT_ID = 0x2040; // LUFA test PID (must change this before shipping to customer)
+
+  static uint8_t constexpr MAX_NUM_FILES = 16;
 }
 
 #endif
