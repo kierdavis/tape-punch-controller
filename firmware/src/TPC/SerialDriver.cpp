@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #include "Config.hpp"
-#include "TPC/Drivers/Serial.hpp"
+#include "TPC/SerialDriver.hpp"
 
 static volatile USART_t * const USART = &USARTD0;
 static volatile PORT_t * const PORT = &PORTD;
@@ -41,7 +41,7 @@ static uint8_t constexpr BAUDCTRLB = (((uint8_t) (BSCALE << 4)) & 0xF0)
 
 static void transmit(uint8_t data);
 
-void TPC::Drivers::Serial::init() {
+void TPC::SerialDriver::init() {
   PORT->DIRSET = TXD_MASK;
   USART->CTRLA = USART_RXCINTLVL_OFF_gc | USART_TXCINTLVL_OFF_gc | USART_DREINTLVL_OFF_gc;
   USART->CTRLB = USART_TXEN_bm;
@@ -50,44 +50,44 @@ void TPC::Drivers::Serial::init() {
   USART->BAUDCTRLB = BAUDCTRLB;
 
   SERIAL_WRITE("BSCALE 0x");
-  TPC::Drivers::Serial::writeHex4(BSCALE & 0xF);
+  TPC::SerialDriver::writeHex4(BSCALE & 0xF);
   SERIAL_WRITE("\r\nBSEL 0x");
-  TPC::Drivers::Serial::writeHex16(BSEL);
-  TPC::Drivers::Serial::writeNewline();
+  TPC::SerialDriver::writeHex16(BSEL);
+  TPC::SerialDriver::writeNewline();
 }
 
-void TPC::Drivers::Serial::write(uint8_t data) {
+void TPC::SerialDriver::write(uint8_t data) {
   transmit(data);
 }
 
-void TPC::Drivers::Serial::writeNewline() {
-  TPC::Drivers::Serial::write('\r');
-  TPC::Drivers::Serial::write('\n');
+void TPC::SerialDriver::writeNewline() {
+  TPC::SerialDriver::write('\r');
+  TPC::SerialDriver::write('\n');
 }
 
-void TPC::Drivers::Serial::writeStringP(PGM_P str) {
+void TPC::SerialDriver::writeStringP(PGM_P str) {
   while (1) {
     char c = pgm_read_byte(str);
     if (c == '\0') { break; }
-    TPC::Drivers::Serial::write((uint8_t) c);
+    TPC::SerialDriver::write((uint8_t) c);
     str++;
   }
 }
 
-void TPC::Drivers::Serial::writeHex4(uint8_t val) {
+void TPC::SerialDriver::writeHex4(uint8_t val) {
   val &= 0xF;
   const char c = (val < 10) ? ('0' + val) : ('a' + val - 10);
-  TPC::Drivers::Serial::write(c);
+  TPC::SerialDriver::write(c);
 }
 
-void TPC::Drivers::Serial::writeHex8(uint8_t val) {
-  TPC::Drivers::Serial::writeHex4(val >> 4);
-  TPC::Drivers::Serial::writeHex4(val);
+void TPC::SerialDriver::writeHex8(uint8_t val) {
+  TPC::SerialDriver::writeHex4(val >> 4);
+  TPC::SerialDriver::writeHex4(val);
 }
 
-void TPC::Drivers::Serial::writeHex16(uint16_t val) {
-  TPC::Drivers::Serial::writeHex8(val >> 8);
-  TPC::Drivers::Serial::writeHex8(val);
+void TPC::SerialDriver::writeHex16(uint16_t val) {
+  TPC::SerialDriver::writeHex8(val >> 8);
+  TPC::SerialDriver::writeHex8(val);
 }
 
 static bool transmitBufferEmpty() {

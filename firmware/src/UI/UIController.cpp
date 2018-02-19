@@ -2,7 +2,7 @@
 
 #include "Controller/TapePunch.hpp"
 #include "Peripheral/Buttons.hpp"
-#include "TPC/Drivers/Serial.hpp"
+#include "TPC/SerialDriver.hpp"
 #include "UI/FileList.hpp"
 #include "UI/UIController.hpp"
 #include "USBInterface/BlockStorage.hpp"
@@ -28,11 +28,11 @@ void UI::UIController::Hooks::confirm() {
         uint8_t * contents = USBInterface::BlockStorage::get(file->startCluster + USBInterface::FAT::NUM_RESERVED_SECTORS);
         uint16_t length = file->size;
         SERIAL_WRITE("Printing file 0x");
-        TPC::Drivers::Serial::writeHex16((uint16_t) file);
+        TPC::SerialDriver::writeHex16((uint16_t) file);
         SERIAL_WRITE(" (contents at cluster 0x");
-        TPC::Drivers::Serial::writeHex16(file->startCluster);
+        TPC::SerialDriver::writeHex16(file->startCluster);
         SERIAL_WRITE(" / addr 0x");
-        TPC::Drivers::Serial::writeHex16((uint16_t) contents);
+        TPC::SerialDriver::writeHex16((uint16_t) contents);
         SERIAL_WRITE(")\r\n");
         Controller::TapePunch::addJob_IE(100);
         Controller::TapePunch::addJob_IE(length, contents);

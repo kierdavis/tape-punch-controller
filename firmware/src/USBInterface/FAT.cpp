@@ -1,6 +1,6 @@
 #include <avr/pgmspace.h>
 
-#include "TPC/Drivers/Serial.hpp"
+#include "TPC/SerialDriver.hpp"
 #include "UI/FileList.hpp"
 #include "USBInterface/BlockStorage.hpp"
 #include "USBInterface/FAT.hpp"
@@ -36,13 +36,13 @@ static void printPaddedStr(const char * const str, const uint8_t maxLen) {
     len--;
   }
   for (uint8_t i = 0; i < len; i++) {
-    TPC::Drivers::Serial::write(str[i]);
+    TPC::SerialDriver::write(str[i]);
   }
 }
 
 static void printFilename(DirectoryEntry * entry) {
   printPaddedStr(&entry->name[0], 8);
-  TPC::Drivers::Serial::write('.');
+  TPC::SerialDriver::write('.');
   printPaddedStr(&entry->extension[0], 3);
 }
 
