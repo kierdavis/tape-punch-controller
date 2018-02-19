@@ -3,7 +3,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#include "TPC/Drivers/Microcontroller.hpp"
+#include "TPC/MicrocontrollerDriver.hpp"
 
 // The production signature row has its own special address space, in which the
 // production signature values begin at offset zero. This structure should only
@@ -82,7 +82,7 @@ static void initInterruptController() {
 }
 
 // Initialise the microcontroller's internal subsystems.
-void TPC::Drivers::Microcontroller::init() {
+void TPC::MicrocontrollerDriver::init() {
   init32MHzOscillator();
   initClockSource();
   initInterruptController();
