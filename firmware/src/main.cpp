@@ -4,7 +4,7 @@
 
 #include "Controller/TapePunch.hpp"
 #include "Peripheral/Serial.hpp"
-#include "Platform.hpp"
+#include "TPC/Drivers/Microcontroller.hpp"
 #include "UI/UIController.hpp"
 #include "USBInterface/USBDevice.hpp"
 
@@ -22,7 +22,7 @@ static uint8_t const DATA[] = {
 
 int main() {
   // First stage init.
-  Platform::init();
+  TPC::Drivers::Microcontroller::init();
   Peripheral::Serial::init();
 
   static const char initStr1[] PROGMEM = "Init stage one complete.\r\n";

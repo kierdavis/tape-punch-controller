@@ -3,7 +3,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-#include "Platform.hpp"
+#include "TPC/Drivers/Microcontroller.hpp"
 
 // Production signature row has its own address space.
 static const volatile NVM_PROD_SIGNATURES_t * const prodSigs = (NVM_PROD_SIGNATURES_t *) 0;
@@ -47,7 +47,7 @@ static void initInterruptController() {
   writeWithCCP(&PMIC.CTRL, PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm);
 }
 
-void Platform::init() {
+void TPC::Drivers::Microcontroller::init() {
   initSystemClock();
   initInterruptController();
 }
