@@ -3,7 +3,7 @@
 
 #include <avr/pgmspace.h>
 
-#include "Peripheral/Serial.hpp"
+#include "TPC/Drivers/Serial.hpp"
 #include "USBInterface/USBDevice.hpp"
 #include "USBInterface/USBDescriptor.hpp"
 #include "USBInterface/SCSI.hpp"
@@ -47,19 +47,19 @@
   extern "C" {
     void EVENT_USB_Device_Connect() {
       static const char str[] PROGMEM = "USB: enumerating\r\n";
-      Peripheral::Serial::writeStringP(str);
+      TPC::Drivers::Serial::writeStringP(str);
     }
 
     void EVENT_USB_Device_Disconnect() {
       static const char str[] PROGMEM = "USB: disconnected\r\n";
-      Peripheral::Serial::writeStringP(str);
+      TPC::Drivers::Serial::writeStringP(str);
     }
 
     void EVENT_USB_Device_ConfigurationChanged() {
       bool success = MS_Device_ConfigureEndpoints(&msdInfo);
       static const char successStr[] PROGMEM = "USB: configuration change successful.\r\n";
       static const char failureStr[] PROGMEM = "USB: configuration change unsuccessful.\r\n";
-      Peripheral::Serial::writeStringP(success ? successStr : failureStr);
+      TPC::Drivers::Serial::writeStringP(success ? successStr : failureStr);
       // TODO: actually handle `success`?
     }
 

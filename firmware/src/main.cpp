@@ -3,7 +3,7 @@
 #include <util/delay.h>
 
 #include "Controller/TapePunch.hpp"
-#include "Peripheral/Serial.hpp"
+#include "TPC/Drivers/Serial.hpp"
 #include "TPC/Drivers/Microcontroller.hpp"
 #include "UI/UIController.hpp"
 #include "USBInterface/USBDevice.hpp"
@@ -23,10 +23,10 @@ static uint8_t const DATA[] = {
 int main() {
   // First stage init.
   TPC::Drivers::Microcontroller::init();
-  Peripheral::Serial::init();
+  TPC::Drivers::Serial::init();
 
   static const char initStr1[] PROGMEM = "Init stage one complete.\r\n";
-  Peripheral::Serial::writeStringP(initStr1);
+  TPC::Drivers::Serial::writeStringP(initStr1);
 
   // Second stage init.
   Controller::TapePunch::init();
@@ -35,7 +35,7 @@ int main() {
   sei();
 
   static const char initStr2[] PROGMEM = "Init stage two complete.\r\n";
-  Peripheral::Serial::writeStringP(initStr2);
+  TPC::Drivers::Serial::writeStringP(initStr2);
 
   // Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)
   // Controller::TapePunch::addJob_IE(sizeof(DATA)/sizeof(DATA[0]), DATA);

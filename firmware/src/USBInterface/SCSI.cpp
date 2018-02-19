@@ -6,7 +6,7 @@
 #include <LUFA/Drivers/USB/USB.h>
 
 #include "Config.hpp"
-#include "Peripheral/Serial.hpp"
+#include "TPC/Drivers/Serial.hpp"
 #include "USBInterface/BlockStorage.hpp"
 #include "USBInterface/SCSI.hpp"
 #include "Util/Arith.hpp"
@@ -40,11 +40,11 @@ static void resetSenseData() {
 
 static bool error(const uint8_t key, const uint8_t addCode, const uint8_t addQual) {
   SERIAL_WRITE(" -> error 0x");
-  Peripheral::Serial::writeHex8(key);
+  TPC::Drivers::Serial::writeHex8(key);
   SERIAL_WRITE(" 0x");
-  Peripheral::Serial::writeHex8(addCode);
+  TPC::Drivers::Serial::writeHex8(addCode);
   SERIAL_WRITE(" 0x");
-  Peripheral::Serial::writeHex8(addQual);
+  TPC::Drivers::Serial::writeHex8(addQual);
   SERIAL_WRITE("\r\n");
   senseData.SenseKey = key;
   senseData.AdditionalSenseCode = addCode;
@@ -189,7 +189,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
     // Receive a block.
     const uint8_t addr = startAddr + i;
     SERIAL_WRITE("\r\n[SCSI] write: 0x");
-    Peripheral::Serial::writeHex8(addr);
+    TPC::Drivers::Serial::writeHex8(addr);
     USBInterface::BlockStorage::receive(addr);
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
 
@@ -227,7 +227,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
     // Send a block.
     const uint8_t addr = startAddr + i;
     SERIAL_WRITE("\r\n[SCSI] read: 0x");
-    Peripheral::Serial::writeHex8(addr);
+    TPC::Drivers::Serial::writeHex8(addr);
     USBInterface::BlockStorage::send(addr);
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
 
@@ -329,7 +329,7 @@ bool USBInterface::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
     }
     default: {
       SERIAL_WRITE("unknown 0x");
-      Peripheral::Serial::writeHex8(cmd);
+      TPC::Drivers::Serial::writeHex8(cmd);
       return handleInvalid(commandBlock);
     }
   }
