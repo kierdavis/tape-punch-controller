@@ -17,6 +17,11 @@ void Peripheral::Serial::write(uint8_t data) {
   transmit(data);
 }
 
+void Peripheral::Serial::writeNewline() {
+  Peripheral::Serial::write('\r');
+  Peripheral::Serial::write('\n');
+}
+
 void Peripheral::Serial::writeStringP(PGM_P str) {
   while (1) {
     char c = pgm_read_byte(str);
@@ -35,6 +40,11 @@ void Peripheral::Serial::writeHex4(uint8_t val) {
 void Peripheral::Serial::writeHex8(uint8_t val) {
   Peripheral::Serial::writeHex4(val >> 4);
   Peripheral::Serial::writeHex4(val);
+}
+
+void Peripheral::Serial::writeHex16(uint16_t val) {
+  Peripheral::Serial::writeHex8(val >> 8);
+  Peripheral::Serial::writeHex8(val);
 }
 
 // Platform-specific code is below.
@@ -58,7 +68,12 @@ void Peripheral::Serial::writeHex8(uint8_t val) {
     // UCSZ = 011 (8-bit data)
     UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);
     // Baud rate register.
-    UBRR0 = F_CPU / (16 * Config::SERIAL_BAUD_RATE) - 1;
+    constexpr uint8_t UBRR0val = F_CPU / (16 * Config::SERIAL_BAUD_RATE) - 1;
+    UBRR0 = UBRR0val;
+
+    SERIAL_WRITE("UBRR0 0x");
+    Peripheral::Serial::writeHex8(UBRR0val);
+    Peripheral::Serial::writeNewline();
   }
 
   static bool transmitBufferEmpty() {
@@ -111,6 +126,12 @@ void Peripheral::Serial::writeHex8(uint8_t val) {
     USART->CTRLC = USART_CMODE_ASYNCHRONOUS_gc | USART_PMODE_DISABLED_gc | USART_CHSIZE_8BIT_gc;
     USART->BAUDCTRLA = BAUDCTRLA;
     USART->BAUDCTRLB = BAUDCTRLB;
+
+    SERIAL_WRITE("BSCALE 0x");
+    Peripheral::Serial::writeHex4(BSCALE & 0xF);
+    SERIAL_WRITE("\r\nBSEL 0x");
+    Peripheral::Serial::writeHex16(BSEL);
+    Peripheral::Serial::writeNewline();
   }
 
   static bool transmitBufferEmpty() {

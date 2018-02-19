@@ -13,9 +13,11 @@ namespace Peripheral {
   namespace Serial {
     void init();
     void write(uint8_t value);
+    void writeNewline();
     void writeStringP(PGM_P str);
     void writeHex4(uint8_t val);
     void writeHex8(uint8_t val);
+    void writeHex16(uint16_t val);
   }
 }
 
