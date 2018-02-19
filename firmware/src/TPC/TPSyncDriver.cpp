@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 #include "TPC/TPSyncDriver.hpp"
-#include "Peripheral/SyncTimer.hpp"
+#include "TPC/TPTimerDriver.hpp"
 
 static volatile PORT_t * const PORT = &PORTE;
 static uint8_t constexpr PIN = 2;
@@ -22,5 +22,5 @@ void TPC::TPSyncDriver::init() {
 }
 
 ISR(PORTE_INT0_vect) {
-  Peripheral::SyncTimer::Hooks::sync_ID();
+  TPC::TPTimerDriver::Hooks::sync_ID();
 }

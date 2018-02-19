@@ -6,9 +6,9 @@
 #include "Controller/JobQueue.hpp"
 #include "Controller/TapePunch.hpp"
 #include "Peripheral/Motor.hpp"
-#include "Peripheral/SyncTimer.hpp"
 #include "TPC/TPSolenoidsDriver.hpp"
 #include "TPC/TPSyncDriver.hpp"
+#include "TPC/TPTimerDriver.hpp"
 
 static volatile bool on = false;
 static volatile uint16_t waitCount = 0;
@@ -17,7 +17,7 @@ void Controller::TapePunch::init() {
   // Initialise our peripherals.
   TPC::TPSolenoidsDriver::init();
   TPC::TPSyncDriver::init();
-  Peripheral::SyncTimer::init();
+  TPC::TPTimerDriver::init();
   Peripheral::Motor::init();
 }
 

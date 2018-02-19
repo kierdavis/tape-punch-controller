@@ -5,7 +5,7 @@
 
 #include "Config.hpp"
 #include "Controller/TapePunch.hpp"
-#include "Peripheral/SyncTimer.hpp"
+#include "TPC/TPTimerDriver.hpp"
 
 static uint16_t constexpr PRESCALER = 4;
 static uint8_t constexpr CLKSEL = TC_CLKSEL_DIV4_gc;
@@ -40,7 +40,7 @@ static void clearCount() {
   TCC0.CNT = 0;
 }
 
-void Peripheral::SyncTimer::init() {
+void TPC::TPTimerDriver::init() {
   setRunning(false); // Sets CTRLA and ensures timer is disabled.
   // CCxEN = 0 (all output compare pins disabled)
   // WGMODE = NORMAL
@@ -69,12 +69,12 @@ void Peripheral::SyncTimer::init() {
   TCC0.CCB = DEENERGISE_COUNT;
 }
 
-void Peripheral::SyncTimer::stop() {
+void TPC::TPTimerDriver::stop() {
   Controller::TapePunch::Hooks::deenergiseSolenoids_ID();
   setRunning(false);
 }
 
-void Peripheral::SyncTimer::Hooks::sync_ID() {
+void TPC::TPTimerDriver::Hooks::sync_ID() {
   // TODO: check that timer count has the expected value (shaft rotation period
   // divided by timer tick period) and raise an error if not.
   // Reset the counter and start the timer (if it isn't already running).
