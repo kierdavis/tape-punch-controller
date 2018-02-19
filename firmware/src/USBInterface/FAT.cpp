@@ -8,8 +8,8 @@
 using namespace USBInterface::FAT;
 
 static constexpr uint8_t BOOT_SECTOR = 0;
-static constexpr uint8_t FAT_SECTOR = 1;
-static constexpr uint8_t ROOT_DIR_SECTOR = 2;
+static constexpr uint8_t FAT_SECTOR = BOOT_SECTOR + NUM_RESERVED_SECTORS;
+static constexpr uint8_t ROOT_DIR_SECTOR = FAT_SECTOR + SECTORS_PER_FAT*NUM_FATS;
 
 const USBInterface::FAT::Header USBInterface::FAT::header PROGMEM = {
   // Assembled from x86 code:

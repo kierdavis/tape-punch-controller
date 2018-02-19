@@ -6,6 +6,7 @@
 #include "USBInterface/FAT.hpp"
 
 using namespace USBInterface::BlockStorage;
+using USBInterface::FAT::NUM_RESERVED_SECTORS;
 
 static uint8_t mutableBlocks[NUM_MUTABLE_BLOCKS][BYTES_PER_BLOCK];
 
@@ -35,11 +36,11 @@ static void receiveNullBlock() {
 }
 
 void USBInterface::BlockStorage::send(const uint8_t addr) {
-  if (addr == 0) {
+  if (addr < NUM_RESERVED_SECTORS) {
     sendBootBlock();
     return;
   }
-  const uint8_t maddr = addr - 1;
+  const uint8_t maddr = addr - NUM_RESERVED_SECTORS;
   if (maddr < NUM_MUTABLE_BLOCKS) {
     sendMutableBlock(maddr);
     return;
@@ -49,12 +50,12 @@ void USBInterface::BlockStorage::send(const uint8_t addr) {
 }
 
 void USBInterface::BlockStorage::receive(const uint8_t addr) {
-  if (addr == 0) {
+  if (addr < NUM_RESERVED_SECTORS) {
     // Boot sector is immutable.
     receiveNullBlock();
     return;
   }
-  const uint8_t maddr = addr - 1;
+  const uint8_t maddr = addr - NUM_RESERVED_SECTORS;
   if (maddr < NUM_MUTABLE_BLOCKS) {
     receiveMutableBlock(maddr);
     return;
@@ -64,12 +65,12 @@ void USBInterface::BlockStorage::receive(const uint8_t addr) {
 }
 
 uint8_t * USBInterface::BlockStorage::get(const uint8_t addr) {
-  if (addr == 0) {
+  if (addr < NUM_RESERVED_SECTORS) {
     // Boot sector is immutable, and shouldn't be used by the rest of the
     // firmware anyway.
     return nullptr;
   }
-  const uint8_t maddr = addr - 1;
+  const uint8_t maddr = addr - NUM_RESERVED_SECTORS;
   if (maddr < NUM_MUTABLE_BLOCKS) {
     return &mutableBlocks[maddr][0];
   }
