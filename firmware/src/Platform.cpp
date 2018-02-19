@@ -5,14 +5,6 @@
 
 #include "Platform.hpp"
 
-#if defined(PLATFORM_IL_MATTO)
-
-void Platform::init() {
-  // TODO
-}
-
-#elif defined(PLATFORM_PCB)
-
 // Production signature row has its own address space.
 static const volatile NVM_PROD_SIGNATURES_t * const prodSigs = (NVM_PROD_SIGNATURES_t *) 0;
 
@@ -59,7 +51,3 @@ void Platform::init() {
   initSystemClock();
   initInterruptController();
 }
-
-#else
-  #error "invalid or unsupported PLATFORM"
-#endif

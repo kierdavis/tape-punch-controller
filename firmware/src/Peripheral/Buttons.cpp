@@ -15,9 +15,32 @@ enum class State : uint8_t {
   AFTER_BOTH_PRESSED,
 };
 
-static void configurePins();
-static bool readConfirm();
-static bool readCancel();
+static volatile PORT_t * const PORT = &PORTA;
+static uint8_t constexpr CONFIRM_PIN = 2;
+static uint8_t constexpr CONFIRM_PIN_MASK = _BV(CONFIRM_PIN);
+static uint8_t constexpr CANCEL_PIN = 1;
+static uint8_t constexpr CANCEL_PIN_MASK = _BV(CANCEL_PIN);
+
+void Peripheral::Buttons::init() {
+  volatile uint8_t * const pinctrls = &PORT->PIN0CTRL;
+  // Configure pins as inputs.
+  PORT->DIRCLR = CONFIRM_PIN_MASK | CANCEL_PIN_MASK;
+  // Attach pins to interrupt 0.
+  PORT->INT0MASK |= CONFIRM_PIN_MASK | CANCEL_PIN_MASK;
+  // Set edge detection mode on these pins to both edges.
+  pinctrls[CONFIRM_PIN] = PORT_ISC_BOTHEDGES_gc;
+  pinctrls[CANCEL_PIN] = PORT_ISC_BOTHEDGES_gc;
+  // Enable interrupt 0 (low priority).
+  PORT->INTCTRL |= PORT_INT0LVL_LO_gc;
+}
+
+static bool readConfirm() {
+  return !(PORT->IN & CONFIRM_PIN_MASK);
+}
+
+static bool readCancel() {
+  return !(PORT->IN & CANCEL_PIN_MASK);
+}
 
 static State readState() {
   if (readConfirm()) {
@@ -35,7 +58,7 @@ static State readState() {
   }
 }
 
-static void update_ID() {
+ISR(PORTA_INT0_vect) {
   static State savedState = State::NONE_PRESSED;
 
   const State oldState = savedState;
@@ -52,45 +75,3 @@ static void update_ID() {
 
   savedState = newState;
 }
-
-void Peripheral::Buttons::init() {
-  configurePins();
-}
-
-// Platform-specific code is below.
-
-#if defined(PLATFORM_PCB)
-  static volatile PORT_t * const PORT = &PORTA;
-  static uint8_t constexpr CONFIRM_PIN = 2;
-  static uint8_t constexpr CONFIRM_PIN_MASK = _BV(CONFIRM_PIN);
-  static uint8_t constexpr CANCEL_PIN = 1;
-  static uint8_t constexpr CANCEL_PIN_MASK = _BV(CANCEL_PIN);
-
-  static void configurePins() {
-    volatile uint8_t * const pinctrls = &PORT->PIN0CTRL;
-    // Configure pins as inputs.
-    PORT->DIRCLR = CONFIRM_PIN_MASK | CANCEL_PIN_MASK;
-    // Attach pins to interrupt 0.
-    PORT->INT0MASK |= CONFIRM_PIN_MASK | CANCEL_PIN_MASK;
-    // Set edge detection mode on these pins to both edges.
-    pinctrls[CONFIRM_PIN] = PORT_ISC_BOTHEDGES_gc;
-    pinctrls[CANCEL_PIN] = PORT_ISC_BOTHEDGES_gc;
-    // Enable interrupt 0 (low priority).
-    PORT->INTCTRL |= PORT_INT0LVL_LO_gc;
-  }
-
-  static bool readConfirm() {
-    return !(PORT->IN & CONFIRM_PIN_MASK);
-  }
-
-  static bool readCancel() {
-    return !(PORT->IN & CANCEL_PIN_MASK);
-  }
-
-  ISR(PORTA_INT0_vect) {
-    update_ID();
-  }
-
-#else
-  #error "invalid or unsupported PLATFORM"
-#endif
