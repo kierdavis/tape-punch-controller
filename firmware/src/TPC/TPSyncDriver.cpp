@@ -2,14 +2,14 @@
 #include <avr/io.h>
 #include <stdint.h>
 
-#include "Peripheral/SyncSignal.hpp"
+#include "TPC/TPSyncDriver.hpp"
 #include "Peripheral/SyncTimer.hpp"
 
 static volatile PORT_t * const PORT = &PORTE;
 static uint8_t constexpr PIN = 2;
 static uint8_t constexpr PIN_MASK = _BV(PIN);
 
-void Peripheral::SyncSignal::init() {
+void TPC::TPSyncDriver::init() {
   volatile uint8_t * const pinctrls = &PORT->PIN0CTRL;
   // Configure pin as an input.
   PORT->DIRCLR = PIN_MASK;
