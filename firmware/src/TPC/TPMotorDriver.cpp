@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "Peripheral/Motor.hpp"
+#include "TPC/TPMotorDriver.hpp"
 
 static volatile PORT_t * const PORT = &PORTE;
 static uint8_t constexpr PIN = 6;
@@ -20,15 +20,15 @@ static void setPin(bool value) {
   }
 }
 
-void Peripheral::Motor::init() {
+void TPC::TPMotorDriver::init() {
   configurePin();
   setPin(false);
 }
 
-void Peripheral::Motor::on() {
+void TPC::TPMotorDriver::on() {
   setPin(true);
 }
 
-void Peripheral::Motor::off() {
+void TPC::TPMotorDriver::off() {
   setPin(false);
 }

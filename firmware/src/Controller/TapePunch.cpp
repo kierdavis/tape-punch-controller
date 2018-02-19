@@ -5,7 +5,7 @@
 #include "Config.hpp"
 #include "Controller/JobQueue.hpp"
 #include "Controller/TapePunch.hpp"
-#include "Peripheral/Motor.hpp"
+#include "TPC/TPMotorDriver.hpp"
 #include "TPC/TPSolenoidsDriver.hpp"
 #include "TPC/TPSyncDriver.hpp"
 #include "TPC/TPTimerDriver.hpp"
@@ -18,11 +18,11 @@ void Controller::TapePunch::init() {
   TPC::TPSolenoidsDriver::init();
   TPC::TPSyncDriver::init();
   TPC::TPTimerDriver::init();
-  Peripheral::Motor::init();
+  TPC::TPMotorDriver::init();
 }
 
 static void switchOn_IE() {
-  Peripheral::Motor::on();
+  TPC::TPMotorDriver::on();
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     // Interrupts disabled.
     on = true;
@@ -31,7 +31,7 @@ static void switchOn_IE() {
 }
 
 static void switchOff_ID() {
-  Peripheral::Motor::off();
+  TPC::TPMotorDriver::off();
   on = false;
 }
 
