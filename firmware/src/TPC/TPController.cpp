@@ -9,6 +9,7 @@
 #include "TPC/TPSolenoidsDriver.hpp"
 #include "TPC/TPSyncDriver.hpp"
 #include "TPC/TPTimerDriver.hpp"
+#include "Util/Maybe.hpp"
 
 static volatile bool on = false;
 static volatile uint16_t waitCount = 0;
@@ -55,9 +56,9 @@ void TPC::TPController::Hooks::energiseSolenoids_ID() {
     waitCount = waitCount_ - 1;
     return;
   }
-  TPC::TPJobManager::NextByteResult result = TPC::TPJobManager::nextByte_ID();
-  if (result.hasByte) {
-    TPC::TPSolenoidsDriver::energise(result.byte);
+  Util::Maybe::Uint8 result = TPC::TPJobManager::nextByte_ID();
+  if (result.hasValue) {
+    TPC::TPSolenoidsDriver::energise(result.value);
   } else {
     switchOff_ID();
   }

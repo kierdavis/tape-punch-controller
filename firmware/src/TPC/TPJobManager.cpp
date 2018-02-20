@@ -5,8 +5,7 @@
 
 #include "Config.hpp"
 #include "TPC/TPJobManager.hpp"
-
-using TPC::TPJobManager::NextByteResult;
+#include "Util/Maybe.hpp"
 
 enum class State : uint8_t {
   IDLE,
@@ -48,10 +47,10 @@ void TPC::TPJobManager::setJob_IE(uint16_t count, const uint8_t * ptr) {
   }
 }
 
-NextByteResult TPC::TPJobManager::nextByte_ID() {
+Util::Maybe::Uint8 TPC::TPJobManager::nextByte_ID() {
   switch (state) {
     case State::IDLE: {
-      return NextByteResult(false);
+      return Util::Maybe::Uint8(false);
     }
     case State::LEADER: {
       const uint16_t countMinusOne = count - 1;
@@ -60,7 +59,7 @@ NextByteResult TPC::TPJobManager::nextByte_ID() {
       } else {
         count = countMinusOne;
       }
-      return NextByteResult(true, 0);
+      return Util::Maybe::Uint8(true, 0);
     }
     case State::BODY: {
       const uint8_t byte = *(bodyPtr++);
@@ -70,7 +69,7 @@ NextByteResult TPC::TPJobManager::nextByte_ID() {
       } else {
         bodyCount = countMinusOne;
       }
-      return NextByteResult(true, byte);
+      return Util::Maybe::Uint8(true, byte);
     }
     case State::TRAILER: {
       const uint16_t countMinusOne = count - 1;
@@ -79,9 +78,9 @@ NextByteResult TPC::TPJobManager::nextByte_ID() {
       } else {
         count = countMinusOne;
       }
-      return NextByteResult(true, 0);
+      return Util::Maybe::Uint8(true, 0);
     }
   }
   // Should be unreachable.
-  return NextByteResult(false);
+  return Util::Maybe::Uint8(false);
 }
