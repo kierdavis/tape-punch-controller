@@ -24,18 +24,14 @@ int main() {
   // First stage init.
   TPC::MicrocontrollerDriver::init();
   TPC::SerialDriver::init();
-
-  static const char initStr1[] PROGMEM = "Init stage one complete.\r\n";
-  TPC::SerialDriver::writeStringP(initStr1);
+  SERIAL_WRITE("Init stage one complete.\r\n");
 
   // Second stage init.
   TPC::TPController::init();
   TPC::USBDriver::init();
   TPC::Application::init();
   sei();
-
-  static const char initStr2[] PROGMEM = "Init stage two complete.\r\n";
-  TPC::SerialDriver::writeStringP(initStr2);
+  SERIAL_WRITE("Init stage two complete.\r\n");
 
   // Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)
   // Controller::TapePunch::addJob_IE(sizeof(DATA)/sizeof(DATA[0]), DATA);
