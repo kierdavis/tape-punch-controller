@@ -1,10 +1,10 @@
-#ifndef __TPC_UI_FILE_LIST_HPP
-#define __TPC_UI_FILE_LIST_HPP
+#ifndef __TPC_FILE_SELECTOR_HPP
+#define __TPC_FILE_SELECTOR_HPP
 
 #include "TPC/Filesystem.hpp"
 
-namespace UI {
-  namespace FileList {
+namespace TPC {
+  namespace FileSelector {
     void reset();
     void add(TPC::Filesystem::DirectoryEntry * file);
     void selectNext();

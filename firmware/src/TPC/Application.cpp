@@ -8,7 +8,7 @@
 #include "TPC/Filesystem.hpp"
 #include "TPC/SerialDriver.hpp"
 #include "TPC/TPController.hpp"
-#include "UI/FileList.hpp"
+#include "TPC/FileSelector.hpp"
 
 enum class State : uint8_t {
   IDLE,
@@ -23,7 +23,7 @@ void TPC::Application::init() {
 }
 
 static void startPrinting_IE() {
-  TPC::Filesystem::DirectoryEntry * selectedFile = UI::FileList::selected();
+  TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
   if (selectedFile != nullptr) {
     // TODO: doesn't support files spread across multiple clusters
     uint8_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;

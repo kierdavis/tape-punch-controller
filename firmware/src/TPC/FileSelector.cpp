@@ -1,18 +1,18 @@
 #include <stdint.h>
 
 #include "Config.hpp"
-#include "UI/FileList.hpp"
+#include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
 
 static TPC::Filesystem::DirectoryEntry * files[Config::MAX_NUM_FILES];
 static uint8_t numFiles = 0;
 static uint8_t selectedIndex = 0; // considered invalid when numFiles == 0.
 
-void UI::FileList::reset() {
+void TPC::FileSelector::reset() {
   numFiles = 0;
 }
 
-void UI::FileList::add(TPC::Filesystem::DirectoryEntry * file) {
+void TPC::FileSelector::add(TPC::Filesystem::DirectoryEntry * file) {
   uint8_t _numFiles = numFiles;
   if (_numFiles < Config::MAX_NUM_FILES) {
     files[_numFiles] = file;
@@ -21,7 +21,7 @@ void UI::FileList::add(TPC::Filesystem::DirectoryEntry * file) {
   selectedIndex = 0;
 }
 
-void UI::FileList::selectNext() {
+void TPC::FileSelector::selectNext() {
   uint8_t _numFiles = numFiles;
   if (_numFiles == 0) { return; }
   uint8_t _selectedIndex = selectedIndex;
@@ -32,7 +32,7 @@ void UI::FileList::selectNext() {
   selectedIndex = _selectedIndex;
 }
 
-void UI::FileList::selectPrev() {
+void TPC::FileSelector::selectPrev() {
   uint8_t _numFiles = numFiles;
   if (_numFiles == 0) { return; }
   uint8_t _selectedIndex = selectedIndex;
@@ -43,7 +43,7 @@ void UI::FileList::selectPrev() {
   selectedIndex = _selectedIndex;
 }
 
-TPC::Filesystem::DirectoryEntry * UI::FileList::selected() {
+TPC::Filesystem::DirectoryEntry * TPC::FileSelector::selected() {
   if (numFiles == 0) {
     return nullptr;
   } else {

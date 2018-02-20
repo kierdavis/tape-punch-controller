@@ -1,7 +1,7 @@
 #include <avr/pgmspace.h>
 
 #include "TPC/SerialDriver.hpp"
-#include "UI/FileList.hpp"
+#include "TPC/FileSelector.hpp"
 #include "TPC/BlockStorage.hpp"
 #include "TPC/Filesystem.hpp"
 
@@ -47,7 +47,7 @@ static void printFilename(DirectoryEntry * entry) {
 }
 
 static void scanFile(DirectoryEntry * entry) {
-  UI::FileList::add(entry);
+  TPC::FileSelector::add(entry);
   SERIAL_WRITE("[FAT] Found file: ");
   printFilename(entry);
   SERIAL_WRITE("\r\n");
@@ -97,7 +97,7 @@ static void scanDirectory(uint8_t * const clusterData) {
 
 void TPC::Filesystem::scanFilesystem() {
   SERIAL_WRITE("[FAT] Scanning...\r\n");
-  UI::FileList::reset();
+  TPC::FileSelector::reset();
   uint8_t * const clusterData = TPC::BlockStorage::get(ROOT_DIR_SECTOR);
   scanDirectory(clusterData);
 }
