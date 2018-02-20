@@ -3,15 +3,15 @@
 #include "TPC/SerialDriver.hpp"
 #include "UI/FileList.hpp"
 #include "TPC/BlockStorage.hpp"
-#include "USBInterface/FAT.hpp"
+#include "TPC/Filesystem.hpp"
 
-using namespace USBInterface::FAT;
+using namespace TPC::Filesystem;
 
 static constexpr uint8_t BOOT_SECTOR = 0;
 static constexpr uint8_t FAT_SECTOR = BOOT_SECTOR + NUM_RESERVED_SECTORS;
 static constexpr uint8_t ROOT_DIR_SECTOR = FAT_SECTOR + SECTORS_PER_FAT*NUM_FATS;
 
-const USBInterface::FAT::Header USBInterface::FAT::header PROGMEM = {
+const TPC::Filesystem::Header TPC::Filesystem::header PROGMEM = {
   // Assembled from x86 code:
   //   loop:  hlt
   //          jmp short loop
@@ -95,7 +95,7 @@ static void scanDirectory(uint8_t * const clusterData) {
   }
 }
 
-void USBInterface::FAT::scanFilesystem() {
+void TPC::Filesystem::scanFilesystem() {
   SERIAL_WRITE("[FAT] Scanning...\r\n");
   UI::FileList::reset();
   uint8_t * const clusterData = TPC::BlockStorage::get(ROOT_DIR_SECTOR);

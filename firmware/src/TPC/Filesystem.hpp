@@ -1,12 +1,12 @@
-#ifndef __TPC_USB_INTERFACE_FAT_HPP
-#define __TPC_USB_INTERFACE_FAT_HPP
+#ifndef __TPC_FILESYSTEM_HPP
+#define __TPC_FILESYSTEM_HPP
 
 #include <stdint.h>
 
 #include <avr/pgmspace.h>
 
-namespace USBInterface {
-  namespace FAT {
+namespace TPC {
+  namespace Filesystem {
     // Together these define the memory requirement.
     static constexpr uint16_t BYTES_PER_SECTOR = 512;
     static constexpr uint16_t NUM_MUTABLE_SECTORS = 8;

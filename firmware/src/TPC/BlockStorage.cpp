@@ -3,16 +3,16 @@
 #include <LUFA/Drivers/USB/USB.h>
 
 #include "TPC/BlockStorage.hpp"
-#include "USBInterface/FAT.hpp"
+#include "TPC/Filesystem.hpp"
 
 using namespace TPC::BlockStorage;
-using USBInterface::FAT::NUM_RESERVED_SECTORS;
+using TPC::Filesystem::NUM_RESERVED_SECTORS;
 
 static uint8_t mutableBlocks[NUM_MUTABLE_BLOCKS][BYTES_PER_BLOCK];
 
 static void sendBootBlock() {
-  constexpr uint16_t headerLen = sizeof(USBInterface::FAT::header);
-  Endpoint_Write_PStream_LE(&USBInterface::FAT::header, headerLen, NULL);
+  constexpr uint16_t headerLen = sizeof(TPC::Filesystem::header);
+  Endpoint_Write_PStream_LE(&TPC::Filesystem::header, headerLen, NULL);
   Endpoint_Null_Stream(BYTES_PER_BLOCK - headerLen - 2, NULL);
   Endpoint_Write_8(0x55);
   Endpoint_Write_8(0xAA);
@@ -28,7 +28,7 @@ static void sendNullBlock() {
 
 static void receiveMutableBlock(const uint8_t maddr) {
   Endpoint_Read_Stream_LE(&mutableBlocks[maddr][0], BYTES_PER_BLOCK, NULL);
-  USBInterface::FAT::scanFilesystem();
+  TPC::Filesystem::scanFilesystem();
 }
 
 static void receiveNullBlock() {

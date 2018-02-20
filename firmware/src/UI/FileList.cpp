@@ -2,9 +2,9 @@
 
 #include "Config.hpp"
 #include "UI/FileList.hpp"
-#include "USBInterface/FAT.hpp"
+#include "TPC/Filesystem.hpp"
 
-static USBInterface::FAT::DirectoryEntry * files[Config::MAX_NUM_FILES];
+static TPC::Filesystem::DirectoryEntry * files[Config::MAX_NUM_FILES];
 static uint8_t numFiles = 0;
 static uint8_t selectedIndex = 0; // considered invalid when numFiles == 0.
 
@@ -12,7 +12,7 @@ void UI::FileList::reset() {
   numFiles = 0;
 }
 
-void UI::FileList::add(USBInterface::FAT::DirectoryEntry * file) {
+void UI::FileList::add(TPC::Filesystem::DirectoryEntry * file) {
   uint8_t _numFiles = numFiles;
   if (_numFiles < Config::MAX_NUM_FILES) {
     files[_numFiles] = file;
@@ -43,7 +43,7 @@ void UI::FileList::selectPrev() {
   selectedIndex = _selectedIndex;
 }
 
-USBInterface::FAT::DirectoryEntry * UI::FileList::selected() {
+TPC::Filesystem::DirectoryEntry * UI::FileList::selected() {
   if (numFiles == 0) {
     return nullptr;
   } else {

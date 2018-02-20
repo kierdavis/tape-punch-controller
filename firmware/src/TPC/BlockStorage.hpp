@@ -3,13 +3,13 @@
 
 #include <stdint.h>
 
-#include "USBInterface/FAT.hpp"
+#include "TPC/Filesystem.hpp"
 
 namespace TPC {
   namespace BlockStorage {
-    static constexpr uint16_t BYTES_PER_BLOCK = USBInterface::FAT::BYTES_PER_SECTOR;
-    static constexpr uint16_t NUM_BLOCKS = USBInterface::FAT::NUM_SECTORS;
-    static constexpr uint16_t NUM_MUTABLE_BLOCKS = USBInterface::FAT::NUM_MUTABLE_SECTORS;
+    static constexpr uint16_t BYTES_PER_BLOCK = TPC::Filesystem::BYTES_PER_SECTOR;
+    static constexpr uint16_t NUM_BLOCKS = TPC::Filesystem::NUM_SECTORS;
+    static constexpr uint16_t NUM_MUTABLE_BLOCKS = TPC::Filesystem::NUM_MUTABLE_SECTORS;
 
     void send(const uint8_t addr);
     void receive(const uint8_t addr);
