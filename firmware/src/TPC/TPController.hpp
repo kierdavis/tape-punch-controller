@@ -1,10 +1,10 @@
-#ifndef __TPC_CONTROLLER_TAPE_PUNCH_HPP
-#define __TPC_CONTROLLER_TAPE_PUNCH_HPP
+#ifndef __TPC_TP_CONTROLLER_HPP
+#define __TPC_TP_CONTROLLER_HPP
 
 #include <stdint.h>
 
-namespace Controller {
-  namespace TapePunch {
+namespace TPC {
+  namespace TPController {
     void init();
     void setJob_IE(uint16_t length, const uint8_t * buffer = nullptr);
 

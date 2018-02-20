@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#include "Controller/TapePunch.hpp"
+#include "TPC/TPController.hpp"
 #include "Peripheral/Buttons.hpp"
 #include "TPC/SerialDriver.hpp"
 #include "UI/FileList.hpp"
@@ -35,7 +35,7 @@ void UI::UIController::Hooks::confirm() {
         TPC::SerialDriver::writeHex16((uint16_t) contents);
         SERIAL_WRITE(")\r\n");
         // TODO: check if already processing a job
-        Controller::TapePunch::setJob_IE(length, contents);
+        TPC::TPController::setJob_IE(length, contents);
         state = State::PRINTING;
       }
       break;

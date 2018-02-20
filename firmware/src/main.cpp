@@ -2,9 +2,9 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "Controller/TapePunch.hpp"
 #include "TPC/SerialDriver.hpp"
 #include "TPC/MicrocontrollerDriver.hpp"
+#include "TPC/TPController.hpp"
 #include "UI/UIController.hpp"
 #include "USBInterface/USBDevice.hpp"
 
@@ -29,7 +29,7 @@ int main() {
   TPC::SerialDriver::writeStringP(initStr1);
 
   // Second stage init.
-  Controller::TapePunch::init();
+  TPC::TPController::init();
   USBInterface::USBDevice::init();
   UI::UIController::init();
   sei();

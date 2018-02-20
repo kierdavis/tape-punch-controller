@@ -3,7 +3,7 @@
 #include <util/atomic.h>
 
 #include "Config.hpp"
-#include "Controller/TapePunch.hpp"
+#include "TPC/TPController.hpp"
 #include "TPC/TPJobManager.hpp"
 #include "TPC/TPMotorDriver.hpp"
 #include "TPC/TPSolenoidsDriver.hpp"
@@ -13,7 +13,7 @@
 static volatile bool on = false;
 static volatile uint16_t waitCount = 0;
 
-void Controller::TapePunch::init() {
+void TPC::TPController::init() {
   // Initialise our peripherals.
   TPC::TPSolenoidsDriver::init();
   TPC::TPSyncDriver::init();
@@ -35,7 +35,7 @@ static void switchOff_ID() {
   on = false;
 }
 
-void Controller::TapePunch::setJob_IE(uint16_t length, const uint8_t * buffer) {
+void TPC::TPController::setJob_IE(uint16_t length, const uint8_t * buffer) {
   TPC::TPJobManager::setJob_IE(length, buffer);
   bool on_;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
@@ -46,7 +46,7 @@ void Controller::TapePunch::setJob_IE(uint16_t length, const uint8_t * buffer) {
   }
 }
 
-void Controller::TapePunch::Hooks::energiseSolenoids_ID() {
+void TPC::TPController::Hooks::energiseSolenoids_ID() {
   if (!on) {
     return;
   }
@@ -63,6 +63,6 @@ void Controller::TapePunch::Hooks::energiseSolenoids_ID() {
   }
 }
 
-void Controller::TapePunch::Hooks::deenergiseSolenoids_ID() {
+void TPC::TPController::Hooks::deenergiseSolenoids_ID() {
   TPC::TPSolenoidsDriver::deenergise();
 }

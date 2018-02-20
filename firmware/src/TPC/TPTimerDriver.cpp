@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #include "Config.hpp"
-#include "Controller/TapePunch.hpp"
+#include "TPC/TPController.hpp"
 #include "TPC/TPTimerDriver.hpp"
 
 static uint16_t constexpr PRESCALER = 4;
@@ -70,7 +70,7 @@ void TPC::TPTimerDriver::init() {
 }
 
 void TPC::TPTimerDriver::stop() {
-  Controller::TapePunch::Hooks::deenergiseSolenoids_ID();
+  TPC::TPController::Hooks::deenergiseSolenoids_ID();
   setRunning(false);
 }
 
@@ -83,15 +83,15 @@ void TPC::TPTimerDriver::Hooks::sync_ID() {
 }
 
 ISR(TCC0_CCA_vect) {
-  Controller::TapePunch::Hooks::energiseSolenoids_ID();
+  TPC::TPController::Hooks::energiseSolenoids_ID();
 }
 
 ISR(TCC0_CCB_vect) {
-  Controller::TapePunch::Hooks::deenergiseSolenoids_ID();
+  TPC::TPController::Hooks::deenergiseSolenoids_ID();
 }
 
 ISR(TCC0_OVF_vect) {
   // TODO: flag an error
-  Controller::TapePunch::Hooks::deenergiseSolenoids_ID();
+  TPC::TPController::Hooks::deenergiseSolenoids_ID();
   setRunning(false);
 }
