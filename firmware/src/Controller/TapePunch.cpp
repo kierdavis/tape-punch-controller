@@ -3,8 +3,8 @@
 #include <util/atomic.h>
 
 #include "Config.hpp"
-#include "Controller/JobQueue.hpp"
 #include "Controller/TapePunch.hpp"
+#include "TPC/TPJobManager.hpp"
 #include "TPC/TPMotorDriver.hpp"
 #include "TPC/TPSolenoidsDriver.hpp"
 #include "TPC/TPSyncDriver.hpp"
@@ -35,8 +35,8 @@ static void switchOff_ID() {
   on = false;
 }
 
-void Controller::TapePunch::addJob_IE(uint16_t length, const uint8_t * buffer) {
-  Controller::JobQueue::addJob_IE(length, buffer);
+void Controller::TapePunch::setJob_IE(uint16_t length, const uint8_t * buffer) {
+  TPC::TPJobManager::setJob_IE(length, buffer);
   bool on_;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     on_ = on;
@@ -44,10 +44,6 @@ void Controller::TapePunch::addJob_IE(uint16_t length, const uint8_t * buffer) {
   if (!on_) {
     switchOn_IE();
   }
-}
-
-void Controller::TapePunch::tick_IE() {
-  Controller::JobQueue::tick_IE();
 }
 
 void Controller::TapePunch::Hooks::energiseSolenoids_ID() {
@@ -59,9 +55,9 @@ void Controller::TapePunch::Hooks::energiseSolenoids_ID() {
     waitCount = waitCount_ - 1;
     return;
   }
-  Controller::JobQueue::PopByteResult result = Controller::JobQueue::popByte_ID();
-  if (result.hasData) {
-    TPC::TPSolenoidsDriver::energise(result.data);
+  TPC::TPJobManager::NextByteResult result = TPC::TPJobManager::nextByte_ID();
+  if (result.hasByte) {
+    TPC::TPSolenoidsDriver::energise(result.byte);
   } else {
     switchOff_ID();
   }

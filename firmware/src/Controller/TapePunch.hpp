@@ -6,8 +6,7 @@
 namespace Controller {
   namespace TapePunch {
     void init();
-    void addJob_IE(uint16_t length, const uint8_t * buffer = nullptr);
-    void tick_IE();
+    void setJob_IE(uint16_t length, const uint8_t * buffer = nullptr);
 
     namespace Hooks {
       void energiseSolenoids_ID();

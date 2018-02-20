@@ -42,7 +42,6 @@ int main() {
   // Controller::TapePunch::addJob_IE(200); // trailer (200 blank rows)
 
   while (1) {
-    Controller::TapePunch::tick_IE();
     USBInterface::USBDevice::tick();
     _delay_us(1000);
   }

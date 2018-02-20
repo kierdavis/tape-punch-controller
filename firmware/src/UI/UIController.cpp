@@ -34,9 +34,8 @@ void UI::UIController::Hooks::confirm() {
         SERIAL_WRITE(" / addr 0x");
         TPC::SerialDriver::writeHex16((uint16_t) contents);
         SERIAL_WRITE(")\r\n");
-        Controller::TapePunch::addJob_IE(100);
-        Controller::TapePunch::addJob_IE(length, contents);
-        Controller::TapePunch::addJob_IE(150);
+        // TODO: check if already processing a job
+        Controller::TapePunch::setJob_IE(length, contents);
         state = State::PRINTING;
       }
       break;
