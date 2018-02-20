@@ -2,7 +2,7 @@
 
 #include "TPC/TPController.hpp"
 #include "TPC/SerialDriver.hpp"
-#include "TPC/UIButtonsDriver.hpp"
+#include "TPC/ButtonsDriver.hpp"
 #include "UI/FileList.hpp"
 #include "UI/UIController.hpp"
 #include "TPC/BlockStorage.hpp"
@@ -16,7 +16,7 @@ enum class State : uint8_t {
 static State state = State::IDLE;
 
 void UI::UIController::init() {
-  TPC::UIButtonsDriver::init();
+  TPC::ButtonsDriver::init();
   state = State::IDLE;
 }
 

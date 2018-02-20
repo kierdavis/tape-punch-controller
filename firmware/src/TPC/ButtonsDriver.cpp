@@ -4,7 +4,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-#include "TPC/UIButtonsDriver.hpp"
+#include "TPC/ButtonsDriver.hpp"
 #include "UI/UIController.hpp"
 
 enum class State : uint8_t {
@@ -21,7 +21,7 @@ static uint8_t constexpr CONFIRM_PIN_MASK = _BV(CONFIRM_PIN);
 static uint8_t constexpr CANCEL_PIN = 1;
 static uint8_t constexpr CANCEL_PIN_MASK = _BV(CANCEL_PIN);
 
-void TPC::UIButtonsDriver::init() {
+void TPC::ButtonsDriver::init() {
   volatile uint8_t * const pinctrls = &PORT->PIN0CTRL;
   // Configure pins as inputs.
   PORT->DIRCLR = CONFIRM_PIN_MASK | CANCEL_PIN_MASK;
