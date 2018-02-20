@@ -8,7 +8,7 @@
 #include "Config.hpp"
 #include "TPC/SerialDriver.hpp"
 #include "USBInterface/BlockStorage.hpp"
-#include "USBInterface/SCSI.hpp"
+#include "TPC/SCSI.hpp"
 #include "Util/Arith.hpp"
 #include "Util/Word.hpp"
 
@@ -262,7 +262,7 @@ static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
   return handleInvalid(commandBlock);
 }
 
-bool USBInterface::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
+bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
   // Initialise sense data to "okay", but it should be overwritten in the event
   // of an error.
   resetSenseData();

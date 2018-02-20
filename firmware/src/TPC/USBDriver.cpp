@@ -9,7 +9,7 @@
 #include "TPC/SerialDriver.hpp"
 #include "TPC/USBDriver.hpp"
 #include "TPC/USBDescriptor.hpp"
-#include "USBInterface/SCSI.hpp"
+#include "TPC/SCSI.hpp"
 
 // Encapsulates runtime state of Mass Storage interface.
 static USB_ClassInfo_MS_Device_t msdInfo = {
@@ -84,6 +84,6 @@ extern "C" {
   }
 
   bool CALLBACK_MS_Device_SCSICommandReceived(USB_ClassInfo_MS_Device_t * msdInfo) {
-    return USBInterface::SCSI::handle(&msdInfo->State.CommandBlock);
+    return TPC::SCSI::handle(&msdInfo->State.CommandBlock);
   }
 };
