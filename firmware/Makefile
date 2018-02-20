@@ -7,17 +7,15 @@ MCU = atxmega192c3
 ARCH = XMEGA
 F_CPU = 12000000
 F_USB = 48000000
-CC_FLAGS += -DPLATFORM_PCB -Werror
-
 BOARD = NONE
-TARGET = firmware
 
+TARGET = firmware
 TARGET_SRC = $(shell find src -name '*.cpp')
 SRC = $(TARGET_SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
 
 OPTIMIZATION = s
 LTO = Y
-CC_FLAGS += -Isrc -Wall -DUSE_LUFA_CONFIG_HEADER
+CC_FLAGS += -Isrc -Wall -Werror -DUSE_LUFA_CONFIG_HEADER
 CPP_STANDARD = c++14
 
 # TODO: http://www.fourwalledcubicle.com/files/LUFA/Doc/151115/html/_page__token_summary.html
