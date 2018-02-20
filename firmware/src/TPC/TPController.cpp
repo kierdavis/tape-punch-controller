@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
+
 #include <util/atomic.h>
 
 #include "Config.hpp"

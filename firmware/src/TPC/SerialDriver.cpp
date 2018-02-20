@@ -1,6 +1,7 @@
-#include <avr/io.h>
 #include <stdbool.h>
 #include <stdint.h>
+
+#include <avr/io.h>
 
 #include "Config.hpp"
 #include "TPC/Log.hpp"

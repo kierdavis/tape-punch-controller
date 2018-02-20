@@ -2,8 +2,8 @@
 
 #include <avr/pgmspace.h>
 
-#include "TPC/Log.hpp"
 #include "TPC/Filesystem.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/SerialDriver.hpp"
 
 void TPC::Log::init() {

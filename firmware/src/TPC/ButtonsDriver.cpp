@@ -4,8 +4,8 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-#include "TPC/ButtonsDriver.hpp"
 #include "TPC/Application.hpp"
+#include "TPC/ButtonsDriver.hpp"
 
 enum class State : uint8_t {
   NONE_PRESSED,

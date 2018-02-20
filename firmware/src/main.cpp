@@ -1,11 +1,10 @@
 #include <avr/interrupt.h>
-#include <avr/pgmspace.h>
 #include <util/delay.h>
 
+#include "TPC/Application.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/MicrocontrollerDriver.hpp"
 #include "TPC/TPController.hpp"
-#include "TPC/Application.hpp"
 #include "TPC/USBDriver.hpp"
 
 int main() {

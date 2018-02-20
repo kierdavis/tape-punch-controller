@@ -1,15 +1,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <avr/pgmspace.h>
-
 #include <LUFA/Drivers/USB/USB.h>
-#include <LUFA/Platform/Platform.h>
 
 #include "TPC/Log.hpp"
-#include "TPC/USBDriver.hpp"
-#include "TPC/USBDescriptor.hpp"
 #include "TPC/SCSI.hpp"
+#include "TPC/USBDescriptor.hpp"
+#include "TPC/USBDriver.hpp"
 
 // Encapsulates runtime state of Mass Storage interface.
 static USB_ClassInfo_MS_Device_t msdInfo = {

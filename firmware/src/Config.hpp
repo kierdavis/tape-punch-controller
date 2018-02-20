@@ -1,7 +1,7 @@
 #ifndef __TPC_CONFIG_HPP
 #define __TPC_CONFIG_HPP
 
-#include <avr/io.h>
+#include <stdint.h>
 
 static constexpr double normaliseAngle(double x) {
   return (x < 0.0) ? (x + 360.0) :

@@ -1,6 +1,7 @@
+#include <stdint.h>
+
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include <stdint.h>
 
 #include "TPC/TPSyncDriver.hpp"
 #include "TPC/TPTimerDriver.hpp"

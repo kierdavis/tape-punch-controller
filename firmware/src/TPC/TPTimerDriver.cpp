@@ -1,12 +1,13 @@
-#include <avr/interrupt.h>
-#include <avr/io.h>
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <avr/interrupt.h>
+#include <avr/io.h>
+
 #include "Config.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPTimerDriver.hpp"
-#include "TPC/Log.hpp"
 
 static uint16_t constexpr PRESCALER = 4;
 static uint8_t constexpr CLKSEL = TC_CLKSEL_DIV4_gc;

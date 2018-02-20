@@ -5,10 +5,10 @@
 #include "TPC/Application.hpp"
 #include "TPC/BlockStorage.hpp"
 #include "TPC/ButtonsDriver.hpp"
+#include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/TPController.hpp"
-#include "TPC/FileSelector.hpp"
 
 enum class State : uint8_t {
   IDLE,
