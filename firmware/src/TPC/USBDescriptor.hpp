@@ -1,12 +1,12 @@
-#ifndef __TPC_USB_INTERFACE_DESCRIPTOR_HPP
-#define __TPC_USB_INTERFACE_DESCRIPTOR_HPP
+#ifndef __TPC_USB_DESCRIPTOR_HPP
+#define __TPC_USB_DESCRIPTOR_HPP
 
 #include <stdbool.h>
 #include <stdint.h>
 
 #include <LUFA/Drivers/USB/USB.h>
 
-namespace USBInterface {
+namespace TPC {
   namespace USBDescriptor {
     enum class InterfaceNumber : uint8_t {
       MASS_STORAGE = 0,

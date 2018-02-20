@@ -6,9 +6,9 @@
 #include <LUFA/Drivers/USB/USB.h>
 
 #include "Config.hpp"
-#include "USBInterface/USBDescriptor.hpp"
+#include "TPC/USBDescriptor.hpp"
 
-using namespace USBInterface::USBDescriptor;
+using namespace TPC::USBDescriptor;
 
 class ConfigurationDescriptor {
 public:
@@ -131,7 +131,7 @@ static const USB_Descriptor_String_t * lookupString(uint8_t number) {
   }
 }
 
-bool USBInterface::USBDescriptor::lookup(uint8_t type, uint8_t number, uint16_t index, Ref * ref) {
+bool TPC::USBDescriptor::lookup(uint8_t type, uint8_t number, uint16_t index, Ref * ref) {
   switch (type) {
     case DTYPE_Device: {
       ref->pointer = &deviceDescriptor;
