@@ -7,13 +7,13 @@
 
 #include "Config.hpp"
 #include "TPC/SerialDriver.hpp"
-#include "USBInterface/BlockStorage.hpp"
+#include "TPC/BlockStorage.hpp"
 #include "TPC/SCSI.hpp"
 #include "Util/Arith.hpp"
 #include "Util/Word.hpp"
 
-using USBInterface::BlockStorage::BYTES_PER_BLOCK;
-using USBInterface::BlockStorage::NUM_BLOCKS;
+using TPC::BlockStorage::BYTES_PER_BLOCK;
+using TPC::BlockStorage::NUM_BLOCKS;
 
 static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
   .ResponseCode = 0x70,
@@ -190,7 +190,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
     const uint8_t addr = startAddr + i;
     SERIAL_WRITE("\r\n[SCSI] write: 0x");
     TPC::SerialDriver::writeHex8(addr);
-    USBInterface::BlockStorage::receive(addr);
+    TPC::BlockStorage::receive(addr);
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
 
     // Check if endpoint is full.
@@ -228,7 +228,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
     const uint8_t addr = startAddr + i;
     SERIAL_WRITE("\r\n[SCSI] read: 0x");
     TPC::SerialDriver::writeHex8(addr);
-    USBInterface::BlockStorage::send(addr);
+    TPC::BlockStorage::send(addr);
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
 
     // Check if endpoint is full.

@@ -5,7 +5,7 @@
 
 #include "USBInterface/FAT.hpp"
 
-namespace USBInterface {
+namespace TPC {
   namespace BlockStorage {
     static constexpr uint16_t BYTES_PER_BLOCK = USBInterface::FAT::BYTES_PER_SECTOR;
     static constexpr uint16_t NUM_BLOCKS = USBInterface::FAT::NUM_SECTORS;

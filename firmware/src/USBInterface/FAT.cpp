@@ -2,7 +2,7 @@
 
 #include "TPC/SerialDriver.hpp"
 #include "UI/FileList.hpp"
-#include "USBInterface/BlockStorage.hpp"
+#include "TPC/BlockStorage.hpp"
 #include "USBInterface/FAT.hpp"
 
 using namespace USBInterface::FAT;
@@ -81,7 +81,7 @@ static void scanDirectory(uint8_t * const clusterData) {
         else if (attributes & SUBDIR_ATTR) {
           // This entry is for a subdirectory.
           uint8_t * const subdirClusterData =
-            USBInterface::BlockStorage::get(currentEntry->startCluster);
+            TPC::BlockStorage::get(currentEntry->startCluster);
           scanDirectory(subdirClusterData);
         }
         else {
@@ -98,6 +98,6 @@ static void scanDirectory(uint8_t * const clusterData) {
 void USBInterface::FAT::scanFilesystem() {
   SERIAL_WRITE("[FAT] Scanning...\r\n");
   UI::FileList::reset();
-  uint8_t * const clusterData = USBInterface::BlockStorage::get(ROOT_DIR_SECTOR);
+  uint8_t * const clusterData = TPC::BlockStorage::get(ROOT_DIR_SECTOR);
   scanDirectory(clusterData);
 }

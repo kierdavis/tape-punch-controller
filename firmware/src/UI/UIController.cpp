@@ -5,7 +5,7 @@
 #include "TPC/UIButtonsDriver.hpp"
 #include "UI/FileList.hpp"
 #include "UI/UIController.hpp"
-#include "USBInterface/BlockStorage.hpp"
+#include "TPC/BlockStorage.hpp"
 
 enum class State : uint8_t {
   IDLE,
@@ -25,7 +25,7 @@ void UI::UIController::Hooks::confirm() {
       USBInterface::FAT::DirectoryEntry * file = UI::FileList::selected();
       if (file != nullptr) {
         // TODO: doesn't support files spread across multiple clusters.
-        uint8_t * contents = USBInterface::BlockStorage::get(file->startCluster + USBInterface::FAT::NUM_RESERVED_SECTORS);
+        uint8_t * contents = TPC::BlockStorage::get(file->startCluster + USBInterface::FAT::NUM_RESERVED_SECTORS);
         uint16_t length = file->size;
         SERIAL_WRITE("Printing file 0x");
         TPC::SerialDriver::writeHex16((uint16_t) file);

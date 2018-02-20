@@ -2,10 +2,10 @@
 
 #include <LUFA/Drivers/USB/USB.h>
 
-#include "USBInterface/BlockStorage.hpp"
+#include "TPC/BlockStorage.hpp"
 #include "USBInterface/FAT.hpp"
 
-using namespace USBInterface::BlockStorage;
+using namespace TPC::BlockStorage;
 using USBInterface::FAT::NUM_RESERVED_SECTORS;
 
 static uint8_t mutableBlocks[NUM_MUTABLE_BLOCKS][BYTES_PER_BLOCK];
@@ -35,7 +35,7 @@ static void receiveNullBlock() {
   Endpoint_Discard_Stream(BYTES_PER_BLOCK, NULL);
 }
 
-void USBInterface::BlockStorage::send(const uint8_t addr) {
+void TPC::BlockStorage::send(const uint8_t addr) {
   if (addr < NUM_RESERVED_SECTORS) {
     sendBootBlock();
     return;
@@ -49,7 +49,7 @@ void USBInterface::BlockStorage::send(const uint8_t addr) {
   sendNullBlock();
 }
 
-void USBInterface::BlockStorage::receive(const uint8_t addr) {
+void TPC::BlockStorage::receive(const uint8_t addr) {
   if (addr < NUM_RESERVED_SECTORS) {
     // Boot sector is immutable.
     receiveNullBlock();
@@ -64,7 +64,7 @@ void USBInterface::BlockStorage::receive(const uint8_t addr) {
   receiveNullBlock();
 }
 
-uint8_t * USBInterface::BlockStorage::get(const uint8_t addr) {
+uint8_t * TPC::BlockStorage::get(const uint8_t addr) {
   if (addr < NUM_RESERVED_SECTORS) {
     // Boot sector is immutable, and shouldn't be used by the rest of the
     // firmware anyway.
