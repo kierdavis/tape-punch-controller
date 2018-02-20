@@ -1,8 +1,8 @@
 #include <stdint.h>
 
 #include "TPC/TPController.hpp"
-#include "Peripheral/Buttons.hpp"
 #include "TPC/SerialDriver.hpp"
+#include "TPC/UIButtonsDriver.hpp"
 #include "UI/FileList.hpp"
 #include "UI/UIController.hpp"
 #include "USBInterface/BlockStorage.hpp"
@@ -15,7 +15,7 @@ enum class State : uint8_t {
 static State state = State::IDLE;
 
 void UI::UIController::init() {
-  Peripheral::Buttons::init();
+  TPC::UIButtonsDriver::init();
   state = State::IDLE;
 }
 
