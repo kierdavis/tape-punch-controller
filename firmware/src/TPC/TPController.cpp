@@ -47,6 +47,10 @@ void TPC::TPController::setJob_IE(uint16_t length, const uint8_t * buffer) {
   }
 }
 
+void TPC::TPController::tick_IE() {
+  TPC::TPJobManager::tick_IE();
+}
+
 void TPC::TPController::Hooks::energiseSolenoids_ID() {
   if (!on) {
     return;

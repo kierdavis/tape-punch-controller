@@ -42,6 +42,7 @@ int main() {
   // Controller::TapePunch::addJob_IE(200); // trailer (200 blank rows)
 
   while (1) {
+    TPC::TPController::tick_IE();
     TPC::USBDriver::tick();
     _delay_us(1000);
   }

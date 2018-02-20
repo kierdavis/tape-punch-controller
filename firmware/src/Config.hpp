@@ -26,6 +26,8 @@ namespace Config {
   static uint16_t constexpr LEADER_LENGTH = 100;
   static uint16_t constexpr TRAILER_LENGTH = 150;
 
+  static uint8_t constexpr BODY_BUFFER_SIZE = 16;
+
   static uint32_t constexpr SERIAL_BAUD_RATE = 115200;
 
   static uint16_t constexpr USB_VENDOR_ID = 0x03EB; // Atmel

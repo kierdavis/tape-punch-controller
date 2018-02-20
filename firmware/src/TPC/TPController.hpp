@@ -7,6 +7,7 @@ namespace TPC {
   namespace TPController {
     void init();
     void setJob_IE(uint16_t length, const uint8_t * buffer = nullptr);
+    void tick_IE();
 
     namespace Hooks {
       void energiseSolenoids_ID();
