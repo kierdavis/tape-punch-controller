@@ -6,7 +6,7 @@
 #include "TPC/MicrocontrollerDriver.hpp"
 #include "TPC/TPController.hpp"
 #include "UI/UIController.hpp"
-#include "USBInterface/USBDevice.hpp"
+#include "TPC/USBDriver.hpp"
 
 static uint8_t const DATA[] = {
   0b10000,
@@ -30,7 +30,7 @@ int main() {
 
   // Second stage init.
   TPC::TPController::init();
-  USBInterface::USBDevice::init();
+  TPC::USBDriver::init();
   UI::UIController::init();
   sei();
 
@@ -42,7 +42,7 @@ int main() {
   // Controller::TapePunch::addJob_IE(200); // trailer (200 blank rows)
 
   while (1) {
-    USBInterface::USBDevice::tick();
+    TPC::USBDriver::tick();
     _delay_us(1000);
   }
 }
