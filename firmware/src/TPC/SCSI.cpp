@@ -33,12 +33,14 @@ static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
 
 static SCSI_Request_Sense_Response_t senseData = initialSenseData;
 
+static uint8_t lastCmd = 0;
+
 static void resetSenseData() {
   memcpy_P(&senseData, &initialSenseData, sizeof(senseData));
 }
 
 static bool error(const uint8_t key, const uint8_t addCode, const uint8_t addQual) {
-  LOG("[SCSI] Error response!");
+  LOG("[SCSI] sending error response; most recent command was 0x", lastCmd);
   LOG("[SCSI]   key: 0x", key);
   LOG("[SCSI]   ac: 0x", addCode);
   LOG("[SCSI]   aq: 0x", addQual);
@@ -241,6 +243,7 @@ static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
+  LOG("[SCSI] unrecognised command 0x", lastCmd);
   return error(
     SCSI_SENSE_KEY_ILLEGAL_REQUEST,
     SCSI_ASENSE_INVALID_COMMAND,
@@ -249,7 +252,12 @@ static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
-  return handleInvalid(commandBlock);
+  LOG("[SCSI] recognised but unimplemented command 0x", lastCmd);
+  return error(
+    SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+    SCSI_ASENSE_INVALID_COMMAND,
+    SCSI_ASENSEQ_NO_QUALIFIER
+  );
 }
 
 bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -258,65 +266,51 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
   resetSenseData();
 
   const uint8_t cmd = commandBlock->SCSICommandData[0];
+  lastCmd = cmd;
   switch (cmd) {
     case SCSI_CMD_INQUIRY: {
-      LOG("[SCSI] inquiry");
       return handleInquiry(commandBlock);
     }
     case SCSI_CMD_REQUEST_SENSE: {
-      LOG("[SCSI] request sense");
       return handleRequestSense(commandBlock);
     }
     case SCSI_CMD_TEST_UNIT_READY: {
-      LOG("[SCSI] test unit ready");
       return handleTestUnitReady(commandBlock);
     }
     case SCSI_CMD_READ_CAPACITY_10: {
-      LOG("[SCSI] read capacity 10");
       return handleReadCapacity10(commandBlock);
     }
     case SCSI_CMD_START_STOP_UNIT: {
-      LOG("[SCSI] start stop unit");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_SEND_DIAGNOSTIC: {
-      LOG("[SCSI] send diagnostic");
       return handleSendDiagnostic(commandBlock);
     }
     case SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL: {
-      LOG("[SCSI] prevent allow medium removal");
       return handlePreventAllowMediumRemoval(commandBlock);
     }
     case SCSI_CMD_WRITE_10: {
-      LOG("[SCSI] write 10");
       return handleWrite10(commandBlock);
     }
     case SCSI_CMD_READ_10: {
-      LOG("[SCSI] read 10");
       return handleRead10(commandBlock);
     }
     case SCSI_CMD_WRITE_6: {
-      LOG("[SCSI] write 6");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_READ_6: {
-      LOG("[SCSI] read 6");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_VERIFY_10: {
-      LOG("[SCSI] verify 10");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_6: {
-      LOG("[SCSI] mode sense 6");
       return handleModeSense6(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_10: {
-      LOG("[SCSI] mode sense 10");
       return handleUnimplemented(commandBlock);
     }
     default: {
-      LOG("[SCSI] unknown 0x", cmd);
       return handleInvalid(commandBlock);
     }
   }
