@@ -9,8 +9,7 @@
 #include "TPC/SerialDriver.hpp"
 #include "TPC/BlockStorage.hpp"
 #include "TPC/SCSI.hpp"
-#include "Util/Arith.hpp"
-#include "Util/Word.hpp"
+#include "TPC/Util.hpp"
 
 using TPC::BlockStorage::BYTES_PER_BLOCK;
 using TPC::BlockStorage::NUM_BLOCKS;
@@ -100,11 +99,11 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   // Number of bytes that the host has allocated for the response (allocation
   // length).
   uint16_t destLength;
-  Util::Word::fromBigEndian(&commandBlock->SCSICommandData[3], &destLength);
+  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[3], &destLength);
   // Maximum number of bytes that we can return.
   const uint16_t srcLength = sizeof(response);
   // Number of bytes that we'll transfer.
-  const uint16_t transferLength = Util::Arith::min(destLength, srcLength);
+  const uint16_t transferLength = TPC::Util::min(destLength, srcLength);
 
   // Send response to client, filling the rest of the client's buffer with zeros.
   Endpoint_Write_PStream_LE(&response, transferLength, NULL);
@@ -121,7 +120,7 @@ static bool handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
   // Maximum numner of bytes that we can return.
   const uint8_t srcLength = sizeof(senseData);
   // Number of bytes that we'll transfer.
-  const uint8_t transferLength = Util::Arith::min(destLength, srcLength);
+  const uint8_t transferLength = TPC::Util::min(destLength, srcLength);
 
   // Send response to client, filling the rest of the client's buffer with zeros.
   Endpoint_Write_Stream_LE(&senseData, transferLength, NULL);
@@ -142,8 +141,8 @@ static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) 
   const uint32_t blockSize = BYTES_PER_BLOCK;
 
   uint8_t buffer[8];
-  Util::Word::toBigEndian(addrOfLastBlock, &buffer[0]);
-  Util::Word::toBigEndian(blockSize, &buffer[4]);
+  TPC::Util::toBigEndian(addrOfLastBlock, &buffer[0]);
+  TPC::Util::toBigEndian(blockSize, &buffer[4]);
   Endpoint_Write_Stream_LE(buffer, 8, NULL);
   Endpoint_ClearIN();
   commandBlock->DataTransferLength -= 8;
@@ -168,8 +167,8 @@ static bool handlePreventAllowMediumRemoval(MS_CommandBlockWrapper_t * const com
 static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   uint32_t startAddr32;
   uint16_t numBlocks16;
-  Util::Word::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
-  Util::Word::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
+  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
+  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
     return error(
       SCSI_SENSE_KEY_ILLEGAL_REQUEST,
@@ -206,8 +205,8 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
 static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   uint32_t startAddr32;
   uint16_t numBlocks16;
-  Util::Word::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
-  Util::Word::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
+  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
+  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
     return error(
       SCSI_SENSE_KEY_ILLEGAL_REQUEST,

@@ -7,7 +7,7 @@
 #include "TPC/TPBodyBuffer.hpp"
 #include "TPC/TPCoding.hpp"
 #include "TPC/TPJobManager.hpp"
-#include "Util/Maybe.hpp"
+#include "TPC/Util.hpp"
 
 enum class State : uint8_t {
   IDLE,
@@ -94,10 +94,10 @@ void TPC::TPJobManager::tick_IE() {
   refillBodyBuffer_IE();
 }
 
-Util::Maybe::Uint8 TPC::TPJobManager::nextByte_ID() {
+TPC::Util::MaybeUint8 TPC::TPJobManager::nextByte_ID() {
   switch (state) {
     case State::IDLE: {
-      return Util::Maybe::Uint8(false);
+      return TPC::Util::MaybeUint8(false);
     }
     case State::LEADER: {
       const uint16_t countMinusOne = count - 1;
@@ -106,10 +106,10 @@ Util::Maybe::Uint8 TPC::TPJobManager::nextByte_ID() {
       } else {
         count = countMinusOne;
       }
-      return Util::Maybe::Uint8(true, 0);
+      return TPC::Util::MaybeUint8(true, 0);
     }
     case State::BODY: {
-      Util::Maybe::Uint8 result = TPC::TPBodyBuffer::pop_ID();
+      TPC::Util::MaybeUint8 result = TPC::TPBodyBuffer::pop_ID();
       if (result.hasValue) {
         return result;
       }
@@ -125,9 +125,9 @@ Util::Maybe::Uint8 TPC::TPJobManager::nextByte_ID() {
       } else {
         count = countMinusOne;
       }
-      return Util::Maybe::Uint8(true, 0);
+      return TPC::Util::MaybeUint8(true, 0);
     }
   }
   // Should be unreachable.
-  return Util::Maybe::Uint8(false);
+  return TPC::Util::MaybeUint8(false);
 }

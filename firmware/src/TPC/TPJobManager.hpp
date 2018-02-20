@@ -3,13 +3,13 @@
 
 #include <stdint.h>
 
-#include "Util/Maybe.hpp"
+#include "TPC/Util.hpp"
 
 namespace TPC {
   namespace TPJobManager {
     void setJob_IE(uint16_t count, const uint8_t * ptr);
     void tick_IE();
-    Util::Maybe::Uint8 nextByte_ID();
+    TPC::Util::MaybeUint8 nextByte_ID();
   }
 }
 

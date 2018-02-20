@@ -3,7 +3,7 @@
 
 #include "Config.hpp"
 #include "TPC/TPBodyBuffer.hpp"
-#include "Util/Maybe.hpp"
+#include "TPC/Util.hpp"
 
 using Config::BODY_BUFFER_SIZE;
 
@@ -22,16 +22,16 @@ void TPC::TPBodyBuffer::push_ID(const uint8_t value) {
   }
 }
 
-Util::Maybe::Uint8 TPC::TPBodyBuffer::pop_ID() {
+TPC::Util::MaybeUint8 TPC::TPBodyBuffer::pop_ID() {
   const uint8_t _count = count;
   if (_count > 0) {
     const uint8_t _popIndex = popIndex;
     const uint8_t byte = buffer[_popIndex];
     popIndex = (_popIndex + 1) % BODY_BUFFER_SIZE;
     count = _count - 1;
-    return Util::Maybe::Uint8(true, byte);
+    return TPC::Util::MaybeUint8(true, byte);
   } else {
-    return Util::Maybe::Uint8(false);
+    return TPC::Util::MaybeUint8(false);
   }
 }
 

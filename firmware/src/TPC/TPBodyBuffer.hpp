@@ -4,12 +4,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "Util/Maybe.hpp"
+#include "TPC/Util.hpp"
 
 namespace TPC {
   namespace TPBodyBuffer {
     void push_ID(const uint8_t value);
-    Util::Maybe::Uint8 pop_ID();
+    TPC::Util::MaybeUint8 pop_ID();
     bool full_ID();
   }
 }
