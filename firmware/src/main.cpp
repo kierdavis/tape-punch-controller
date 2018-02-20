@@ -14,15 +14,15 @@ int main() {
   LOG("[main] initialising...");
 
   // Second stage init.
-  TPC::TPController::init();
   TPC::USBDriver::init();
+  TPC::TPController::init();
   TPC::Application::init();
   sei();
   LOG("[main] ready");
 
   while (1) {
-    TPC::TPController::tick_IE();
     TPC::USBDriver::tick();
+    TPC::TPController::tick_IE();
     _delay_us(1000);
   }
 }
