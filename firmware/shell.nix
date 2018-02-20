@@ -6,7 +6,7 @@ let
   pdiprog = pkgs.callPackage ./pdi-programmer/client {};
 
 in stdenv.mkDerivation {
-  name = "piii-project-firmware-env";
+  name = "tpc-firmware-env";
 
   buildInputs = [ avrbinutils avrdude avrgcc avrlibc pdiprog ];
 

@@ -1,6 +1,6 @@
 with import <nixpkgs> {};
 
 stdenv.mkDerivation {
-  name = "piii-project-lasercut-env";
+  name = "tpc-mechanical-env";
   buildInputs = [ librecad ];
 }

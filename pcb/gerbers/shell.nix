@@ -3,7 +3,7 @@
 with pkgs;
 
 stdenv.mkDerivation {
-  name = "env";
+  name = "tpc-pcb-gerbers-env";
   buildInputs = [
     gerbv
   ];
