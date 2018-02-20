@@ -241,6 +241,59 @@ static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
   return ok();
 }
 
+static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandBlock) {
+  // http://www.usb.org/developers/docs/devclass_docs/usbmass-ufi10.pdf section 4.10.
+
+  static constexpr uint32_t NUM_BLOCKS = TPC::BlockStorage::NUM_BLOCKS;
+  static constexpr uint32_t BYTES_PER_BLOCK = TPC::BlockStorage::BYTES_PER_BLOCK;
+  static const struct {
+    struct {
+      uint8_t reserved[3];
+      uint8_t capacityListLength;
+    } capacityListHeader;
+    struct {
+      uint8_t numBlocks[4]; // A 32-bit big-endian number.
+      uint8_t descriptorCode;
+      uint8_t blockLength[3]; // A 24-bit big-endian number.
+    } currentCapacityHeader;
+  } response PROGMEM = {
+    .capacityListHeader = {
+      .reserved = {0, 0, 0},
+      .capacityListLength = 8,
+    },
+    .currentCapacityHeader = {
+      .numBlocks = {
+        (NUM_BLOCKS >> 24) & 0xFF,
+        (NUM_BLOCKS >> 16) & 0xFF,
+        (NUM_BLOCKS >> 8) & 0xFF,
+        NUM_BLOCKS & 0xFF,
+      },
+      .descriptorCode = 0x02, // formatted media
+      .blockLength = {
+        (BYTES_PER_BLOCK >> 16) & 0xFF,
+        (BYTES_PER_BLOCK >> 8) & 0xFF,
+        BYTES_PER_BLOCK & 0xFF,
+      },
+    },
+  };
+
+  // Number of bytes that the host has allocated for the response (allocation
+  // length).
+  uint16_t destLength;
+  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[3], &destLength);
+  // Maximum number of bytes that we can return.
+  const uint16_t srcLength = sizeof(response);
+  // Number of bytes that we'll transfer.
+  const uint16_t transferLength = TPC::Util::min(destLength, srcLength);
+
+  // Send response to client, filling the rest of the client's buffer with zeros.
+  Endpoint_Write_PStream_LE(&response, transferLength, NULL);
+  Endpoint_Null_Stream(destLength - transferLength, NULL);
+  Endpoint_ClearIN();
+  commandBlock->DataTransferLength -= transferLength;
+  return ok();
+}
+
 static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
   LOG("[SCSI] unrecognised command 0x", lastCmd);
   return error(
@@ -263,6 +316,9 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
   // Initialise sense data to "okay", but it should be overwritten in the event
   // of an error.
   resetSenseData();
+
+  // Some commands aren't supported by LUFA.
+  static constexpr uint8_t SCSI_CMD_READ_FORMAT_CAPACITIES = 0x23;
 
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   lastCmd = cmd;
@@ -308,6 +364,9 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
     }
     case SCSI_CMD_MODE_SENSE_10: {
       return handleUnimplemented(commandBlock);
+    }
+    case SCSI_CMD_READ_FORMAT_CAPACITIES: {
+      return handleReadFormatCapacities(commandBlock);
     }
     default: {
       return handleInvalid(commandBlock);
