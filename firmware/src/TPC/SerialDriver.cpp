@@ -3,7 +3,7 @@
 
 #include <avr/io.h>
 
-#include "Config.hpp"
+#include "TPC/Config.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/SerialDriver.hpp"
 
@@ -22,7 +22,7 @@ static_assert(-6 <= BSCALE && BSCALE <= 6, "BSCALE must in range -6..6 inclusive
 
 static constexpr uint16_t calculateBSEL() {
   constexpr uint32_t f_per = (uint32_t) F_CPU;
-  constexpr uint32_t f_baud = (uint32_t) Config::SERIAL_BAUD_RATE;
+  constexpr uint32_t f_baud = (uint32_t) TPC::Config::SERIAL_BAUD_RATE;
   if (BSCALE >= 0) {
     constexpr uint32_t pow_bscale = 1 << ((uint32_t) (BSCALE & 7));
     constexpr uint32_t bsel = f_per / (pow_bscale * 16 * f_baud) - 1;

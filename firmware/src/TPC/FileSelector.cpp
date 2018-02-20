@@ -1,10 +1,10 @@
 #include <stdint.h>
 
-#include "Config.hpp"
+#include "TPC/Config.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
 
-static TPC::Filesystem::DirectoryEntry * files[Config::MAX_NUM_FILES];
+static TPC::Filesystem::DirectoryEntry * files[TPC::Config::MAX_NUM_FILES];
 static uint8_t numFiles = 0;
 static uint8_t selectedIndex = 0; // considered invalid when numFiles == 0.
 
@@ -14,7 +14,7 @@ void TPC::FileSelector::reset() {
 
 void TPC::FileSelector::add(TPC::Filesystem::DirectoryEntry * file) {
   uint8_t _numFiles = numFiles;
-  if (_numFiles < Config::MAX_NUM_FILES) {
+  if (_numFiles < TPC::Config::MAX_NUM_FILES) {
     files[_numFiles] = file;
     numFiles = _numFiles + 1;
   }

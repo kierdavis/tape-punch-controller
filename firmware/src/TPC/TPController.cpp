@@ -3,7 +3,7 @@
 
 #include <util/atomic.h>
 
-#include "Config.hpp"
+#include "TPC/Config.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPJobManager.hpp"
 #include "TPC/TPMotorDriver.hpp"
@@ -28,7 +28,7 @@ static void switchOn_IE() {
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     // Interrupts disabled.
     on = true;
-    waitCount = Config::STARTUP_CYCLES;
+    waitCount = TPC::Config::STARTUP_CYCLES;
   }
 }
 

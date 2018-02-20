@@ -4,7 +4,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-#include "Config.hpp"
+#include "TPC/Config.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPTimerDriver.hpp"
@@ -14,8 +14,8 @@ static uint8_t constexpr CLKSEL = TC_CLKSEL_DIV4_gc;
 
 static double constexpr TICK_FREQ = ((double) F_CPU) / ((double) PRESCALER);
 static double constexpr TICK_PERIOD = 1.0 / TICK_FREQ;
-static double constexpr ENERGISE_COUNT_F = (Config::ENERGISE_DELAY / TICK_PERIOD) + 0.5;
-static double constexpr DEENERGISE_COUNT_F = (Config::DEENERGISE_DELAY / TICK_PERIOD) + 0.5;
+static double constexpr ENERGISE_COUNT_F = (TPC::Config::ENERGISE_DELAY / TICK_PERIOD) + 0.5;
+static double constexpr DEENERGISE_COUNT_F = (TPC::Config::DEENERGISE_DELAY / TICK_PERIOD) + 0.5;
 
 // Check ENERGISE_COUNT_F and DEENERGISE_COUNT_F have reasonable values before we convert them to uint8_t.
 static_assert(ENERGISE_COUNT_F < 65536,

@@ -5,7 +5,6 @@
 
 #include <LUFA/Drivers/USB/USB.h>
 
-#include "Config.hpp"
 #include "TPC/BlockStorage.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/SCSI.hpp"

@@ -1,11 +1,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "Config.hpp"
+#include "TPC/Config.hpp"
 #include "TPC/TPBodyBuffer.hpp"
 #include "TPC/Util.hpp"
 
-using Config::BODY_BUFFER_SIZE;
+using TPC::Config::BODY_BUFFER_SIZE;
 
 static volatile uint8_t buffer[BODY_BUFFER_SIZE];
 static volatile uint8_t pushIndex = 0;

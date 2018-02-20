@@ -3,7 +3,7 @@
 
 #include <util/atomic.h>
 
-#include "Config.hpp"
+#include "TPC/Config.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/TPBodyBuffer.hpp"
 #include "TPC/TPCoding.hpp"
@@ -30,7 +30,7 @@ static void goToIdle_ID() {
 
 static void goToLeader_ID() {
   state = State::LEADER;
-  count = Config::LEADER_LENGTH;
+  count = TPC::Config::LEADER_LENGTH;
 }
 
 static void goToBody_ID() {
@@ -39,7 +39,7 @@ static void goToBody_ID() {
 
 static void goToTrailer_ID() {
   state = State::TRAILER;
-  count = Config::TRAILER_LENGTH;
+  count = TPC::Config::TRAILER_LENGTH;
 }
 
 static void refillBodyBuffer_IE() {

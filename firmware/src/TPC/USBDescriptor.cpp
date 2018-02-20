@@ -5,7 +5,7 @@
 
 #include <LUFA/Drivers/USB/USB.h>
 
-#include "Config.hpp"
+#include "TPC/Config.hpp"
 #include "TPC/USBDescriptor.hpp"
 
 using namespace TPC::USBDescriptor;
@@ -28,8 +28,8 @@ static const USB_Descriptor_Device_t deviceDescriptor PROGMEM = {
   .SubClass = USB_CSCP_NoDeviceSubclass,
   .Protocol = USB_CSCP_NoDeviceProtocol,
   .Endpoint0Size = FIXED_CONTROL_ENDPOINT_SIZE,
-  .VendorID = Config::USB_VENDOR_ID,
-  .ProductID = Config::USB_PRODUCT_ID,
+  .VendorID = TPC::Config::USB_VENDOR_ID,
+  .ProductID = TPC::Config::USB_PRODUCT_ID,
   .ReleaseNumber = VERSION_BCD(0,0,1),
   .ManufacturerStrIndex = (uint8_t) StringNumber::MANUFACTURER,
   .ProductStrIndex = (uint8_t) StringNumber::PRODUCT,
