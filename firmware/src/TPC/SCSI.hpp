@@ -1,5 +1,5 @@
-#ifndef __TPC_TPC_SCSI_HPP
-#define __TPC_TPC_SCSI_HPP
+#ifndef __TPC_SCSI_HPP
+#define __TPC_SCSI_HPP
 
 #include <stdbool.h>
 

@@ -1,5 +1,5 @@
-#ifndef __TPC_USB_INTERFACE_BLOCK_STORAGE_HPP
-#define __TPC_USB_INTERFACE_BLOCK_STORAGE_HPP
+#ifndef __TPC_BLOCK_STORAGE_HPP
+#define __TPC_BLOCK_STORAGE_HPP
 
 #include <stdint.h>
 
