@@ -5,7 +5,7 @@
 #include "TPC/SerialDriver.hpp"
 #include "TPC/MicrocontrollerDriver.hpp"
 #include "TPC/TPController.hpp"
-#include "UI/UIController.hpp"
+#include "TPC/Application.hpp"
 #include "TPC/USBDriver.hpp"
 
 static uint8_t const DATA[] = {
@@ -31,7 +31,7 @@ int main() {
   // Second stage init.
   TPC::TPController::init();
   TPC::USBDriver::init();
-  UI::UIController::init();
+  TPC::Application::init();
   sei();
 
   static const char initStr2[] PROGMEM = "Init stage two complete.\r\n";

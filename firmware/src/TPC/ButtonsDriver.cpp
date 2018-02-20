@@ -5,7 +5,7 @@
 #include <avr/io.h>
 
 #include "TPC/ButtonsDriver.hpp"
-#include "UI/UIController.hpp"
+#include "TPC/Application.hpp"
 
 enum class State : uint8_t {
   NONE_PRESSED,
@@ -65,11 +65,11 @@ ISR(PORTA_INT0_vect) {
   State newState = readState();
 
   if (oldState == State::CONFIRM_PRESSED && newState == State::NONE_PRESSED) {
-    UI::UIController::Hooks::confirm();
+    TPC::Application::Hooks::confirm_ID();
   } else if (oldState == State::CANCEL_PRESSED && newState == State::NONE_PRESSED) {
-    UI::UIController::Hooks::cancel();
+    TPC::Application::Hooks::cancel_ID();
   } else if (oldState == State::BOTH_PRESSED && newState != State::BOTH_PRESSED) {
-    UI::UIController::Hooks::both();
+    TPC::Application::Hooks::both_ID();
     newState = State::AFTER_BOTH_PRESSED;
   }
 
