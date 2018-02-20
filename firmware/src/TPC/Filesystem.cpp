@@ -32,7 +32,7 @@ const TPC::Filesystem::Header TPC::Filesystem::header PROGMEM = {
 
 static void scanFile(DirectoryEntry * entry) {
   TPC::FileSelector::add(entry);
-  LOG("[Filesystem] discovered file ", entry);
+  LOG("[Filesystem]   discovered file ", entry);
 }
 
 static void scanDirectory(uint8_t * const clusterData) {
@@ -82,4 +82,5 @@ void TPC::Filesystem::scanFilesystem() {
   TPC::FileSelector::reset();
   uint8_t * const clusterData = TPC::BlockStorage::get(ROOT_DIR_SECTOR);
   scanDirectory(clusterData);
+  LOG("[Filesystem] scan complete");
 }

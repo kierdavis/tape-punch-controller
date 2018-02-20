@@ -37,7 +37,7 @@ static void startPrinting_IE() {
 }
 
 static void confirm_IE() {
-  LOG("[Application] confirm button pressed");
+  LOG("[Application] CONFIRM pressed");
   switch (state) {
     case State::IDLE: {
       startPrinting_IE();
@@ -51,11 +51,11 @@ static void confirm_IE() {
 }
 
 static void cancel_IE() {
-  LOG("[Application] cancel button pressed");
+  LOG("[Application] CANCEL pressed");
 }
 
 static void both_IE() {
-  LOG("[Application] both buttons pressed");
+  LOG("[Application] CONFIRM+CANCEL pressed");
 }
 
 void TPC::Application::Hooks::confirm_ID() {

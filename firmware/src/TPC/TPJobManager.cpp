@@ -4,6 +4,7 @@
 #include <util/atomic.h>
 
 #include "Config.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/TPBodyBuffer.hpp"
 #include "TPC/TPCoding.hpp"
 #include "TPC/TPJobManager.hpp"
@@ -88,6 +89,7 @@ void TPC::TPJobManager::setJob_IE(uint16_t count, const uint8_t * ptr) {
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     goToLeader_ID();
   }
+  LOG("[TPJobManager] job added or changed");
 }
 
 void TPC::TPJobManager::tick_IE() {
