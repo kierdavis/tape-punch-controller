@@ -17,8 +17,6 @@ enum class State : uint8_t {
   TRAILER,
 };
 
-// TODO: use the FAT
-
 static volatile State state = State::IDLE;
 static volatile uint16_t count = 0;
 

@@ -7,11 +7,6 @@
 
 #include "TPC/Filesystem.hpp"
 
-#define LOG(STR, ...) { \
-  static const char str[] PROGMEM = STR; \
-  TPC::Log::log(str,##__VA_ARGS__); \
-}
-
 namespace TPC {
   namespace Log {
     void init();
@@ -32,6 +27,11 @@ namespace TPC {
     void log(PGM_P str, uint16_t val);
     void log(PGM_P str, TPC::Filesystem::DirectoryEntry * entry);
   }
+}
+
+#define LOG(STR, ...) { \
+  static const char str[] PROGMEM = STR; \
+  TPC::Log::log(str,##__VA_ARGS__); \
 }
 
 #endif
