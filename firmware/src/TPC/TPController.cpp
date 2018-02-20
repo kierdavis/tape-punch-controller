@@ -37,13 +37,17 @@ static void switchOff_ID() {
   on = false;
 }
 
-void TPC::TPController::setJob_IE(uint16_t length, const uint8_t * buffer) {
-  TPC::TPJobManager::setJob_IE(length, buffer);
+bool TPC::TPController::isOn_IE() {
   bool on_;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     on_ = on;
   }
-  if (!on_) {
+  return on_;
+}
+
+void TPC::TPController::setJob_IE(uint16_t length, const uint8_t * buffer) {
+  TPC::TPJobManager::setJob_IE(length, buffer);
+  if (!isOn_IE()) {
     switchOn_IE();
   }
 }

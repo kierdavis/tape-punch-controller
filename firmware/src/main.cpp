@@ -23,6 +23,7 @@ int main() {
   while (1) {
     TPC::USBDriver::tick();
     TPC::TPController::tick_IE();
+    TPC::Application::tick_IE();
     _delay_us(1000);
   }
 }

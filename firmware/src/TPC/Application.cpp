@@ -36,6 +36,26 @@ static void startPrinting_IE() {
   }
 }
 
+static void checkIfDonePrinting_IE() {
+  if (!TPC::TPController::isOn_IE()) {
+    LOG("[Application] printing complete");
+    state = State::IDLE;
+  }
+}
+
+void TPC::Application::tick_IE() {
+  switch (state) {
+    case State::IDLE: {
+      // Do nothing.
+      break;
+    }
+    case State::PRINT: {
+      checkIfDonePrinting_IE();
+      break;
+    }
+  }
+}
+
 static void confirm_IE() {
   LOG("[Application] CONFIRM pressed");
   switch (state) {
