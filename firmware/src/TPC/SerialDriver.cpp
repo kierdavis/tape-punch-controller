@@ -1,9 +1,9 @@
 #include <avr/io.h>
-#include <avr/pgmspace.h>
 #include <stdbool.h>
 #include <stdint.h>
 
 #include "Config.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/SerialDriver.hpp"
 
 static volatile USART_t * const USART = &USARTD0;
@@ -47,11 +47,8 @@ void TPC::SerialDriver::init() {
   USART->BAUDCTRLA = BAUDCTRLA;
   USART->BAUDCTRLB = BAUDCTRLB;
 
-  SERIAL_WRITE("BSCALE 0x");
-  TPC::SerialDriver::writeHex4(BSCALE & 0xF);
-  SERIAL_WRITE("\r\nBSEL 0x");
-  TPC::SerialDriver::writeHex16(BSEL);
-  TPC::SerialDriver::writeNewline();
+  LOG("[SerialDriver] BSCALE = 0x", (uint8_t) (BSCALE & 0xF));
+  LOG("[SerialDriver] BSEL = 0x", BSEL);
 }
 
 static bool transmitBufferEmpty() {
@@ -61,34 +58,4 @@ static bool transmitBufferEmpty() {
 void TPC::SerialDriver::write(uint8_t data) {
   while (!transmitBufferEmpty()) {}
   USART->DATA = data;
-}
-
-void TPC::SerialDriver::writeNewline() {
-  TPC::SerialDriver::write('\r');
-  TPC::SerialDriver::write('\n');
-}
-
-void TPC::SerialDriver::writeStringP(PGM_P str) {
-  while (1) {
-    char c = pgm_read_byte(str);
-    if (c == '\0') { break; }
-    TPC::SerialDriver::write((uint8_t) c);
-    str++;
-  }
-}
-
-void TPC::SerialDriver::writeHex4(uint8_t val) {
-  val &= 0xF;
-  const char c = (val < 10) ? ('0' + val) : ('a' + val - 10);
-  TPC::SerialDriver::write(c);
-}
-
-void TPC::SerialDriver::writeHex8(uint8_t val) {
-  TPC::SerialDriver::writeHex4(val >> 4);
-  TPC::SerialDriver::writeHex4(val);
-}
-
-void TPC::SerialDriver::writeHex16(uint16_t val) {
-  TPC::SerialDriver::writeHex8(val >> 8);
-  TPC::SerialDriver::writeHex8(val);
 }

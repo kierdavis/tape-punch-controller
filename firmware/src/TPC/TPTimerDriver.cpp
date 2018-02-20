@@ -6,6 +6,7 @@
 #include "Config.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPTimerDriver.hpp"
+#include "TPC/Log.hpp"
 
 static uint16_t constexpr PRESCALER = 4;
 static uint8_t constexpr CLKSEL = TC_CLKSEL_DIV4_gc;
@@ -67,6 +68,9 @@ void TPC::TPTimerDriver::init() {
   TCC0.PER = 0xFFFF;
   TCC0.CCA = ENERGISE_COUNT;
   TCC0.CCB = DEENERGISE_COUNT;
+
+  LOG("[TPTimerDriver] ENERGISE_COUNT = 0x", ENERGISE_COUNT);
+  LOG("[TPTimerDriver] DEENERGISE_COUNT = 0x", DEENERGISE_COUNT);
 }
 
 void TPC::TPTimerDriver::stop() {

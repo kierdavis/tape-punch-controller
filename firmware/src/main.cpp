@@ -2,7 +2,7 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "TPC/SerialDriver.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/MicrocontrollerDriver.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/Application.hpp"
@@ -23,15 +23,15 @@ static uint8_t const DATA[] = {
 int main() {
   // First stage init.
   TPC::MicrocontrollerDriver::init();
-  TPC::SerialDriver::init();
-  SERIAL_WRITE("Init stage one complete.\r\n");
+  TPC::Log::init();
+  LOG("[main] initialising...");
 
   // Second stage init.
   TPC::TPController::init();
   TPC::USBDriver::init();
   TPC::Application::init();
   sei();
-  SERIAL_WRITE("Init stage two complete.\r\n");
+  LOG("[main] ready");
 
   // Controller::TapePunch::addJob_IE(100); // leader (100 blank rows)
   // Controller::TapePunch::addJob_IE(sizeof(DATA)/sizeof(DATA[0]), DATA);

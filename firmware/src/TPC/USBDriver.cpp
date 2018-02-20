@@ -6,7 +6,7 @@
 #include <LUFA/Drivers/USB/USB.h>
 #include <LUFA/Platform/Platform.h>
 
-#include "TPC/SerialDriver.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/USBDriver.hpp"
 #include "TPC/USBDescriptor.hpp"
 #include "TPC/SCSI.hpp"
@@ -45,20 +45,20 @@ void TPC::USBDriver::tick() {
 
 extern "C" {
   void EVENT_USB_Device_Connect() {
-    static const char str[] PROGMEM = "USB: enumerating\r\n";
-    TPC::SerialDriver::writeStringP(str);
+    LOG("[USB] enumerating");
   }
 
   void EVENT_USB_Device_Disconnect() {
-    static const char str[] PROGMEM = "USB: disconnected\r\n";
-    TPC::SerialDriver::writeStringP(str);
+    LOG("[USB] disconnected");
   }
 
   void EVENT_USB_Device_ConfigurationChanged() {
     bool success = MS_Device_ConfigureEndpoints(&msdInfo);
-    static const char successStr[] PROGMEM = "USB: configuration change successful.\r\n";
-    static const char failureStr[] PROGMEM = "USB: configuration change unsuccessful.\r\n";
-    TPC::SerialDriver::writeStringP(success ? successStr : failureStr);
+    if (success) {
+      LOG("[USB] configuration change successful");
+    } else {
+      LOG("[USB] configuration change failed");
+    }
     // TODO: actually handle `success`?
   }
 

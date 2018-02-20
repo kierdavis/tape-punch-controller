@@ -6,7 +6,7 @@
 #include <LUFA/Drivers/USB/USB.h>
 
 #include "Config.hpp"
-#include "TPC/SerialDriver.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/BlockStorage.hpp"
 #include "TPC/SCSI.hpp"
 #include "TPC/Util.hpp"
@@ -38,13 +38,10 @@ static void resetSenseData() {
 }
 
 static bool error(const uint8_t key, const uint8_t addCode, const uint8_t addQual) {
-  SERIAL_WRITE(" -> error 0x");
-  TPC::SerialDriver::writeHex8(key);
-  SERIAL_WRITE(" 0x");
-  TPC::SerialDriver::writeHex8(addCode);
-  SERIAL_WRITE(" 0x");
-  TPC::SerialDriver::writeHex8(addQual);
-  SERIAL_WRITE("\r\n");
+  LOG("[SCSI] Error response!");
+  LOG("[SCSI]   key: 0x", key);
+  LOG("[SCSI]   ac: 0x", addCode);
+  LOG("[SCSI]   aq: 0x", addQual);
   senseData.SenseKey = key;
   senseData.AdditionalSenseCode = addCode;
   senseData.AdditionalSenseQualifier = addQual;
@@ -52,7 +49,6 @@ static bool error(const uint8_t key, const uint8_t addCode, const uint8_t addQua
 }
 
 static bool ok() {
-  SERIAL_WRITE(" -> ok\r\n");
   return true;
 }
 
@@ -187,8 +183,6 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
 
     // Receive a block.
     const uint8_t addr = startAddr + i;
-    SERIAL_WRITE("\r\n[SCSI] write: 0x");
-    TPC::SerialDriver::writeHex8(addr);
     TPC::BlockStorage::receive(addr);
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
 
@@ -225,8 +219,6 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
 
     // Send a block.
     const uint8_t addr = startAddr + i;
-    SERIAL_WRITE("\r\n[SCSI] read: 0x");
-    TPC::SerialDriver::writeHex8(addr);
     TPC::BlockStorage::send(addr);
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
 
@@ -257,7 +249,6 @@ static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
-  SERIAL_WRITE(" (NOT IMPLEMENTED)");
   return handleInvalid(commandBlock);
 }
 
@@ -266,69 +257,66 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
   // of an error.
   resetSenseData();
 
-  SERIAL_WRITE("[SCSI] command: ");
-
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   switch (cmd) {
     case SCSI_CMD_INQUIRY: {
-      SERIAL_WRITE("inquiry");
+      LOG("[SCSI] inquiry");
       return handleInquiry(commandBlock);
     }
     case SCSI_CMD_REQUEST_SENSE: {
-      SERIAL_WRITE("request sense");
+      LOG("[SCSI] request sense");
       return handleRequestSense(commandBlock);
     }
     case SCSI_CMD_TEST_UNIT_READY: {
-      SERIAL_WRITE("test unit ready");
+      LOG("[SCSI] test unit ready");
       return handleTestUnitReady(commandBlock);
     }
     case SCSI_CMD_READ_CAPACITY_10: {
-      SERIAL_WRITE("read capacity 10");
+      LOG("[SCSI] read capacity 10");
       return handleReadCapacity10(commandBlock);
     }
     case SCSI_CMD_START_STOP_UNIT: {
-      SERIAL_WRITE("start stop unit");
+      LOG("[SCSI] start stop unit");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_SEND_DIAGNOSTIC: {
-      SERIAL_WRITE("send diagnostic");
+      LOG("[SCSI] send diagnostic");
       return handleSendDiagnostic(commandBlock);
     }
     case SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL: {
-      SERIAL_WRITE("prevent allow medium removal");
+      LOG("[SCSI] prevent allow medium removal");
       return handlePreventAllowMediumRemoval(commandBlock);
     }
     case SCSI_CMD_WRITE_10: {
-      SERIAL_WRITE("write 10");
+      LOG("[SCSI] write 10");
       return handleWrite10(commandBlock);
     }
     case SCSI_CMD_READ_10: {
-      SERIAL_WRITE("read 10");
+      LOG("[SCSI] read 10");
       return handleRead10(commandBlock);
     }
     case SCSI_CMD_WRITE_6: {
-      SERIAL_WRITE("write 6");
+      LOG("[SCSI] write 6");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_READ_6: {
-      SERIAL_WRITE("read 6");
+      LOG("[SCSI] read 6");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_VERIFY_10: {
-      SERIAL_WRITE("verify 10");
+      LOG("[SCSI] verify 10");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_6: {
-      SERIAL_WRITE("mode sense 6");
+      LOG("[SCSI] mode sense 6");
       return handleModeSense6(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_10: {
-      SERIAL_WRITE("mod sense 10");
+      LOG("[SCSI] mode sense 10");
       return handleUnimplemented(commandBlock);
     }
     default: {
-      SERIAL_WRITE("unknown 0x");
-      TPC::SerialDriver::writeHex8(cmd);
+      LOG("[SCSI] unknown 0x", cmd);
       return handleInvalid(commandBlock);
     }
   }

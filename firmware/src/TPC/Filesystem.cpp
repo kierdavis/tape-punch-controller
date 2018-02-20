@@ -1,6 +1,6 @@
 #include <avr/pgmspace.h>
 
-#include "TPC/SerialDriver.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/BlockStorage.hpp"
 #include "TPC/Filesystem.hpp"
@@ -30,27 +30,9 @@ const TPC::Filesystem::Header TPC::Filesystem::header PROGMEM = {
   .numHiddenSectors = 0
 };
 
-static void printPaddedStr(const char * const str, const uint8_t maxLen) {
-  uint8_t len = maxLen;
-  while (len != 0 && str[len-1] == ' ') {
-    len--;
-  }
-  for (uint8_t i = 0; i < len; i++) {
-    TPC::SerialDriver::write(str[i]);
-  }
-}
-
-static void printFilename(DirectoryEntry * entry) {
-  printPaddedStr(&entry->name[0], 8);
-  TPC::SerialDriver::write('.');
-  printPaddedStr(&entry->extension[0], 3);
-}
-
 static void scanFile(DirectoryEntry * entry) {
   TPC::FileSelector::add(entry);
-  SERIAL_WRITE("[FAT] Found file: ");
-  printFilename(entry);
-  SERIAL_WRITE("\r\n");
+  LOG("[Filesystem] discovered file ", entry);
 }
 
 static void scanDirectory(uint8_t * const clusterData) {
@@ -96,7 +78,7 @@ static void scanDirectory(uint8_t * const clusterData) {
 }
 
 void TPC::Filesystem::scanFilesystem() {
-  SERIAL_WRITE("[FAT] Scanning...\r\n");
+  LOG("[Filesystem] scanning...");
   TPC::FileSelector::reset();
   uint8_t * const clusterData = TPC::BlockStorage::get(ROOT_DIR_SECTOR);
   scanDirectory(clusterData);

@@ -6,7 +6,7 @@
 #include "TPC/BlockStorage.hpp"
 #include "TPC/ButtonsDriver.hpp"
 #include "TPC/Filesystem.hpp"
-#include "TPC/SerialDriver.hpp"
+#include "TPC/Log.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/FileSelector.hpp"
 
@@ -29,7 +29,7 @@ static void startPrinting_IE() {
     uint8_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
     uint8_t * fileData = TPC::BlockStorage::get(firstCluster);
     uint16_t length = selectedFile->size;
-    SERIAL_WRITE("Printing\r\n");
+    LOG("[Application] printing ", selectedFile);
     // TODO: check if already processing a job
     TPC::TPController::setJob_IE(length, fileData);
     state = State::PRINT;
@@ -37,6 +37,7 @@ static void startPrinting_IE() {
 }
 
 static void confirm_IE() {
+  LOG("[Application] confirm button pressed");
   switch (state) {
     case State::IDLE: {
       startPrinting_IE();
@@ -50,11 +51,11 @@ static void confirm_IE() {
 }
 
 static void cancel_IE() {
-
+  LOG("[Application] cancel button pressed");
 }
 
 static void both_IE() {
-
+  LOG("[Application] both buttons pressed");
 }
 
 void TPC::Application::Hooks::confirm_ID() {
