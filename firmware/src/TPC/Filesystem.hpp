@@ -9,7 +9,7 @@ namespace TPC {
   namespace Filesystem {
     // Together these define the memory requirement.
     static constexpr uint16_t BYTES_PER_SECTOR = 512;
-    static constexpr uint16_t NUM_MUTABLE_SECTORS = 8;
+    static constexpr uint16_t NUM_MUTABLE_SECTORS = 28;
 
     static constexpr uint8_t SECTORS_PER_CLUSTER = 1;
     static constexpr uint16_t NUM_RESERVED_SECTORS = 1;
