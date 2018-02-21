@@ -38,7 +38,7 @@ static void resetSenseData() {
   memcpy_P(&senseData, &initialSenseData, sizeof(senseData));
 }
 
-static bool error(const uint8_t key, const uint8_t addCode, const uint8_t addQual) {
+static bool error(MS_CommandBlockWrapper_t * const commandBlock, const uint8_t key, const uint8_t addCode, const uint8_t addQual) {
   LOG("[SCSI] sending error response; most recent command was 0x", lastCmd);
   LOG("[SCSI]   key: 0x", key);
   LOG("[SCSI]   ac: 0x", addCode);
@@ -46,6 +46,10 @@ static bool error(const uint8_t key, const uint8_t addCode, const uint8_t addQua
   senseData.SenseKey = key;
   senseData.AdditionalSenseCode = addCode;
   senseData.AdditionalSenseQualifier = addQual;
+  // DataTransferLength represents the number of bytes left to send. If we don't
+  // clear it, LUFA assumes we want to temporarily stall rather than abort with
+  // an error.
+  commandBlock->DataTransferLength = 0;
   return false;
 }
 
@@ -116,6 +120,7 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
       default: {
         // This VPD page isn't supported.
         return error(
+          commandBlock,
           SCSI_SENSE_KEY_ILLEGAL_REQUEST,
           SCSI_ASENSE_INVALID_FIELD_IN_CDB,
           SCSI_ASENSEQ_NO_QUALIFIER
@@ -185,6 +190,7 @@ static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) 
 static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) {
   // TODO - maybe support some of these modes?
   return error(
+    commandBlock,
     SCSI_SENSE_KEY_ILLEGAL_REQUEST,
     SCSI_ASENSE_INVALID_FIELD_IN_CDB,
     SCSI_ASENSEQ_NO_QUALIFIER
@@ -204,6 +210,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
     return error(
+      commandBlock,
       SCSI_SENSE_KEY_ILLEGAL_REQUEST,
       SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
       SCSI_ASENSEQ_NO_QUALIFIER
@@ -240,6 +247,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
     return error(
+      commandBlock,
       SCSI_SENSE_KEY_ILLEGAL_REQUEST,
       SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
       SCSI_ASENSEQ_NO_QUALIFIER
@@ -333,6 +341,7 @@ static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandB
 static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
   LOG("[SCSI] unrecognised command 0x", lastCmd);
   return error(
+    commandBlock,
     SCSI_SENSE_KEY_ILLEGAL_REQUEST,
     SCSI_ASENSE_INVALID_COMMAND,
     SCSI_ASENSEQ_NO_QUALIFIER
@@ -342,6 +351,7 @@ static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
 static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
   LOG("[SCSI] recognised but unimplemented command 0x", lastCmd);
   return error(
+    commandBlock,
     SCSI_SENSE_KEY_ILLEGAL_REQUEST,
     SCSI_ASENSE_INVALID_COMMAND,
     SCSI_ASENSEQ_NO_QUALIFIER
