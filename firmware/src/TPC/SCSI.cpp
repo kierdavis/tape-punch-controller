@@ -280,7 +280,7 @@ static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandB
   // Number of bytes that the host has allocated for the response (allocation
   // length).
   uint16_t destLength;
-  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[3], &destLength);
+  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &destLength);
   // Maximum number of bytes that we can return.
   const uint16_t srcLength = sizeof(response);
   // Number of bytes that we'll transfer.
