@@ -54,6 +54,9 @@ static bool ok() {
 }
 
 static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
+  static constexpr uint8_t EVPD_MASK = 1 << 0;
+  static constexpr uint8_t UNIT_SERIAL_NUMBER_PAGE_CODE = 0x80;
+
   static const SCSI_Inquiry_Response_t standardResponse PROGMEM = {
     .DeviceType = 0x0, // block device
     .PeripheralQualifier = 0x0, // peripheral with given device type is connected
@@ -80,16 +83,36 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
     .RevisionID = {'0','.','1',0},
   };
 
+  typedef struct {
+    unsigned deviceType : 5;
+    unsigned peripheralQualifier : 3;
+    uint8_t pageCode;
+    uint8_t reserved;
+    uint8_t pageLength;
+    uint8_t serialNumber[5];
+  } ATTR_PACKED UnitSerialNumberResponse;
+  static const UnitSerialNumberResponse unitSerialNumberResponse PROGMEM = {
+    .deviceType = 0x0,
+    .peripheralQualifier = 0x0,
+    .pageCode = UNIT_SERIAL_NUMBER_PAGE_CODE,
+    .reserved = 0,
+    .pageLength = 5,
+    .serialNumber = {'D','E','V','E','L'},
+  };
+
   PGM_VOID_P responsePtr = nullptr;
   uint16_t responseLength = 0;
 
-  static constexpr uint8_t EVPD_MASK = 1 << 0;
   const uint8_t flags = commandBlock->SCSICommandData[1];
   if (flags & EVPD_MASK) {
     // A Vital Product Data page is requested.
     const uint8_t pageCode = commandBlock->SCSICommandData[2];
     switch (pageCode) {
-      // TODO: support some VPD pages.
+      case UNIT_SERIAL_NUMBER_PAGE_CODE: {
+        responsePtr = &unitSerialNumberResponse;
+        responseLength = sizeof(unitSerialNumberResponse);
+        break;
+      }
       default: {
         // This VPD page isn't supported.
         return error(
