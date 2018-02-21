@@ -81,11 +81,10 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   };
 
   // Check whether the type of response requested by the client is supported.
-  static constexpr uint8_t CMDDT_MASK = 1 << 1;
   static constexpr uint8_t EVPD_MASK = 1 << 0;
   const uint8_t flags = commandBlock->SCSICommandData[1];
   const uint8_t pageCode = commandBlock->SCSICommandData[2];
-  if ((flags & (CMDDT_MASK | EVPD_MASK)) || (pageCode != 0)) {
+  if ((flags & EVPD_MASK) || (pageCode != 0)) {
     return error(
       SCSI_SENSE_KEY_ILLEGAL_REQUEST,
       SCSI_ASENSE_INVALID_FIELD_IN_CDB,
