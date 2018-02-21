@@ -118,11 +118,11 @@ static const USB_Descriptor_String_t * lookupString(uint8_t number) {
       return (const USB_Descriptor_String_t *) &languageString;
     }
     case StringNumber::MANUFACTURER: {
-      DEFINE_STRING(manufacturerString, L"Kier Davis");
+      DEFINE_STRING(manufacturerString, L"University of Southampton");
       return (const USB_Descriptor_String_t *) &manufacturerString;
     }
     case StringNumber::PRODUCT: {
-      DEFINE_STRING(productString, L"Tape punch controller");
+      DEFINE_STRING(productString, L"Tape punch interface");
       return (const USB_Descriptor_String_t *) &productString;
     }
     default: {
