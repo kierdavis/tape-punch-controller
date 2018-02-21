@@ -54,7 +54,7 @@ static bool ok() {
 }
 
 static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
-  static const SCSI_Inquiry_Response_t response PROGMEM = {
+  static const SCSI_Inquiry_Response_t standardResponse PROGMEM = {
     .DeviceType = 0x0, // block device
     .PeripheralQualifier = 0x0, // peripheral with given device type is connected
     .Reserved = 0,
@@ -80,16 +80,30 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
     .RevisionID = {'0','.','1',0},
   };
 
-  // Check whether the type of response requested by the client is supported.
+  PGM_VOID_P responsePtr = nullptr;
+  uint16_t responseLength = 0;
+
   static constexpr uint8_t EVPD_MASK = 1 << 0;
   const uint8_t flags = commandBlock->SCSICommandData[1];
-  const uint8_t pageCode = commandBlock->SCSICommandData[2];
-  if ((flags & EVPD_MASK) || (pageCode != 0)) {
-    return error(
-      SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-      SCSI_ASENSE_INVALID_FIELD_IN_CDB,
-      SCSI_ASENSEQ_NO_QUALIFIER
-    );
+  if (flags & EVPD_MASK) {
+    // A Vital Product Data page is requested.
+    const uint8_t pageCode = commandBlock->SCSICommandData[2];
+    switch (pageCode) {
+      // TODO: support some VPD pages.
+      default: {
+        // This VPD page isn't supported.
+        return error(
+          SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+          SCSI_ASENSE_INVALID_FIELD_IN_CDB,
+          SCSI_ASENSEQ_NO_QUALIFIER
+        );
+      }
+    }
+  }
+  else {
+    // The standard response is requested.
+    responsePtr = &standardResponse;
+    responseLength = sizeof(standardResponse);
   }
 
   // Number of bytes that the host has allocated for the response (allocation
@@ -97,12 +111,12 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   uint16_t destLength;
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[3], &destLength);
   // Maximum number of bytes that we can return.
-  const uint16_t srcLength = sizeof(response);
+  const uint16_t srcLength = responseLength;
   // Number of bytes that we'll transfer.
   const uint16_t transferLength = TPC::Util::min(destLength, srcLength);
 
   // Send response to client, filling the rest of the client's buffer with zeros.
-  Endpoint_Write_PStream_LE(&response, transferLength, NULL);
+  Endpoint_Write_PStream_LE(responsePtr, transferLength, NULL);
   Endpoint_Null_Stream(destLength - transferLength, NULL);
   Endpoint_ClearIN();
   commandBlock->DataTransferLength -= transferLength;
