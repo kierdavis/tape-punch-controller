@@ -16,6 +16,7 @@ SRC = $(TARGET_SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
 OPTIMIZATION = s
 LTO = Y
 CC_FLAGS += -Isrc -Wall -Werror -DUSE_LUFA_CONFIG_HEADER
+LD_FLAGS += -Wl,--defsym=__heap_end=0x805e00
 CPP_STANDARD = c++14
 
 # TODO: http://www.fourwalledcubicle.com/files/LUFA/Doc/151115/html/_page__token_summary.html
