@@ -278,11 +278,13 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
-  // TODO: handle this properly
-  Endpoint_Null_Stream(4, NULL);
-  Endpoint_ClearIN();
-  commandBlock->DataTransferLength -= 4;
-  return ok();
+  // Page or subpage not supported.
+  return error(
+    commandBlock,
+    SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+    SCSI_ASENSE_INVALID_FIELD_IN_CDB,
+    SCSI_ASENSEQ_NO_QUALIFIER
+  );
 }
 
 static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandBlock) {
