@@ -278,13 +278,34 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
-  // Page or subpage not supported.
-  return error(
-    commandBlock,
-    SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-    SCSI_ASENSE_INVALID_FIELD_IN_CDB,
-    SCSI_ASENSEQ_NO_QUALIFIER
-  );
+  typedef struct {
+    uint8_t dataLength; // Length of the response, not including this byte.
+    uint8_t mediumType;
+    uint8_t reserved;
+    uint8_t blockDescriptorLength;
+  } Header;
+
+  static const Header header PROGMEM = {
+    .dataLength = 3,
+    .mediumType = 0,
+    .reserved = 0,
+    .blockDescriptorLength = 0,
+  };
+
+  // Number of bytes that the host has allocated for the response (allocation
+  // length).
+  const uint8_t destLength = commandBlock->SCSICommandData[4];
+  // Maximum number of bytes that we can return.
+  const uint8_t srcLength = sizeof(Header);
+  // Number of bytes that we'll transfer.
+  const uint8_t transferLength = TPC::Util::min(destLength, srcLength);
+
+  // Send response to client, filling the rest of the client's buffer with zeros.
+  Endpoint_Write_PStream_LE(&header, transferLength, NULL);
+  Endpoint_Null_Stream(destLength - transferLength, NULL);
+  Endpoint_ClearIN();
+  commandBlock->DataTransferLength -= transferLength;
+  return ok();
 }
 
 static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandBlock) {
