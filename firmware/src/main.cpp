@@ -2,6 +2,7 @@
 #include <util/delay.h>
 
 #include "TPC/Application.hpp"
+#include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/MicrocontrollerDriver.hpp"
 #include "TPC/TPController.hpp"
@@ -14,6 +15,7 @@ int main() {
   LOG("[main] initialising...");
 
   // Second stage init.
+  TPC::Filesystem::init();
   TPC::USBDriver::init();
   TPC::TPController::init();
   TPC::Application::init();

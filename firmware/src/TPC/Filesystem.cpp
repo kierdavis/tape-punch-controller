@@ -80,6 +80,30 @@ static void scanDirectory(uint8_t * const clusterData) {
   }
 }
 
+static void writeFATEntry(const uint16_t index, const uint16_t val) {
+  uint8_t * const fat = TPC::BlockStorage::get(FAT_SECTOR);
+  const uint16_t pairIndex = index / 2;
+  uint8_t * const pair = &fat[pairIndex * 3];
+  if (val % 2 == 0) {
+    // First half of pair.
+    // Low eight bits stored in pair[0].
+    // High four bits stored in low nibble of pair[1].
+    pair[0] = val & 0xFF;
+    pair[1] = (pair[1] & 0xF0) | ((val >> 8) & 0x0F);
+  } else {
+    // Second half of pair.
+    // Low four bits stored in high nibble of pair[1].
+    // High eight bits stored in pair[2].
+    pair[1] = (pair[1] & 0x0F) | ((val << 4) & 0xF0);
+    pair[2] = (val >> 4) & 0xFF;
+  }
+}
+
+void TPC::Filesystem::init() {
+  writeFATEntry(0, 0xF00 | MEDIA_TYPE);
+  writeFATEntry(1, 0xFFF);
+}
+
 void TPC::Filesystem::scanFilesystem() {
   LOG("[Filesystem] scanning...");
   TPC::FileSelector::reset();

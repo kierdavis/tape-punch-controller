@@ -22,6 +22,10 @@ namespace TPC {
     static constexpr uint16_t NUM_DATA_SECTORS = NUM_MUTABLE_SECTORS - SECTORS_PER_FAT*NUM_FATS - ROOT_DIR_SIZE_SECTORS;
     static constexpr uint16_t NUM_SECTORS = NUM_MUTABLE_SECTORS + 1;
 
+    // 0xF0 for a generic non-partitioned disk.
+    // 0xF8 for a generic partitioned disk.
+    static constexpr uint8_t MEDIA_TYPE = 0xF0;
+
     class Header {
     public:
       uint8_t bootCode[3];
@@ -56,6 +60,7 @@ namespace TPC {
 
     extern const Header header PROGMEM;
 
+    void init();
     void scanFilesystem();
   }
 }
