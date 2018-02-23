@@ -187,6 +187,11 @@ static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) 
   return ok();
 }
 
+static bool handleStartStopUnit(MS_CommandBlockWrapper_t * const commandBlock) {
+  // No operation required.
+  return ok();
+}
+
 static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) {
   // TODO - maybe support some of these modes?
   return error(
@@ -405,7 +410,7 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
       return handleReadCapacity10(commandBlock);
     }
     case SCSI_CMD_START_STOP_UNIT: {
-      return handleUnimplemented(commandBlock);
+      return handleStartStopUnit(commandBlock);
     }
     case SCSI_CMD_SEND_DIAGNOSTIC: {
       return handleSendDiagnostic(commandBlock);
