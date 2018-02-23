@@ -25,12 +25,19 @@ const TPC::Filesystem::Header TPC::Filesystem::header PROGMEM = {
   .numReservedSectors = NUM_RESERVED_SECTORS,
   .numFATs = NUM_FATS,
   .numRootDirEntries = NUM_ROOT_DIR_ENTRIES,
-  .numSectors = NUM_SECTORS,
-  .mediaType = 0xF8,
+  .reserved1 = 0,
+  .mediaType = MEDIA_TYPE,
   .sectorsPerFat = SECTORS_PER_FAT,
   .sectorsPerTrack = 0,
   .numHeads = 0,
-  .numHiddenSectors = 0
+  .numHiddenSectors = 0,
+  .numSectors = NUM_SECTORS,
+  .driveNumber = 0x00, // first removable media
+  .reserved2 = 0,
+  .extendedBootSignature = 0x29, // a magic number
+  .volumeID = {0x12, 0x34, 0x56, 0x78},
+  .volumeLabel = {'T','A','P','E',' ','P','U','N','C','H',' '},
+  .fsTypeStr = {'F','A','T','1','2',' ',' ',' '},
 };
 
 static void scanFile(DirectoryEntry * entry) {

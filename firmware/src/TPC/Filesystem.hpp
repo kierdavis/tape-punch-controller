@@ -28,20 +28,28 @@ namespace TPC {
 
     class Header {
     public:
-      uint8_t bootCode[3];
-      char vendorStr[8];
-      uint16_t bytesPerSector;
-      uint8_t sectorsPerCluster;
-      uint16_t numReservedSectors;
-      uint8_t numFATs;
-      uint16_t numRootDirEntries;
-      uint16_t numSectors;
-      uint8_t mediaType;
-      uint16_t sectorsPerFat;
-      uint16_t sectorsPerTrack;
-      uint16_t numHeads;
-      uint16_t numHiddenSectors;
+      /* 0x000 */ uint8_t bootCode[3];
+      /* 0x003 */ char vendorStr[8];
+      /* 0x00B */ uint16_t bytesPerSector;
+      /* 0x00D */ uint8_t sectorsPerCluster;
+      /* 0x00E */ uint16_t numReservedSectors;
+      /* 0x010 */ uint8_t numFATs;
+      /* 0x011 */ uint16_t numRootDirEntries;
+      /* 0x013 */ uint16_t reserved1;
+      /* 0x015 */ uint8_t mediaType;
+      /* 0x016 */ uint16_t sectorsPerFat;
+      /* 0x018 */ uint16_t sectorsPerTrack;
+      /* 0x01A */ uint16_t numHeads;
+      /* 0x01C */ uint32_t numHiddenSectors;
+      /* 0x020 */ uint32_t numSectors;
+      /* 0x024 */ uint8_t driveNumber;
+      /* 0x025 */ uint8_t reserved2;
+      /* 0x026 */ uint8_t extendedBootSignature;
+      /* 0x027 */ uint8_t volumeID[4];
+      /* 0x02B */ char volumeLabel[11];
+      /* 0x036 */ char fsTypeStr[8];
     };
+    static_assert(sizeof(Header) == 0x3e, "Header should be 0x3e bytes long");
 
     class DirectoryEntry {
     public:
