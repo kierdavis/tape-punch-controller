@@ -6,7 +6,7 @@
 
 // USB_OPT_RC32MCLKSRC: use the ~32MHz internal oscillator as the USB clock source
 // USB_OPT_BUSEVENT_PRIMED: USB bus interrupt is medium priority
-#define USE_STATIC_OPTIONS (USB_OPT_RC32MCLKSRC | USB_OPT_BUSEVENT_PRIMED)
+#define USE_STATIC_OPTIONS (USB_OPT_RC32MCLKSRC | USB_OPT_BUSEVENT_PRIHIGH)
 
 // #define USE_FLASH_DESCRIPTORS
 

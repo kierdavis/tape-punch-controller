@@ -18,8 +18,8 @@ void TPC::TPSyncDriver::init() {
   PORT->INT0MASK |= PIN_MASK;
   // Set edge detection mode on this pin to rising edge.
   pinctrls[PIN] = PORT_ISC_RISING_gc;
-  // Enable interrupt 0 (high priority).
-  PORT->INTCTRL |= PORT_INT0LVL_HI_gc;
+  // Enable interrupt 0 (medium priority).
+  PORT->INTCTRL |= PORT_INT0LVL_MED_gc;
 }
 
 ISR(PORTE_INT0_vect) {
