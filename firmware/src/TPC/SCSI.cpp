@@ -221,7 +221,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
 
   for (uint8_t i = 0; i < numBlocks; i++) {
     // Wait until endpoint is ready to send more daya.
-    if (Endpoint_WaitUntilReady()) {
+    if (Endpoint_WaitUntilReady() != ENDPOINT_READYWAIT_NoError) {
       return false;
     }
 
@@ -258,7 +258,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
 
   for (uint8_t i = 0; i < numBlocks; i++) {
     // Wait until endpoint is ready to accept more data.
-    if (Endpoint_WaitUntilReady()) {
+    if (Endpoint_WaitUntilReady() != ENDPOINT_READYWAIT_NoError) {
       return false;
     }
 
