@@ -6,6 +6,8 @@ The project involves designing a system that can interface a restored [Teletype 
 
 ## Repository Layout
 
+(this is out of date, will update soon)
+
 - [`/schematic`][repo-schematic]: the electronic schematic diagram of the system
 - [`/lasercut`][repo-lasercut]: designs for laser cut parts
 - *more to come...*
