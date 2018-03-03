@@ -31,8 +31,8 @@ namespace TPC {
 
     static uint32_t constexpr SERIAL_BAUD_RATE = 115200;
 
-    static uint16_t constexpr USB_VENDOR_ID = 0x03EB; // Atmel
-    static uint16_t constexpr USB_PRODUCT_ID = 0x2040; // LUFA test PID (must change this before shipping to customer)
+    static uint16_t constexpr USB_VENDOR_ID = 0x1BDA; // University of Southampton
+    static uint16_t constexpr USB_PRODUCT_ID = 0xE184; // Tape punch interface
 
     static uint8_t constexpr MAX_NUM_FILES = 16;
   }
