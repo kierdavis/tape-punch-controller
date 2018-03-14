@@ -56,8 +56,8 @@ static void scanDirectory(uint8_t cluster) {
 
   bool looping = true;
   while (looping && !reader.eof()) {
-    DirectoryEntry * currentEntry = (DirectoryEntry *) reader.pointer();
-    switch (currentEntry->name[0]) {
+    DirectoryEntry * entry = (DirectoryEntry *) reader.pointer();
+    switch (entry->name[0]) {
       case END_OF_DIR_MARKER: {
         looping = false;
         break;
@@ -66,17 +66,17 @@ static void scanDirectory(uint8_t cluster) {
         break;
       }
       default: {
-        const uint8_t attributes = currentEntry->attributes;
+        const uint8_t attributes = entry->attributes;
         if (attributes == LFN_ATTRS) {
           // This entry is a VFAT long filename prefix.
         }
         else if (attributes & SUBDIR_ATTR) {
           // This entry is for a subdirectory.
-          scanDirectory(currentEntry->startCluster);
+          scanDirectory(entry->startCluster);
         }
         else {
           // This entry is for a file.
-          scanFile(currentEntry);
+          scanFile(entry);
         }
         break;
       }
