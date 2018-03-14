@@ -91,7 +91,7 @@ static void writeFATEntry(const uint16_t index, const uint16_t val) {
   uint8_t * const fat = TPC::BlockStorage::get(FAT_SECTOR);
   const uint16_t pairIndex = index / 2;
   uint8_t * const pair = &fat[pairIndex * 3];
-  if (val % 2 == 0) {
+  if (index % 2 == 0) {
     // First half of pair.
     // Low eight bits stored in pair[0].
     // High four bits stored in low nibble of pair[1].
