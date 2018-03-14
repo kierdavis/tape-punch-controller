@@ -54,12 +54,12 @@ static void scanDirectory(uint8_t cluster) {
   static constexpr uint8_t LFN_ATTRS = 0x0F;
   static constexpr uint8_t SUBDIR_ATTR = 0x10;
 
-  bool looping = true;
-  while (looping && !reader.eof()) {
+  bool endOfDirReached = false;
+  while (!endOfDirReached && !reader.eof()) {
     DirectoryEntry * entry = (DirectoryEntry *) reader.pointer();
     switch (entry->name[0]) {
       case END_OF_DIR_MARKER: {
-        looping = false;
+        endOfDirReached = true;
         break;
       }
       case UNOCCUPIED_MARKER: {
