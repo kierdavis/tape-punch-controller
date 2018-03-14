@@ -87,6 +87,27 @@ static void scanDirectory(uint8_t * const clusterData) {
   }
 }
 
+static uint16_t readFATEntry(const uint16_t index) {
+  uint8_t * const fat = TPC::BlockStorage::get(FAT_SECTOR);
+  const uint16_t pairIndex = index / 2;
+  uint8_t * const pair = &fat[pairIndex * 3];
+  if (index % 2 == 0) {
+    // First half of pair.
+    // Low eight bits stored in pair[0].
+    // High four bits stored in low nibble of pair[1].
+    uint16_t lo = (uint16_t) pair[0];
+    uint16_t hi = (uint16_t) (pair[1] & 0x0F);
+    return (hi << 8) | lo;
+  } else {
+    // Second half of pair.
+    // Low four bits stored in high nibble of pair[1].
+    // High eight bits stored in pair[2].
+    uint16_t lo = (uint16_t) (pair[1] & 0xF0);
+    uint16_t hi = (uint16_t) pair[2];
+    return (hi << 4) | (lo >> 4);
+  }
+}
+
 static void writeFATEntry(const uint16_t index, const uint16_t val) {
   uint8_t * const fat = TPC::BlockStorage::get(FAT_SECTOR);
   const uint16_t pairIndex = index / 2;
@@ -117,4 +138,35 @@ void TPC::Filesystem::scanFilesystem() {
   uint8_t * const clusterData = TPC::BlockStorage::get(ROOT_DIR_SECTOR);
   scanDirectory(clusterData);
   LOG("[Filesystem] scan complete");
+}
+
+TPC::Filesystem::Reader::Reader(uint8_t _cluster)
+  : cluster(_cluster), offset(0) {}
+
+bool TPC::Filesystem::Reader::eof() const {
+  return cluster >= 0xFF8 && cluster <= 0xFFF;
+}
+
+const uint8_t * TPC::Filesystem::Reader::pointer() const {
+  if (eof()) {
+    return nullptr;
+  }
+  const uint8_t * const clusterData = TPC::BlockStorage::get(cluster);
+  return &clusterData[offset];
+}
+
+uint16_t TPC::Filesystem::Reader::usableLength() const {
+  if (eof()) {
+    return 0;
+  }
+  return BYTES_PER_CLUSTER - offset;
+}
+
+void TPC::Filesystem::Reader::advance(uint16_t amount) {
+  while (amount >= usableLength()) {
+    amount -= usableLength();
+    cluster = readFATEntry(cluster);
+    offset = 0;
+  }
+  offset += amount;
 }

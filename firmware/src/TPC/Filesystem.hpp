@@ -22,6 +22,8 @@ namespace TPC {
     static constexpr uint16_t NUM_DATA_SECTORS = NUM_MUTABLE_SECTORS - SECTORS_PER_FAT*NUM_FATS - ROOT_DIR_SIZE_SECTORS;
     static constexpr uint16_t NUM_SECTORS = NUM_MUTABLE_SECTORS + 1;
 
+    static constexpr uint16_t BYTES_PER_CLUSTER = BYTES_PER_SECTOR * SECTORS_PER_CLUSTER;
+
     // 0xF0 for a generic non-partitioned disk.
     // 0xF8 for a generic partitioned disk.
     static constexpr uint8_t MEDIA_TYPE = 0xF0;
@@ -70,6 +72,18 @@ namespace TPC {
 
     void init();
     void scanFilesystem();
+
+    class Reader {
+    public:
+      Reader(uint8_t cluster);
+      bool eof() const;
+      const uint8_t * pointer() const;
+      uint16_t usableLength() const;
+      void advance(uint16_t amount);
+    protected:
+      uint8_t cluster;
+      uint16_t offset;
+    };
   }
 }
 
