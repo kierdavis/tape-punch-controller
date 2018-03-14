@@ -45,8 +45,8 @@ static void scanFile(DirectoryEntry * entry) {
   LOG("[Filesystem]   discovered file ", entry);
 }
 
-static void scanDirectory(uint8_t * const clusterData) {
-  // TODO: follow the FAT if the directory doesn't fit into one cluster?
+static void scanDirectory(uint8_t cluster) {
+  Reader reader(cluster);
 
   static constexpr char END_OF_DIR_MARKER = '\x00';
   static constexpr char UNOCCUPIED_MARKER = '\xE5';
@@ -54,9 +54,9 @@ static void scanDirectory(uint8_t * const clusterData) {
   static constexpr uint8_t LFN_ATTRS = 0x0F;
   static constexpr uint8_t SUBDIR_ATTR = 0x10;
 
-  DirectoryEntry * currentEntry = (DirectoryEntry *) clusterData;
   bool looping = true;
-  while (looping) {
+  while (looping && !reader.eof()) {
+    DirectoryEntry * currentEntry = (DirectoryEntry *) reader.pointer();
     switch (currentEntry->name[0]) {
       case END_OF_DIR_MARKER: {
         looping = false;
@@ -72,9 +72,7 @@ static void scanDirectory(uint8_t * const clusterData) {
         }
         else if (attributes & SUBDIR_ATTR) {
           // This entry is for a subdirectory.
-          uint8_t * const subdirClusterData =
-            TPC::BlockStorage::get(currentEntry->startCluster);
-          scanDirectory(subdirClusterData);
+          scanDirectory(currentEntry->startCluster);
         }
         else {
           // This entry is for a file.
@@ -83,7 +81,7 @@ static void scanDirectory(uint8_t * const clusterData) {
         break;
       }
     }
-    currentEntry++;
+    reader.advance(sizeof(DirectoryEntry));
   }
 }
 
@@ -135,8 +133,7 @@ void TPC::Filesystem::init() {
 void TPC::Filesystem::scanFilesystem() {
   LOG("[Filesystem] scanning...");
   TPC::FileSelector::reset();
-  uint8_t * const clusterData = TPC::BlockStorage::get(ROOT_DIR_SECTOR);
-  scanDirectory(clusterData);
+  scanDirectory(ROOT_DIR_SECTOR);
   LOG("[Filesystem] scan complete");
 }
 
