@@ -72,7 +72,7 @@ static void scanDirectory(uint8_t cluster) {
         }
         else if (attributes & SUBDIR_ATTR) {
           // This entry is for a subdirectory.
-          scanDirectory(entry->startCluster);
+          scanDirectory(entry->startCluster + NUM_RESERVED_SECTORS);
         }
         else {
           // This entry is for a file.
