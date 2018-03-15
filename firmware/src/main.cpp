@@ -1,11 +1,11 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "TPC/Application.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/MicrocontrollerDriver.hpp"
 #include "TPC/TPController.hpp"
+#include "TPC/UI.hpp"
 #include "TPC/USBDriver.hpp"
 
 int main() {
@@ -18,14 +18,14 @@ int main() {
   TPC::Filesystem::init();
   TPC::USBDriver::init();
   TPC::TPController::init();
-  TPC::Application::init();
+  TPC::UI::init();
   sei();
   LOG("[main] ready");
 
   while (1) {
     TPC::USBDriver::tick();
     TPC::TPController::tick_IE();
-    TPC::Application::tick_IE();
+    TPC::UI::tick_IE();
     _delay_us(1000);
   }
 }

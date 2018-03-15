@@ -3,11 +3,11 @@
 
 #include <avr/pgmspace.h>
 
-#include "TPC/Application.hpp"
 #include "TPC/BlockStorage.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
+#include "TPC/UI.hpp"
 
 using namespace TPC::Filesystem;
 
@@ -165,7 +165,7 @@ void TPC::Filesystem::scanFilesystem() {
   TPC::FileSelector::reset();
   scanDirectory(ROOT_DIR_SECTOR);
   LOG("[Filesystem] scan complete");
-  TPC::Application::refresh_IE();
+  TPC::UI::refresh_IE();
 }
 
 // Always reports EOF.

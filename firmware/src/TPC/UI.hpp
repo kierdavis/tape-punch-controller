@@ -1,8 +1,8 @@
-#ifndef __TPC_APPLICATION_HPP
-#define __TPC_APPLICATION_HPP
+#ifndef __TPC_UI_HPP
+#define __TPC_UI_HPP
 
 namespace TPC {
-  namespace Application {
+  namespace UI {
     void init();
     void refresh_IE();
     void tick_IE();

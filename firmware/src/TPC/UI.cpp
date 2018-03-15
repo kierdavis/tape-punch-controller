@@ -2,13 +2,13 @@
 
 #include <util/atomic.h>
 
-#include "TPC/Application.hpp"
 #include "TPC/ButtonsDriver.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/LCD.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/TPController.hpp"
+#include "TPC/UI.hpp"
 
 enum class State : uint8_t {
   IDLE,
@@ -17,14 +17,14 @@ enum class State : uint8_t {
 
 static volatile State state = State::IDLE;
 
-void TPC::Application::init() {
+void TPC::UI::init() {
   TPC::ButtonsDriver::init();
   TPC::LCD::init();
   state = State::IDLE;
-  TPC::Application::refresh_IE();
+  TPC::UI::refresh_IE();
 }
 
-void TPC::Application::refresh_IE() {
+void TPC::UI::refresh_IE() {
   TPC::LCD::clear();
   switch (state) {
     case State::IDLE: {
@@ -51,7 +51,7 @@ void TPC::Application::refresh_IE() {
 
 static void setState(State newState) {
   state = newState;
-  TPC::Application::refresh_IE();
+  TPC::UI::refresh_IE();
 }
 
 static void startPrinting_IE() {
@@ -59,13 +59,13 @@ static void startPrinting_IE() {
   if (selectedFile != nullptr) {
     uint32_t size32 = selectedFile->size;
     if (size32 > 0xFFFF) {
-      LOG("[Application] WARNING: file larger than 0xFFFF bytes, truncating!");
+      LOG("[UI] WARNING: file larger than 0xFFFF bytes, truncating!");
       size32 = 0xFFFF;
     }
     uint16_t size = (uint16_t) size32;
     uint16_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
     TPC::Filesystem::Reader reader(firstCluster);
-    LOG("[Application] printing ", selectedFile);
+    LOG("[UI] printing ", selectedFile);
     // TODO: check if already processing a job
     TPC::TPController::setJob_IE(reader, size);
     setState(State::PRINT);
@@ -74,12 +74,12 @@ static void startPrinting_IE() {
 
 static void checkIfDonePrinting_IE() {
   if (!TPC::TPController::isOn_IE()) {
-    LOG("[Application] printing complete");
+    LOG("[UI] printing complete");
     setState(State::IDLE);
   }
 }
 
-void TPC::Application::tick_IE() {
+void TPC::UI::tick_IE() {
   switch (state) {
     case State::IDLE: {
       // Do nothing.
@@ -93,7 +93,7 @@ void TPC::Application::tick_IE() {
 }
 
 static void confirm_IE() {
-  LOG("[Application] CONFIRM pressed");
+  LOG("[UI] CONFIRM pressed");
   switch (state) {
     case State::IDLE: {
       startPrinting_IE();
@@ -107,26 +107,26 @@ static void confirm_IE() {
 }
 
 static void cancel_IE() {
-  LOG("[Application] CANCEL pressed");
+  LOG("[UI] CANCEL pressed");
 }
 
 static void both_IE() {
-  LOG("[Application] CONFIRM+CANCEL pressed");
+  LOG("[UI] CONFIRM+CANCEL pressed");
 }
 
-void TPC::Application::Hooks::confirm_ID() {
+void TPC::UI::Hooks::confirm_ID() {
   NONATOMIC_BLOCK(NONATOMIC_FORCEOFF) {
     confirm_IE();
   }
 }
 
-void TPC::Application::Hooks::cancel_ID() {
+void TPC::UI::Hooks::cancel_ID() {
   NONATOMIC_BLOCK(NONATOMIC_FORCEOFF) {
     cancel_IE();
   }
 }
 
-void TPC::Application::Hooks::both_ID() {
+void TPC::UI::Hooks::both_ID() {
   NONATOMIC_BLOCK(NONATOMIC_FORCEOFF) {
     both_IE();
   }
