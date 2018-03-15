@@ -44,8 +44,8 @@ void TPC::Log::writeStringP(PGM_P str) {
 void TPC::Log::writeFilename(TPC::Filesystem::DirectoryEntry * entry) {
   static constexpr uint8_t BUFFER_LEN = 32;
   char buffer[BUFFER_LEN];
-  entry->formatName(buffer, BUFFER_LEN);
-  writeString(buffer);
+  uint8_t len = entry->formatName(buffer, BUFFER_LEN);
+  writeString(buffer, len);
 }
 
 void TPC::Log::writeHex4(uint8_t val) {
