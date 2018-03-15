@@ -46,8 +46,8 @@ bool TPC::TPController::isOn_IE() {
   return on_;
 }
 
-void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader) {
-  TPC::TPJobManager::setJob_IE(reader);
+void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
+  TPC::TPJobManager::setJob_IE(reader, length);
   if (!isOn_IE()) {
     switchOn_IE();
   }

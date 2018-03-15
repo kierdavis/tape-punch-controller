@@ -22,6 +22,7 @@ static volatile State state = State::IDLE;
 static volatile uint16_t count = 0;
 
 static TPC::Filesystem::Reader bodyReader;
+static uint16_t bodyLength;
 static bool inComment = false;
 
 static void goToIdle_ID() {
@@ -48,9 +49,10 @@ static void refillBodyBuffer_IE() {
     bufferNotFull = !TPC::TPBodyBuffer::full_ID();
   }
 
-  while (bufferNotFull && !bodyReader.eof()) {
+  while (bufferNotFull && bodyLength && !bodyReader.eof()) {
     const uint8_t asciiChar = *bodyReader.pointer();
     bodyReader.advance(1);
+    bodyLength--;
 
     const uint8_t tapeCode = TPC::TPCoding::asciiToEdsac(asciiChar);
     switch (tapeCode) {
@@ -79,8 +81,9 @@ static void refillBodyBuffer_IE() {
   }
 }
 
-void TPC::TPJobManager::setJob_IE(TPC::Filesystem::Reader reader) {
+void TPC::TPJobManager::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
   bodyReader = reader;
+  bodyLength = length;
   refillBodyBuffer_IE();
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     goToLeader_ID();

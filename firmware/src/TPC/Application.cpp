@@ -24,11 +24,17 @@ void TPC::Application::init() {
 static void startPrinting_IE() {
   TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
   if (selectedFile != nullptr) {
+    uint32_t size32 = selectedFile->size;
+    if (size32 > 0xFFFF) {
+      LOG("[Application] WARNING: file larger than 0xFFFF bytes, truncating!");
+      size32 = 0xFFFF;
+    }
+    uint16_t size = (uint16_t) size32;
     uint16_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
     TPC::Filesystem::Reader reader(firstCluster);
     LOG("[Application] printing ", selectedFile);
     // TODO: check if already processing a job
-    TPC::TPController::setJob_IE(reader);
+    TPC::TPController::setJob_IE(reader, size);
     state = State::PRINT;
   }
 }

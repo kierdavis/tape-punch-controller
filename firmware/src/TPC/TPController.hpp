@@ -9,7 +9,7 @@ namespace TPC {
   namespace TPController {
     void init();
     bool isOn_IE();
-    void setJob_IE(TPC::Filesystem::Reader reader);
+    void setJob_IE(TPC::Filesystem::Reader reader, uint16_t length);
     void tick_IE();
 
     namespace Hooks {
