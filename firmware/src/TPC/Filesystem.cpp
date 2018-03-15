@@ -3,6 +3,7 @@
 
 #include <avr/pgmspace.h>
 
+#include "TPC/Application.hpp"
 #include "TPC/BlockStorage.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
@@ -13,6 +14,35 @@ using namespace TPC::Filesystem;
 static constexpr uint8_t BOOT_SECTOR = 0;
 static constexpr uint8_t FAT_SECTOR = BOOT_SECTOR + NUM_RESERVED_SECTORS;
 static constexpr uint8_t ROOT_DIR_SECTOR = FAT_SECTOR + SECTORS_PER_FAT*NUM_FATS;
+
+uint8_t TPC::Filesystem::DirectoryEntry::prettyName(char * buffer, uint8_t bufferLen) {
+  // Leave room for a null terminator.
+  uint8_t usableBufferLen = bufferLen - 1;
+
+  uint8_t nameLen = 8;
+  while (nameLen > 0 && name[nameLen-1] == ' ') {
+    nameLen--;
+  }
+  uint8_t extLen = 3;
+  while (extLen > 0 && extension[extLen-1] == ' ') {
+    extLen--;
+  }
+
+  uint8_t bufferPos = 0;
+  uint8_t namePos = 0;
+  while (bufferPos < usableBufferLen && namePos < nameLen) {
+    buffer[bufferPos++] = name[namePos++];
+  }
+  if (bufferPos < usableBufferLen) {
+    buffer[bufferPos++] = '.';
+  }
+  uint8_t extPos = 0;
+  while (bufferPos < usableBufferLen && extPos < extLen) {
+    buffer[bufferPos++] = extension[extPos++];
+  }
+  buffer[bufferPos] = '\0';
+  return bufferPos;
+}
 
 const TPC::Filesystem::Header TPC::Filesystem::header PROGMEM = {
   // Assembled from x86 code:
@@ -135,6 +165,7 @@ void TPC::Filesystem::scanFilesystem() {
   TPC::FileSelector::reset();
   scanDirectory(ROOT_DIR_SECTOR);
   LOG("[Filesystem] scan complete");
+  TPC::Application::refresh_IE();
 }
 
 // Always reports EOF.

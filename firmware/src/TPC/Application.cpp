@@ -6,6 +6,7 @@
 #include "TPC/ButtonsDriver.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
+#include "TPC/LCD.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/TPController.hpp"
 
@@ -18,7 +19,39 @@ static volatile State state = State::IDLE;
 
 void TPC::Application::init() {
   TPC::ButtonsDriver::init();
+  TPC::LCD::init();
   state = State::IDLE;
+  TPC::Application::refresh_IE();
+}
+
+void TPC::Application::refresh_IE() {
+  TPC::LCD::clear();
+  switch (state) {
+    case State::IDLE: {
+      TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
+      if (selectedFile == nullptr) {
+        LCD_WRITE_AT(0, 0, "No files present");
+      }
+      else {
+        static constexpr uint8_t NAME_BUFFER_LEN = 17;
+        char nameBuffer[NAME_BUFFER_LEN];
+        selectedFile->prettyName(nameBuffer, NAME_BUFFER_LEN);
+        TPC::LCD::writeAt(0, 0, nameBuffer);
+        LCD_WRITE_AT(1, 0, "[NEXT]");
+        LCD_WRITE_AT(1, 16-7, "[PRINT]");
+      }
+      break;
+    }
+    case State::PRINT: {
+      LCD_WRITE_AT(0, 0, "Printing");
+      break;
+    }
+  }
+}
+
+static void setState(State newState) {
+  state = newState;
+  TPC::Application::refresh_IE();
 }
 
 static void startPrinting_IE() {
@@ -35,14 +68,14 @@ static void startPrinting_IE() {
     LOG("[Application] printing ", selectedFile);
     // TODO: check if already processing a job
     TPC::TPController::setJob_IE(reader, size);
-    state = State::PRINT;
+    setState(State::PRINT);
   }
 }
 
 static void checkIfDonePrinting_IE() {
   if (!TPC::TPController::isOn_IE()) {
     LOG("[Application] printing complete");
-    state = State::IDLE;
+    setState(State::IDLE);
   }
 }
 

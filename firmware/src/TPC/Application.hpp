@@ -4,6 +4,7 @@
 namespace TPC {
   namespace Application {
     void init();
+    void refresh_IE();
     void tick_IE();
 
     namespace Hooks {
