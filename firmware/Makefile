@@ -11,7 +11,7 @@ BOARD = NONE
 
 TARGET = firmware
 TARGET_SRC = $(shell find src -name '*.cpp')
-SRC = $(TARGET_SRC) $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS) $(LUFA_SRC_PLATFORM)
+SRC = $(TARGET_SRC) $(LUFA_SRC_USB_DEVICE) $(LUFA_ROOT_PATH)/Drivers/USB/Class/Device/MassStorageClassDevice.c $(LUFA_SRC_PLATFORM)
 
 OPTIMIZATION = s
 LTO = Y
