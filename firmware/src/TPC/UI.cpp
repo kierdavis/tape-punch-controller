@@ -108,6 +108,17 @@ static void confirm_IE() {
 
 static void cancel_IE() {
   LOG("[UI] CANCEL pressed");
+  switch (state) {
+    case State::IDLE: {
+      TPC::FileSelector::selectNext();
+      TPC::UI::refresh_IE();
+      break;
+    }
+    case State::PRINT: {
+      // TODO: abort
+      break;
+    }
+  }
 }
 
 static void both_IE() {
