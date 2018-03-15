@@ -91,6 +91,15 @@ void TPC::TPJobManager::setJob_IE(TPC::Filesystem::Reader reader, uint16_t lengt
   LOG("[TPJobManager] job added or changed");
 }
 
+void TPC::TPJobManager::clearJob_IE() {
+  bodyLength = 0;
+  ATOMIC_BLOCK(ATOMIC_FORCEON) {
+    TPC::TPBodyBuffer::reset_ID();
+    goToIdle_ID();
+  }
+  LOG("[TPJobManager] job cleared");
+}
+
 void TPC::TPJobManager::tick_IE() {
   refillBodyBuffer_IE();
 }

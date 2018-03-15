@@ -9,6 +9,7 @@
 namespace TPC {
   namespace TPJobManager {
     void setJob_IE(TPC::Filesystem::Reader reader, uint16_t length);
+    void clearJob_IE();
     void tick_IE();
     TPC::Util::MaybeUint8 nextByte_ID();
   }

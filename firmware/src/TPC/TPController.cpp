@@ -38,6 +38,13 @@ static void switchOff_ID() {
   on = false;
 }
 
+static void switchOff_IE() {
+  TPC::TPMotorDriver::off();
+  ATOMIC_BLOCK(ATOMIC_FORCEON) {
+    on = false;
+  }
+}
+
 bool TPC::TPController::isOn_IE() {
   bool on_;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
@@ -51,6 +58,11 @@ void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader, uint16_t lengt
   if (!isOn_IE()) {
     switchOn_IE();
   }
+}
+
+void TPC::TPController::clearJob_IE() {
+  TPC::TPJobManager::clearJob_IE();
+  switchOff_IE();
 }
 
 void TPC::TPController::tick_IE() {

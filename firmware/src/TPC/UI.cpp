@@ -72,6 +72,12 @@ static void startPrinting_IE() {
   }
 }
 
+static void cancelPrinting_IE() {
+  TPC::TPController::clearJob_IE();
+  setState(State::IDLE);
+  LOG("[UI] printing cancelled");
+}
+
 static void checkIfDonePrinting_IE() {
   if (!TPC::TPController::isOn_IE()) {
     LOG("[UI] printing complete");
@@ -115,7 +121,7 @@ static void cancel_IE() {
       break;
     }
     case State::PRINT: {
-      // TODO: abort
+      cancelPrinting_IE();
       break;
     }
   }

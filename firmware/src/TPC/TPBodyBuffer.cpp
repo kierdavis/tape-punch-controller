@@ -12,6 +12,12 @@ static volatile uint8_t pushIndex = 0;
 static volatile uint8_t popIndex = 0;
 static volatile uint8_t count = 0;
 
+void TPC::TPBodyBuffer::reset_ID() {
+  pushIndex = 0;
+  popIndex = 0;
+  count = 0;
+}
+
 void TPC::TPBodyBuffer::push_ID(const uint8_t value) {
   const uint8_t _count = count;
   if (_count < BODY_BUFFER_SIZE) {
