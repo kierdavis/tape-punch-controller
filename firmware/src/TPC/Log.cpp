@@ -41,18 +41,11 @@ void TPC::Log::writeStringP(PGM_P str) {
   }
 }
 
-void TPC::Log::writePaddedString(const char * str, uint8_t maxLen) {
-  uint8_t len = maxLen;
-  while (len > 0 && str[len-1] == ' ') {
-    len--;
-  }
-  writeString(str, len);
-}
-
 void TPC::Log::writeFilename(TPC::Filesystem::DirectoryEntry * entry) {
-  writePaddedString(entry->name, 8);
-  writeChar('.');
-  writePaddedString(entry->extension, 3);
+  static constexpr uint8_t BUFFER_LEN = 32;
+  char buffer[BUFFER_LEN];
+  entry->prettyName(buffer, BUFFER_LEN);
+  writeString(buffer);
 }
 
 void TPC::Log::writeHex4(uint8_t val) {

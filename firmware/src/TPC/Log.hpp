@@ -16,7 +16,6 @@ namespace TPC {
     void writeString(const char * str);
     void writeString(const char * str, uint8_t len);
     void writeStringP(PGM_P str);
-    void writePaddedString(const char * str, uint8_t maxLen);
     void writeFilename(TPC::Filesystem::DirectoryEntry * entry);
     void writeHex4(uint8_t val);
     void writeHex8(uint8_t val);
