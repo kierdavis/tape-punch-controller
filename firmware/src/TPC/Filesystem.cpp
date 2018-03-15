@@ -137,7 +137,11 @@ void TPC::Filesystem::scanFilesystem() {
   LOG("[Filesystem] scan complete");
 }
 
-TPC::Filesystem::Reader::Reader(uint8_t _cluster)
+// Always reports EOF.
+TPC::Filesystem::Reader::Reader()
+  : cluster(0xFFF), offset(0) {}
+
+TPC::Filesystem::Reader::Reader(uint16_t _cluster)
   : cluster(_cluster), offset(0) {}
 
 bool TPC::Filesystem::Reader::eof() const {

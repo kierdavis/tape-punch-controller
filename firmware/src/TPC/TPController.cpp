@@ -4,6 +4,7 @@
 #include <util/atomic.h>
 
 #include "TPC/Config.hpp"
+#include "TPC/Filesystem.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPJobManager.hpp"
 #include "TPC/TPMotorDriver.hpp"
@@ -45,8 +46,8 @@ bool TPC::TPController::isOn_IE() {
   return on_;
 }
 
-void TPC::TPController::setJob_IE(uint16_t length, const uint8_t * buffer) {
-  TPC::TPJobManager::setJob_IE(length, buffer);
+void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader) {
+  TPC::TPJobManager::setJob_IE(reader);
   if (!isOn_IE()) {
     switchOn_IE();
   }

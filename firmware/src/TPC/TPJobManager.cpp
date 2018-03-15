@@ -4,6 +4,7 @@
 #include <util/atomic.h>
 
 #include "TPC/Config.hpp"
+#include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/TPBodyBuffer.hpp"
 #include "TPC/TPCoding.hpp"
@@ -20,8 +21,7 @@ enum class State : uint8_t {
 static volatile State state = State::IDLE;
 static volatile uint16_t count = 0;
 
-static const uint8_t * bodyPtr = nullptr;
-static uint16_t bodyCount = 0;
+static TPC::Filesystem::Reader bodyReader;
 static bool inComment = false;
 
 static void goToIdle_ID() {
@@ -48,10 +48,9 @@ static void refillBodyBuffer_IE() {
     bufferNotFull = !TPC::TPBodyBuffer::full_ID();
   }
 
-  while (bufferNotFull && bodyCount != 0) {
-    const uint8_t asciiChar = *bodyPtr;
-    bodyPtr++;
-    bodyCount--;
+  while (bufferNotFull && !bodyReader.eof()) {
+    const uint8_t asciiChar = *bodyReader.pointer();
+    bodyReader.advance(1);
 
     const uint8_t tapeCode = TPC::TPCoding::asciiToEdsac(asciiChar);
     switch (tapeCode) {
@@ -80,9 +79,8 @@ static void refillBodyBuffer_IE() {
   }
 }
 
-void TPC::TPJobManager::setJob_IE(uint16_t count, const uint8_t * ptr) {
-  bodyPtr = ptr;
-  bodyCount = count;
+void TPC::TPJobManager::setJob_IE(TPC::Filesystem::Reader reader) {
+  bodyReader = reader;
   refillBodyBuffer_IE();
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     goToLeader_ID();

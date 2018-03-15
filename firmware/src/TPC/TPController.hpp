@@ -3,11 +3,13 @@
 
 #include <stdint.h>
 
+#include "TPC/Filesystem.hpp"
+
 namespace TPC {
   namespace TPController {
     void init();
     bool isOn_IE();
-    void setJob_IE(uint16_t length, const uint8_t * buffer = nullptr);
+    void setJob_IE(TPC::Filesystem::Reader reader);
     void tick_IE();
 
     namespace Hooks {

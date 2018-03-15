@@ -75,13 +75,14 @@ namespace TPC {
 
     class Reader {
     public:
-      Reader(uint8_t cluster);
+      Reader();
+      Reader(uint16_t cluster);
       bool eof() const;
       const uint8_t * pointer() const;
       uint16_t usableLength() const;
       void advance(uint16_t amount);
     protected:
-      uint8_t cluster;
+      uint16_t cluster;
       uint16_t offset;
     };
   }

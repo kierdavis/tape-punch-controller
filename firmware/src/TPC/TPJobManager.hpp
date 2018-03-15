@@ -3,11 +3,12 @@
 
 #include <stdint.h>
 
+#include "TPC/Filesystem.hpp"
 #include "TPC/Util.hpp"
 
 namespace TPC {
   namespace TPJobManager {
-    void setJob_IE(uint16_t count, const uint8_t * ptr);
+    void setJob_IE(TPC::Filesystem::Reader reader);
     void tick_IE();
     TPC::Util::MaybeUint8 nextByte_ID();
   }

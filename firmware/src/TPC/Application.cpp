@@ -3,7 +3,6 @@
 #include <util/atomic.h>
 
 #include "TPC/Application.hpp"
-#include "TPC/BlockStorage.hpp"
 #include "TPC/ButtonsDriver.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
@@ -25,13 +24,11 @@ void TPC::Application::init() {
 static void startPrinting_IE() {
   TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
   if (selectedFile != nullptr) {
-    // TODO: doesn't support files spread across multiple clusters
-    uint8_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
-    uint8_t * fileData = TPC::BlockStorage::get(firstCluster);
-    uint16_t length = selectedFile->size;
+    uint16_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
+    TPC::Filesystem::Reader reader(firstCluster);
     LOG("[Application] printing ", selectedFile);
     // TODO: check if already processing a job
-    TPC::TPController::setJob_IE(length, fileData);
+    TPC::TPController::setJob_IE(reader);
     state = State::PRINT;
   }
 }
