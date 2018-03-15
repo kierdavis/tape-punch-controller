@@ -65,7 +65,7 @@ namespace TPC {
       uint8_t modifiedTime[4];
       uint16_t startCluster;
       uint32_t size;
-      uint8_t prettyName(char * buffer, uint8_t bufferLen);
+      uint8_t formatName(char * buffer, uint8_t bufferLen);
     };
     static_assert(sizeof(DirectoryEntry) == 32, "DirectoryEntry should be 32 bytes long");
 

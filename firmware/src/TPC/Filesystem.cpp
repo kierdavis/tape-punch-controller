@@ -15,7 +15,7 @@ static constexpr uint8_t BOOT_SECTOR = 0;
 static constexpr uint8_t FAT_SECTOR = BOOT_SECTOR + NUM_RESERVED_SECTORS;
 static constexpr uint8_t ROOT_DIR_SECTOR = FAT_SECTOR + SECTORS_PER_FAT*NUM_FATS;
 
-uint8_t TPC::Filesystem::DirectoryEntry::prettyName(char * buffer, uint8_t bufferLen) {
+uint8_t TPC::Filesystem::DirectoryEntry::formatName(char * buffer, uint8_t bufferLen) {
   // Leave room for a null terminator.
   uint8_t usableBufferLen = bufferLen - 1;
 

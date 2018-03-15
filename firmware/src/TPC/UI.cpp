@@ -35,7 +35,7 @@ void TPC::UI::refresh_IE() {
       else {
         static constexpr uint8_t NAME_BUFFER_LEN = 17;
         char nameBuffer[NAME_BUFFER_LEN];
-        selectedFile->prettyName(nameBuffer, NAME_BUFFER_LEN);
+        selectedFile->formatName(nameBuffer, NAME_BUFFER_LEN);
         TPC::LCD::writeAt(0, 0, nameBuffer);
         LCD_WRITE_AT(1, 0, "[NEXT]");
         LCD_WRITE_AT(1, 16-7, "[PRINT]");
