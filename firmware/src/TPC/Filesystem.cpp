@@ -95,6 +95,10 @@ static void scanDirectory(uint8_t cluster) {
       case UNOCCUPIED_MARKER: {
         break;
       }
+      case '.': {
+        // Hidden file or directory.
+        break;
+      }
       default: {
         const uint8_t attributes = entry->attributes;
         if (attributes == LFN_ATTRS) {
