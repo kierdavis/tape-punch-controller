@@ -1,6 +1,5 @@
 #include <stdint.h>
 
-#include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/atomic.h>
 
@@ -32,7 +31,7 @@ static void initCountTimer() {
   TCF0.CTRLB = TC_WGMODE_NORMAL_gc;
   TCF0.CTRLD = TC_EVACT_OFF_gc | TC_EVSEL_OFF_gc;
   TCF0.CTRLE = TC_BYTEM_NORMAL_gc;
-  TCF0.INTCTRLA = TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_MED_gc;
+  TCF0.INTCTRLA = TC_ERRINTLVL_OFF_gc | TC_OVFINTLVL_OFF_gc;
   TCF0.INTCTRLB = TC_CCDINTLVL_OFF_gc | TC_CCCINTLVL_OFF_gc
                 | TC_CCBINTLVL_OFF_gc | TC_CCAINTLVL_OFF_gc;
   TCF0.CTRLFCLR = TC0_LUPD_bm | TC0_DIR_bm;
