@@ -5,6 +5,7 @@
 #include <avr/io.h>
 
 #include "TPC/ButtonsDriver.hpp"
+#include "TPC/Scheduler.hpp"
 #include "TPC/UI.hpp"
 
 enum class State : uint8_t {
@@ -65,11 +66,11 @@ ISR(PORTA_INT0_vect) {
   State newState = readState();
 
   if (oldState == State::CONFIRM_PRESSED && newState == State::NONE_PRESSED) {
-    TPC::UI::Hooks::confirm_ID();
+    TPC::Scheduler::schedule(TPC::Scheduler::TaskID::UI_CONFIRM_BUTTON);
   } else if (oldState == State::CANCEL_PRESSED && newState == State::NONE_PRESSED) {
-    TPC::UI::Hooks::cancel_ID();
+    TPC::Scheduler::schedule(TPC::Scheduler::TaskID::UI_CANCEL_BUTTON);
   } else if (oldState == State::BOTH_PRESSED && newState != State::BOTH_PRESSED) {
-    TPC::UI::Hooks::both_ID();
+    TPC::Scheduler::schedule(TPC::Scheduler::TaskID::UI_BOTH_BUTTONS);
     newState = State::AFTER_BOTH_PRESSED;
   }
 

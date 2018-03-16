@@ -32,7 +32,7 @@ static USB_ClassInfo_MS_Device_t msdInfo = {
 
 static void scheduleTask() {
   TPC::Scheduler::schedule(
-    TPC::Scheduler::TaskID::USB_DRIVER,
+    TPC::Scheduler::TaskID::USB_DRIVER_SERVICE,
     TPC::Timekeeping::Interval::fromMilliseconds(1)
   );
 }

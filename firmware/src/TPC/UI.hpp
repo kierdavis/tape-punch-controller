@@ -6,12 +6,9 @@ namespace TPC {
     void init();
     void refresh_IE();
     void serviceTask_IE();
-
-    namespace Hooks {
-      void confirm_ID();
-      void cancel_ID();
-      void both_ID();
-    }
+    void handleConfirmButton_IE();
+    void handleCancelButton_IE();
+    void handleBothButtons_IE();
   }
 }
 

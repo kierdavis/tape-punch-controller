@@ -85,7 +85,7 @@ static void refillBodyBuffer_IE() {
 
 static void scheduleTask() {
   TPC::Scheduler::schedule(
-    TPC::Scheduler::TaskID::TP_JOB_MANAGER,
+    TPC::Scheduler::TaskID::TP_JOB_MANAGER_SERVICE,
     TPC::Timekeeping::Interval::fromMilliseconds(50)
   );
 }

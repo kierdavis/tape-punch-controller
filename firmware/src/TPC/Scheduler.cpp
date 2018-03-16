@@ -83,21 +83,37 @@ void TPC::Scheduler::schedule(TaskID taskID, Interval delay) {
   TPC::Scheduler::schedule(taskID, Timestamp::now().add(delay));
 }
 
+void TPC::Scheduler::schedule(TaskID taskID) {
+  TPC::Scheduler::schedule(taskID, Interval(0));
+}
+
 void TPC::Scheduler::cancel(TaskID taskID) {
   scheduledTasks.remove(taskID);
 }
 
 static void serviceTask(TaskID taskID) {
   switch (taskID) {
-    case TaskID::TP_JOB_MANAGER: {
+    case TaskID::TP_JOB_MANAGER_SERVICE: {
       TPC::TPJobManager::serviceTask_IE();
       break;
     }
-    case TaskID::UI: {
+    case TaskID::UI_BOTH_BUTTONS: {
+      TPC::UI::handleBothButtons_IE();
+      break;
+    }
+    case TaskID::UI_CANCEL_BUTTON: {
+      TPC::UI::handleCancelButton_IE();
+      break;
+    }
+    case TaskID::UI_CONFIRM_BUTTON: {
+      TPC::UI::handleConfirmButton_IE();
+      break;
+    }
+    case TaskID::UI_SERVICE: {
       TPC::UI::serviceTask_IE();
       break;
     }
-    case TaskID::USB_DRIVER: {
+    case TaskID::USB_DRIVER_SERVICE: {
       TPC::USBDriver::serviceTask();
       break;
     }

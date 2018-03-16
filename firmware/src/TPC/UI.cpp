@@ -26,7 +26,7 @@ static void setState(State newState) {
 
 static void scheduleTask() {
   TPC::Scheduler::schedule(
-    TPC::Scheduler::TaskID::UI,
+    TPC::Scheduler::TaskID::UI_SERVICE,
     TPC::Timekeeping::Interval::fromMilliseconds(100)
   );
 }
@@ -108,7 +108,7 @@ void TPC::UI::serviceTask_IE() {
   scheduleTask();
 }
 
-static void confirm_IE() {
+void TPC::UI::handleConfirmButton_IE() {
   LOG("[UI] CONFIRM pressed");
   switch (state) {
     case State::IDLE: {
@@ -122,7 +122,7 @@ static void confirm_IE() {
   }
 }
 
-static void cancel_IE() {
+void TPC::UI::handleCancelButton_IE() {
   LOG("[UI] CANCEL pressed");
   switch (state) {
     case State::IDLE: {
@@ -137,24 +137,6 @@ static void cancel_IE() {
   }
 }
 
-static void both_IE() {
+void TPC::UI::handleBothButtons_IE() {
   LOG("[UI] CONFIRM+CANCEL pressed");
-}
-
-void TPC::UI::Hooks::confirm_ID() {
-  NONATOMIC_BLOCK(NONATOMIC_FORCEOFF) {
-    confirm_IE();
-  }
-}
-
-void TPC::UI::Hooks::cancel_ID() {
-  NONATOMIC_BLOCK(NONATOMIC_FORCEOFF) {
-    cancel_IE();
-  }
-}
-
-void TPC::UI::Hooks::both_ID() {
-  NONATOMIC_BLOCK(NONATOMIC_FORCEOFF) {
-    both_IE();
-  }
 }
