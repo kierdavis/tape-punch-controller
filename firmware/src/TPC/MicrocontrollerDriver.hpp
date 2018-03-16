@@ -5,6 +5,8 @@ namespace TPC {
   namespace MicrocontrollerDriver {
     // Initialise the microcontroller's internal subsystems.
     void init();
+
+    void logResetSource();
   }
 }
 

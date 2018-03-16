@@ -15,6 +15,7 @@ int main() {
   LOG("[main] initialising...");
 
   // Second stage init.
+  TPC::MicrocontrollerDriver::logResetSource();
   TPC::Filesystem::init();
   TPC::USBDriver::init();
   TPC::TPController::init();

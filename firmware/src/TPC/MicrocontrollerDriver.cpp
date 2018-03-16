@@ -3,6 +3,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
+#include "TPC/Log.hpp"
 #include "TPC/MicrocontrollerDriver.hpp"
 
 // The production signature row has its own special address space, in which the
@@ -89,4 +90,29 @@ void TPC::MicrocontrollerDriver::init() {
   // TODO: watchdog timer
   // TODO: brownout detector
   // TODO: power management / sleep modes
+}
+
+void TPC::MicrocontrollerDriver::logResetSource() {
+  uint8_t resetStatus = RST.STATUS;
+  if (resetStatus & RST_PORF_bm) {
+    LOG("[MicrocontrollerDriver] Reset source: power-on");
+  }
+  if (resetStatus & RST_EXTRF_bm) {
+    LOG("[MicrocontrollerDriver] Reset source: external (button)");
+  }
+  if (resetStatus & RST_BORF_bm) {
+    LOG("[MicrocontrollerDriver] Reset source: brown-out");
+  }
+  if (resetStatus & RST_WDRF_bm) {
+    LOG("[MicrocontrollerDriver] Reset source: watchdog timeout");
+  }
+  if (resetStatus & RST_PDIRF_bm) {
+    LOG("[MicrocontrollerDriver] Reset source: PDI");
+  }
+  if (resetStatus & RST_SRF_bm) {
+    LOG("[MicrocontrollerDriver] Reset source: software");
+  }
+  // Clear all reset flags.
+  RST.STATUS = RST_PORF_bm | RST_EXTRF_bm | RST_BORF_bm
+             | RST_WDRF_bm | RST_PDIRF_bm | RST_SRF_bm;
 }
