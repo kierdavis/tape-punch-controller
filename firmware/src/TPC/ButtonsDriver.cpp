@@ -71,7 +71,12 @@ ISR(PORTA_INT0_vect) {
     TPC::Scheduler::schedule(TPC::Scheduler::TaskID::UI_CANCEL_BUTTON);
   } else if (oldState == State::BOTH_PRESSED && newState != State::BOTH_PRESSED) {
     TPC::Scheduler::schedule(TPC::Scheduler::TaskID::UI_BOTH_BUTTONS);
-    newState = State::AFTER_BOTH_PRESSED;
+    if (newState == State::CONFIRM_PRESSED || newState == State::CANCEL_PRESSED) {
+      // Move to the pseudo-state AFTER_BOTH_PRESSED instead of
+      // CONFIRM_PRESSED/CANCEL_PRESSED, so that we don't trigger another
+      // button event when the second button is later released.
+      newState = State::AFTER_BOTH_PRESSED;
+    }
   }
 
   savedState = newState;
