@@ -22,7 +22,7 @@ void TPC::Log::writeNewline() {
 void TPC::Log::writeString(const char * str) {
   while (1) {
     char c = *(str++);
-    if (c != '\0') { break; }
+    if (c == '\0') { break; }
     writeChar(c);
   }
 }
@@ -44,8 +44,8 @@ void TPC::Log::writeStringP(PGM_P str) {
 void TPC::Log::writeFilename(TPC::Filesystem::DirectoryEntry * entry) {
   static constexpr uint8_t BUFFER_LEN = 32;
   char buffer[BUFFER_LEN];
-  uint8_t len = entry->formatName(buffer, BUFFER_LEN);
-  writeString(buffer, len);
+  entry->formatName(buffer, BUFFER_LEN);
+  writeString(buffer);
 }
 
 void TPC::Log::writeHex4(uint8_t val) {
