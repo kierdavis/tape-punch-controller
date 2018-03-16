@@ -11,7 +11,7 @@ namespace TPC {
     class Interval {
     public:
       int16_t ticks;
-      Interval(int16_t _ticks);
+      Interval(int16_t _ticks = 0);
       static Interval fromSeconds(int16_t seconds);
       static Interval fromMilliseconds(int16_t milliseconds);
     };
@@ -19,7 +19,7 @@ namespace TPC {
     class Timestamp {
     public:
       int16_t ticks;
-      Timestamp(int16_t _ticks);
+      Timestamp(int16_t _ticks = 0);
       static Timestamp now();
       bool isBefore(Timestamp other) const;
       bool isAfter(Timestamp other) const;
