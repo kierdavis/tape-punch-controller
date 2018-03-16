@@ -4,7 +4,7 @@
 namespace TPC {
   namespace USBDriver {
     void init();
-    void tick();
+    void serviceTask();
   }
 }
 

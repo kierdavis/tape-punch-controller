@@ -4,7 +4,9 @@
 #include <LUFA/Drivers/USB/USB.h>
 
 #include "TPC/Log.hpp"
+#include "TPC/Scheduler.hpp"
 #include "TPC/SCSI.hpp"
+#include "TPC/Timekeeping.hpp"
 #include "TPC/USBDescriptor.hpp"
 #include "TPC/USBDriver.hpp"
 
@@ -28,12 +30,23 @@ static USB_ClassInfo_MS_Device_t msdInfo = {
   },
 };
 
+static void scheduleTask() {
+  TPC::Scheduler::schedule(
+    TPC::Scheduler::TaskID::USB_DRIVER,
+    TPC::Timekeeping::Interval::fromMilliseconds(1)
+  );
+}
+
 void TPC::USBDriver::init() {
   // Initialise LUFA.
   USB_Init();
+
+  scheduleTask();
 }
 
-void TPC::USBDriver::tick() {
+void TPC::USBDriver::serviceTask() {
+  scheduleTask();
+
   MS_Device_USBTask(&msdInfo);
   USB_USBTask();
 }

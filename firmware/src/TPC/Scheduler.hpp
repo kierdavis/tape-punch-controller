@@ -8,7 +8,9 @@
 namespace TPC {
   namespace Scheduler {
     enum class TaskID : uint8_t {
-      TEST,
+      TP_JOB_MANAGER,
+      UI,
+      USB_DRIVER,
     };
 
     void init();

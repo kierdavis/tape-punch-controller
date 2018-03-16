@@ -4,6 +4,10 @@
 #include "TPC/Scheduler.hpp"
 #include "TPC/Timekeeping.hpp"
 
+#include "TPC/TPJobManager.hpp"
+#include "TPC/UI.hpp"
+#include "TPC/USBDriver.hpp"
+
 using TPC::Scheduler::TaskID;
 using TPC::Timekeeping::Interval;
 using TPC::Timekeeping::Timestamp;
@@ -83,12 +87,18 @@ void TPC::Scheduler::cancel(TaskID taskID) {
   scheduledTasks.remove(taskID);
 }
 
-#include "TPC/Log.hpp"
 static void serviceTask(TaskID taskID) {
   switch (taskID) {
-    case TaskID::TEST: {
-      LOG("test task");
-      TPC::Scheduler::schedule(TaskID::TEST, Interval::fromSeconds(1));
+    case TaskID::TP_JOB_MANAGER: {
+      TPC::TPJobManager::serviceTask_IE();
+      break;
+    }
+    case TaskID::UI: {
+      TPC::UI::serviceTask_IE();
+      break;
+    }
+    case TaskID::USB_DRIVER: {
+      TPC::USBDriver::serviceTask();
       break;
     }
   }

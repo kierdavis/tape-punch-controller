@@ -22,6 +22,7 @@ void TPC::TPController::init() {
   TPC::TPSyncDriver::init();
   TPC::TPTimerDriver::init();
   TPC::TPMotorDriver::init();
+  TPC::TPJobManager::init();
 }
 
 static void switchOn_IE() {
@@ -63,10 +64,6 @@ void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader, uint16_t lengt
 void TPC::TPController::clearJob_IE() {
   TPC::TPJobManager::clearJob_IE();
   switchOff_IE();
-}
-
-void TPC::TPController::tick_IE() {
-  TPC::TPJobManager::tick_IE();
 }
 
 void TPC::TPController::Hooks::energiseSolenoids_ID() {

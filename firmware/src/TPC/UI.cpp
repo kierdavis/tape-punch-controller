@@ -7,6 +7,8 @@
 #include "TPC/Filesystem.hpp"
 #include "TPC/LCD.hpp"
 #include "TPC/Log.hpp"
+#include "TPC/Scheduler.hpp"
+#include "TPC/Timekeeping.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/UI.hpp"
 
@@ -17,11 +19,19 @@ enum class State : uint8_t {
 
 static volatile State state = State::IDLE;
 
+static void scheduleTask() {
+  TPC::Scheduler::schedule(
+    TPC::Scheduler::TaskID::UI,
+    TPC::Timekeeping::Interval::fromMilliseconds(100)
+  );
+}
+
 void TPC::UI::init() {
   TPC::ButtonsDriver::init();
   TPC::LCD::init();
   state = State::IDLE;
   TPC::UI::refresh_IE();
+  scheduleTask();
 }
 
 void TPC::UI::refresh_IE() {
@@ -85,7 +95,7 @@ static void checkIfDonePrinting_IE() {
   }
 }
 
-void TPC::UI::tick_IE() {
+void TPC::UI::serviceTask_IE() {
   switch (state) {
     case State::IDLE: {
       // Do nothing.
@@ -96,6 +106,7 @@ void TPC::UI::tick_IE() {
       break;
     }
   }
+  scheduleTask();
 }
 
 static void confirm_IE() {

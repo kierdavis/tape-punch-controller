@@ -6,6 +6,8 @@
 #include "TPC/Config.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
+#include "TPC/Scheduler.hpp"
+#include "TPC/Timekeeping.hpp"
 #include "TPC/TPBodyBuffer.hpp"
 #include "TPC/TPCoding.hpp"
 #include "TPC/TPJobManager.hpp"
@@ -81,6 +83,17 @@ static void refillBodyBuffer_IE() {
   }
 }
 
+static void scheduleTask() {
+  TPC::Scheduler::schedule(
+    TPC::Scheduler::TaskID::TP_JOB_MANAGER,
+    TPC::Timekeeping::Interval::fromMilliseconds(50)
+  );
+}
+
+void TPC::TPJobManager::init() {
+  scheduleTask();
+}
+
 void TPC::TPJobManager::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
   bodyReader = reader;
   bodyLength = length;
@@ -100,8 +113,9 @@ void TPC::TPJobManager::clearJob_IE() {
   LOG("[TPJobManager] job cleared");
 }
 
-void TPC::TPJobManager::tick_IE() {
+void TPC::TPJobManager::serviceTask_IE() {
   refillBodyBuffer_IE();
+  scheduleTask();
 }
 
 TPC::Util::MaybeUint8 TPC::TPJobManager::nextByte_ID() {

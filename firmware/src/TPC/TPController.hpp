@@ -11,7 +11,6 @@ namespace TPC {
     bool isOn_IE();
     void setJob_IE(TPC::Filesystem::Reader reader, uint16_t length);
     void clearJob_IE();
-    void tick_IE();
 
     namespace Hooks {
       void energiseSolenoids_ID();

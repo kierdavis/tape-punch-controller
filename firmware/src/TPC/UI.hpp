@@ -5,7 +5,7 @@ namespace TPC {
   namespace UI {
     void init();
     void refresh_IE();
-    void tick_IE();
+    void serviceTask_IE();
 
     namespace Hooks {
       void confirm_ID();

@@ -4,6 +4,7 @@
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/MicrocontrollerDriver.hpp"
+#include "TPC/Scheduler.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/UI.hpp"
 #include "TPC/USBDriver.hpp"
@@ -16,6 +17,7 @@ int main() {
 
   // Second stage init.
   TPC::MicrocontrollerDriver::logResetSource();
+  TPC::Scheduler::init();
   TPC::Filesystem::init();
   TPC::USBDriver::init();
   TPC::TPController::init();
@@ -24,9 +26,6 @@ int main() {
   LOG("[main] ready");
 
   while (1) {
-    TPC::USBDriver::tick();
-    TPC::TPController::tick_IE();
-    TPC::UI::tick_IE();
-    _delay_us(1000);
+    TPC::Scheduler::serviceTasks();
   }
 }
