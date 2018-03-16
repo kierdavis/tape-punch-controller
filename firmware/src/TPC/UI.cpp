@@ -5,7 +5,7 @@
 #include "TPC/ButtonsDriver.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
-#include "TPC/LCD.hpp"
+#include "TPC/LCDDriver.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/Scheduler.hpp"
 #include "TPC/Timekeeping.hpp"
@@ -28,14 +28,14 @@ static void scheduleTask() {
 
 void TPC::UI::init() {
   TPC::ButtonsDriver::init();
-  TPC::LCD::init();
+  TPC::LCDDriver::init();
   state = State::IDLE;
   TPC::UI::refresh_IE();
   scheduleTask();
 }
 
 void TPC::UI::refresh_IE() {
-  TPC::LCD::clear();
+  TPC::LCDDriver::clear();
   switch (state) {
     case State::IDLE: {
       TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
@@ -46,7 +46,7 @@ void TPC::UI::refresh_IE() {
         static constexpr uint8_t NAME_BUFFER_LEN = 17;
         char nameBuffer[NAME_BUFFER_LEN];
         selectedFile->formatName(nameBuffer, NAME_BUFFER_LEN);
-        TPC::LCD::writeAt(0, 0, nameBuffer);
+        TPC::LCDDriver::writeAt(0, 0, nameBuffer);
         LCD_WRITE_AT(1, 0, "[NEXT]");
         LCD_WRITE_AT(1, 16-7, "[PRINT]");
       }

@@ -5,7 +5,7 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "TPC/LCD.hpp"
+#include "TPC/LCDDriver.hpp"
 
 enum class RS : uint8_t {
   CTRL, DATA
@@ -159,7 +159,7 @@ static void writeData(const uint8_t data) {
   _delay_us(50);
 }
 
-void TPC::LCD::init() {
+void TPC::LCDDriver::init() {
   configurePins();
 
   // Set bus to 4-bit mode.
@@ -183,11 +183,11 @@ void TPC::LCD::init() {
   setDisplayMode(DISPLAY_MODE_ENABLE_DISPLAY);
 }
 
-void TPC::LCD::clear() {
+void TPC::LCDDriver::clear() {
   clearDisplay();
 }
 
-void TPC::LCD::writeAt(const uint8_t row, const uint8_t col, const char * str) {
+void TPC::LCDDriver::writeAt(const uint8_t row, const uint8_t col, const char * str) {
   setCursorPos(row, col);
   while (1) {
     char c = *str;
@@ -197,7 +197,7 @@ void TPC::LCD::writeAt(const uint8_t row, const uint8_t col, const char * str) {
   }
 }
 
-void TPC::LCD::writeAtP(const uint8_t row, const uint8_t col, PGM_P str) {
+void TPC::LCDDriver::writeAtP(const uint8_t row, const uint8_t col, PGM_P str) {
   setCursorPos(row, col);
   while (1) {
     char c = pgm_read_byte(str);
