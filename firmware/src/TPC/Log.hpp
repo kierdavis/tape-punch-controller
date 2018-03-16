@@ -24,6 +24,7 @@ namespace TPC {
     void log(PGM_P str);
     void log(PGM_P str, uint8_t val);
     void log(PGM_P str, uint16_t val);
+    void log(PGM_P str, const char * val);
     void log(PGM_P str, TPC::Filesystem::DirectoryEntry * entry);
   }
 }

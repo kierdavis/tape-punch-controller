@@ -81,6 +81,12 @@ void TPC::Log::log(PGM_P str, uint16_t val) {
   writeNewline();
 }
 
+void TPC::Log::log(PGM_P str, const char * val) {
+  writeStringP(str);
+  writeString(val);
+  writeNewline();
+}
+
 void TPC::Log::log(PGM_P str, TPC::Filesystem::DirectoryEntry * entry) {
   writeStringP(str);
   writeFilename(entry);

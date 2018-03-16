@@ -93,25 +93,17 @@ void TPC::MicrocontrollerDriver::init() {
 }
 
 void TPC::MicrocontrollerDriver::logResetSource() {
-  uint8_t resetStatus = RST.STATUS;
-  if (resetStatus & RST_PORF_bm) {
-    LOG("[MicrocontrollerDriver] Reset source: power-on");
-  }
-  if (resetStatus & RST_EXTRF_bm) {
-    LOG("[MicrocontrollerDriver] Reset source: external (button)");
-  }
-  if (resetStatus & RST_BORF_bm) {
-    LOG("[MicrocontrollerDriver] Reset source: brown-out");
-  }
-  if (resetStatus & RST_WDRF_bm) {
-    LOG("[MicrocontrollerDriver] Reset source: watchdog timeout");
-  }
-  if (resetStatus & RST_PDIRF_bm) {
-    LOG("[MicrocontrollerDriver] Reset source: PDI");
-  }
-  if (resetStatus & RST_SRF_bm) {
-    LOG("[MicrocontrollerDriver] Reset source: software");
-  }
+  uint8_t status = RST.STATUS;
+  char statusStr[7] = {
+    (status & RST_PORF_bm)  ? 'P' : '.',
+    (status & RST_EXTRF_bm) ? 'X' : '.',
+    (status & RST_BORF_bm)  ? 'B' : '.',
+    (status & RST_WDRF_bm)  ? 'W' : '.',
+    (status & RST_PDIRF_bm) ? 'F' : '.',
+    (status & RST_SRF_bm)   ? 'S' : '.',
+    '\0'
+  };
+  LOG("[MicrocontrollerDriver] reset source(s): ", (const char *) statusStr);
   // Clear all reset flags.
   RST.STATUS = RST_PORF_bm | RST_EXTRF_bm | RST_BORF_bm
              | RST_WDRF_bm | RST_PDIRF_bm | RST_SRF_bm;
