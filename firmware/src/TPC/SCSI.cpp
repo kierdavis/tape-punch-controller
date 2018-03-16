@@ -53,7 +53,19 @@ static bool error(MS_CommandBlockWrapper_t * const commandBlock, const uint8_t k
   return false;
 }
 
-static bool ok() {
+static bool ok(MS_CommandBlockWrapper_t * const commandBlock) {
+  if (commandBlock->DataTransferLength != 0) {
+    // Fill the rest of the host's buffer with null bytes.
+    Endpoint_Null_Stream(commandBlock->DataTransferLength, NULL);
+    commandBlock->DataTransferLength = 0;
+  }
+  if (Endpoint_BytesInEndpoint()) {
+    if (USB_Endpoint_SelectedEndpoint & ENDPOINT_DIR_IN) {
+      Endpoint_ClearIN();
+    } else {
+      Endpoint_ClearOUT();
+    }
+  }
   return true;
 }
 
@@ -143,12 +155,10 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   // Number of bytes that we'll transfer.
   const uint16_t transferLength = TPC::Util::min(destLength, srcLength);
 
-  // Send response to client, filling the rest of the client's buffer with zeros.
+  // Send response to client.
   Endpoint_Write_PStream_LE(responsePtr, transferLength, NULL);
-  Endpoint_Null_Stream(destLength - transferLength, NULL);
-  Endpoint_ClearIN();
   commandBlock->DataTransferLength -= transferLength;
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -160,18 +170,15 @@ static bool handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
   // Number of bytes that we'll transfer.
   const uint8_t transferLength = TPC::Util::min(destLength, srcLength);
 
-  // Send response to client, filling the rest of the client's buffer with zeros.
+  // Send response to client.
   Endpoint_Write_Stream_LE(&senseData, transferLength, NULL);
-  Endpoint_Null_Stream(destLength - transferLength, NULL);
-  Endpoint_ClearIN();
   commandBlock->DataTransferLength -= transferLength;
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleTestUnitReady(MS_CommandBlockWrapper_t * const commandBlock) {
-  // TODO: eventually this might not always be true
-  commandBlock->DataTransferLength = 0;
-  return ok();
+  // TODO
+  return ok(commandBlock);
 }
 
 static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -182,14 +189,13 @@ static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) 
   TPC::Util::toBigEndian(addrOfLastBlock, &buffer[0]);
   TPC::Util::toBigEndian(blockSize, &buffer[4]);
   Endpoint_Write_Stream_LE(buffer, 8, NULL);
-  Endpoint_ClearIN();
   commandBlock->DataTransferLength -= 8;
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleStartStopUnit(MS_CommandBlockWrapper_t * const commandBlock) {
   // No operation required.
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -204,8 +210,7 @@ static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) 
 
 static bool handlePreventAllowMediumRemoval(MS_CommandBlockWrapper_t * const commandBlock) {
   // TODO
-  commandBlock->DataTransferLength = 0;
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -234,15 +239,9 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
     const uint8_t addr = startAddr + i;
     TPC::BlockStorage::receive(addr);
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
-
-    // Check if endpoint is full.
-    if (!Endpoint_IsReadWriteAllowed()) {
-      // Flush endpoint.
-      Endpoint_ClearOUT();
-    }
   }
 
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -271,15 +270,9 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
     const uint8_t addr = startAddr + i;
     TPC::BlockStorage::send(addr);
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
-
-    // Check if endpoint is full.
-    if (!Endpoint_IsReadWriteAllowed()) {
-      // Flush endpoint to client.
-      Endpoint_ClearIN();
-    }
   }
 
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -305,12 +298,10 @@ static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
   // Number of bytes that we'll transfer.
   const uint8_t transferLength = TPC::Util::min(destLength, srcLength);
 
-  // Send response to client, filling the rest of the client's buffer with zeros.
+  // Send response to client.
   Endpoint_Write_PStream_LE(&header, transferLength, NULL);
-  Endpoint_Null_Stream(destLength - transferLength, NULL);
-  Endpoint_ClearIN();
   commandBlock->DataTransferLength -= transferLength;
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -358,12 +349,10 @@ static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandB
   // Number of bytes that we'll transfer.
   const uint16_t transferLength = TPC::Util::min(destLength, srcLength);
 
-  // Send response to client, filling the rest of the client's buffer with zeros.
+  // Send response to client.
   Endpoint_Write_PStream_LE(&response, transferLength, NULL);
-  Endpoint_Null_Stream(destLength - transferLength, NULL);
-  Endpoint_ClearIN();
   commandBlock->DataTransferLength -= transferLength;
-  return ok();
+  return ok(commandBlock);
 }
 
 static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
