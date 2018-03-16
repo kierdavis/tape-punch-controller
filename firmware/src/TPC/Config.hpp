@@ -35,6 +35,8 @@ namespace TPC {
     static uint16_t constexpr USB_PRODUCT_ID = 0xE184; // Tape punch interface
 
     static uint8_t constexpr MAX_NUM_FILES = 16;
+
+    static uint32_t constexpr TICK_FREQUENCY = 4e3;
   }
 }
 
