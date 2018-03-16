@@ -19,6 +19,11 @@ enum class State : uint8_t {
 
 static volatile State state = State::IDLE;
 
+static void setState(State newState) {
+  state = newState;
+  TPC::UI::refresh_IE();
+}
+
 static void scheduleTask() {
   TPC::Scheduler::schedule(
     TPC::Scheduler::TaskID::UI,
@@ -29,8 +34,7 @@ static void scheduleTask() {
 void TPC::UI::init() {
   TPC::ButtonsDriver::init();
   TPC::LCDDriver::init();
-  state = State::IDLE;
-  TPC::UI::refresh_IE();
+  setState(State::IDLE);
   scheduleTask();
 }
 
@@ -57,11 +61,6 @@ void TPC::UI::refresh_IE() {
       break;
     }
   }
-}
-
-static void setState(State newState) {
-  state = newState;
-  TPC::UI::refresh_IE();
 }
 
 static void startPrinting_IE() {
