@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <avr/pgmspace.h>
+
 #include "TPC/BlockStorage.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
@@ -139,9 +141,17 @@ static void writeFATEntry(const uint16_t index, const uint16_t val) {
   }
 }
 
+static void initVolumeLabel() {
+  static const char label[11] PROGMEM = {'T','A','P','E',' ','P','U','N','C','H',' '};
+  DirectoryEntry * entry = (DirectoryEntry *) TPC::BlockStorage::get(ROOT_DIR_SECTOR);
+  memcpy_P(entry->name, label, 11);
+  entry->attributes = 0x08;
+}
+
 void TPC::Filesystem::init() {
   writeFATEntry(0, 0xF00 | MEDIA_TYPE);
   writeFATEntry(1, 0xFFF);
+  initVolumeLabel();
 }
 
 void TPC::Filesystem::scanFilesystem() {
