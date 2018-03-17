@@ -15,11 +15,10 @@ static uint8_t mutableBlocks[NUM_MUTABLE_BLOCKS][BYTES_PER_BLOCK];
 
 static void sendBootBlock() {
   static const TPC::BlockStorage::Header headerP PROGMEM = TPC::BlockStorage::header;
-  constexpr uint16_t headerLen = sizeof(headerP);
-  Endpoint_Write_PStream_LE(&headerP, headerLen, NULL);
-  Endpoint_Null_Stream(BYTES_PER_BLOCK - headerLen - 2, NULL);
-  Endpoint_Write_8(0x55);
-  Endpoint_Write_8(0xAA);
+  static const uint8_t trailerP[2] PROGMEM = {0x55, 0xAA};
+  Endpoint_Write_PStream_LE(&headerP, sizeof(headerP), NULL);
+  Endpoint_Null_Stream(BYTES_PER_BLOCK - sizeof(headerP) - sizeof(trailerP), NULL);
+  Endpoint_Write_PStream_LE(trailerP, sizeof(trailerP), NULL);
 }
 
 static void sendMutableBlock(const uint8_t maddr) {
