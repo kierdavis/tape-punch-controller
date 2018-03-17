@@ -18,10 +18,10 @@ namespace TPC {
     };
 
     static constexpr Header header = {
-      // Assembled from x86 code:
-      //   loop:  hlt
-      //          jmp short loop
-      .bootJump = {0xF4, 0xEB, 0xFD},
+      // While this is supposed to be arbitrary x86 code, Windows systems seem
+      // to consider a signature that must be matched. Therefore, these three
+      // bytes shouldn't be changed from their current values.
+      .bootJump = {0xEB, 0x3C, 0x90},
       .filesystemHeader = TPC::Filesystem::header,
     };
 
