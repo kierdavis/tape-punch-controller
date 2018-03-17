@@ -3,6 +3,7 @@
 #include "TPC/Config.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
+#include "TPC/Log.hpp"
 
 static TPC::Filesystem::DirectoryEntry * files[TPC::Config::MAX_NUM_FILES];
 static uint8_t numFiles = 0;
@@ -29,6 +30,7 @@ void TPC::FileSelector::selectNext() {
   if (_selectedIndex == _numFiles) {
     _selectedIndex = 0;
   }
+  LOG("[FileSelector] selected ", files[_selectedIndex]);
   selectedIndex = _selectedIndex;
 }
 
@@ -40,6 +42,7 @@ void TPC::FileSelector::selectPrev() {
     _selectedIndex = _numFiles;
   }
   _selectedIndex--;
+  LOG("[FileSelector] selected ", files[_selectedIndex]);
   selectedIndex = _selectedIndex;
 }
 
