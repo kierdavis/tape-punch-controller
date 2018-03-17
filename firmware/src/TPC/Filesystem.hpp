@@ -44,7 +44,7 @@ namespace TPC {
       /* 0x024 */ uint8_t driveNumber;
       /* 0x025 */ uint8_t reserved2;
       /* 0x026 */ uint8_t extendedBootSignature;
-      /* 0x027 */ uint8_t volumeID[4];
+      /* 0x027 */ uint32_t volumeID;
       /* 0x02B */ char volumeLabel[11];
       /* 0x036 */ char fsTypeStr[8];
     };
@@ -67,7 +67,7 @@ namespace TPC {
       .driveNumber = 0x00, // first removable media
       .reserved2 = 0,
       .extendedBootSignature = 0x29, // a magic number
-      .volumeID = {0x12, 0x34, 0x56, 0x78},
+      .volumeID = 0xED5AC123,
       .volumeLabel = {'T','A','P','E',' ','P','U','N','C','H',' '},
       .fsTypeStr = {'F','A','T','1','2',' ',' ',' '},
     };
