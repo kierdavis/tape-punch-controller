@@ -54,9 +54,5 @@ void TPC::FileSelector::selectPrev() {
 }
 
 TPC::Filesystem::DirectoryEntry * TPC::FileSelector::selected() {
-  if (numFiles == 0) {
-    return nullptr;
-  } else {
-    return files[selectedIndex];
-  }
+  return (numFiles == 0) ? nullptr : files[selectedIndex];
 }
