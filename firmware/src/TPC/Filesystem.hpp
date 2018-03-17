@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#include <avr/pgmspace.h>
-
 namespace TPC {
   namespace Filesystem {
     // Together these define the memory requirement.
@@ -30,7 +28,6 @@ namespace TPC {
 
     class Header {
     public:
-      /* 0x000 */ uint8_t bootCode[3];
       /* 0x003 */ char vendorStr[8];
       /* 0x00B */ uint16_t bytesPerSector;
       /* 0x00D */ uint8_t sectorsPerCluster;
@@ -51,7 +48,29 @@ namespace TPC {
       /* 0x02B */ char volumeLabel[11];
       /* 0x036 */ char fsTypeStr[8];
     };
-    static_assert(sizeof(Header) == 0x3e, "Header should be 0x3e bytes long");
+    static_assert(sizeof(Header) == (0x03e - 0x003), "Header should be 59 bytes long");
+
+    static constexpr Header header = {
+      .vendorStr = {'S','O','T','O','N','U','N','I'},
+      .bytesPerSector = BYTES_PER_SECTOR,
+      .sectorsPerCluster = SECTORS_PER_CLUSTER,
+      .numReservedSectors = NUM_RESERVED_SECTORS,
+      .numFATs = NUM_FATS,
+      .numRootDirEntries = NUM_ROOT_DIR_ENTRIES,
+      .reserved1 = 0,
+      .mediaType = MEDIA_TYPE,
+      .sectorsPerFat = SECTORS_PER_FAT,
+      .sectorsPerTrack = 0x20,
+      .numHeads = 0x40,
+      .numHiddenSectors = 0,
+      .numSectors = NUM_SECTORS,
+      .driveNumber = 0x00, // first removable media
+      .reserved2 = 0,
+      .extendedBootSignature = 0x29, // a magic number
+      .volumeID = {0x12, 0x34, 0x56, 0x78},
+      .volumeLabel = {'T','A','P','E',' ','P','U','N','C','H',' '},
+      .fsTypeStr = {'F','A','T','1','2',' ',' ',' '},
+    };
 
     class DirectoryEntry {
     public:
@@ -68,8 +87,6 @@ namespace TPC {
       uint8_t formatName(char * buffer, uint8_t bufferLen);
     };
     static_assert(sizeof(DirectoryEntry) == 32, "DirectoryEntry should be 32 bytes long");
-
-    extern const Header header PROGMEM;
 
     void init();
     void scanFilesystem();

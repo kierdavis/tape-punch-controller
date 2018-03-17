@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include <avr/pgmspace.h>
+
 #include <LUFA/Drivers/USB/USB.h>
 
 #include "TPC/BlockStorage.hpp"
@@ -12,8 +14,9 @@ using TPC::Filesystem::NUM_RESERVED_SECTORS;
 static uint8_t mutableBlocks[NUM_MUTABLE_BLOCKS][BYTES_PER_BLOCK];
 
 static void sendBootBlock() {
-  constexpr uint16_t headerLen = sizeof(TPC::Filesystem::header);
-  Endpoint_Write_PStream_LE(&TPC::Filesystem::header, headerLen, NULL);
+  static const TPC::BlockStorage::Header headerP PROGMEM = TPC::BlockStorage::header;
+  constexpr uint16_t headerLen = sizeof(headerP);
+  Endpoint_Write_PStream_LE(&headerP, headerLen, NULL);
   Endpoint_Null_Stream(BYTES_PER_BLOCK - headerLen - 2, NULL);
   Endpoint_Write_8(0x55);
   Endpoint_Write_8(0xAA);

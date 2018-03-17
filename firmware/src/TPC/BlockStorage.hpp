@@ -11,6 +11,20 @@ namespace TPC {
     static constexpr uint16_t NUM_BLOCKS = TPC::Filesystem::NUM_SECTORS;
     static constexpr uint16_t NUM_MUTABLE_BLOCKS = TPC::Filesystem::NUM_MUTABLE_SECTORS;
 
+    class Header {
+    public:
+      uint8_t bootJump[3];
+      TPC::Filesystem::Header filesystemHeader;
+    };
+
+    static constexpr Header header = {
+      // Assembled from x86 code:
+      //   loop:  hlt
+      //          jmp short loop
+      .bootJump = {0xF4, 0xEB, 0xFD},
+      .filesystemHeader = TPC::Filesystem::header,
+    };
+
     void send(const uint8_t addr);
     void receive(const uint8_t addr);
     uint8_t * get(const uint8_t addr);

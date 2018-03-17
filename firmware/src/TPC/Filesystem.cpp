@@ -1,8 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <avr/pgmspace.h>
-
 #include "TPC/BlockStorage.hpp"
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
@@ -43,32 +41,6 @@ uint8_t TPC::Filesystem::DirectoryEntry::formatName(char * buffer, uint8_t buffe
   buffer[bufferPos] = '\0';
   return bufferPos;
 }
-
-const TPC::Filesystem::Header TPC::Filesystem::header PROGMEM = {
-  // Assembled from x86 code:
-  //   loop:  hlt
-  //          jmp short loop
-  .bootCode = {0xF4, 0xEB, 0xFD},
-  .vendorStr = {'S','O','T','O','N','U','N','I'},
-  .bytesPerSector = BYTES_PER_SECTOR,
-  .sectorsPerCluster = SECTORS_PER_CLUSTER,
-  .numReservedSectors = NUM_RESERVED_SECTORS,
-  .numFATs = NUM_FATS,
-  .numRootDirEntries = NUM_ROOT_DIR_ENTRIES,
-  .reserved1 = 0,
-  .mediaType = MEDIA_TYPE,
-  .sectorsPerFat = SECTORS_PER_FAT,
-  .sectorsPerTrack = 0,
-  .numHeads = 0,
-  .numHiddenSectors = 0,
-  .numSectors = NUM_SECTORS,
-  .driveNumber = 0x00, // first removable media
-  .reserved2 = 0,
-  .extendedBootSignature = 0x29, // a magic number
-  .volumeID = {0x12, 0x34, 0x56, 0x78},
-  .volumeLabel = {'T','A','P','E',' ','P','U','N','C','H',' '},
-  .fsTypeStr = {'F','A','T','1','2',' ',' ',' '},
-};
 
 static void scanFile(DirectoryEntry * entry) {
   TPC::FileSelector::add(entry);
