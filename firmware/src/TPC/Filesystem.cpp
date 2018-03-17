@@ -54,6 +54,8 @@ static void scanDirectory(uint8_t cluster) {
   static constexpr char UNOCCUPIED_MARKER = '\xE5';
 
   static constexpr uint8_t LFN_ATTRS = 0x0F;
+  static constexpr uint8_t HIDDEN_ATTR = 0x02;
+  static constexpr uint8_t VOLUME_LABEL_ATTR = 0x08;
   static constexpr uint8_t SUBDIR_ATTR = 0x10;
 
   bool endOfDirReached = false;
@@ -68,13 +70,19 @@ static void scanDirectory(uint8_t cluster) {
         break;
       }
       case '.': {
-        // Hidden file or directory.
+        // This entry is a hidden file or directory; do nothing.
         break;
       }
       default: {
         const uint8_t attributes = entry->attributes;
         if (attributes == LFN_ATTRS) {
           // This entry is a VFAT long filename prefix.
+        }
+        else if (attributes & HIDDEN_ATTR) {
+          // This entry is a hidden file or directory; do nothing.
+        }
+        else if (attributes & VOLUME_LABEL_ATTR) {
+          // This entry is the volume label; do nothing.
         }
         else if (attributes & SUBDIR_ATTR) {
           // This entry is for a subdirectory.
