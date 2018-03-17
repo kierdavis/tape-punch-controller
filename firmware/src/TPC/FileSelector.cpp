@@ -8,18 +8,25 @@
 static TPC::Filesystem::DirectoryEntry * files[TPC::Config::MAX_NUM_FILES];
 static uint8_t numFiles = 0;
 static uint8_t selectedIndex = 0; // considered invalid when numFiles == 0.
+static TPC::Filesystem::DirectoryEntry * previousSelection = nullptr;
 
 void TPC::FileSelector::reset() {
+  previousSelection = selected();
   numFiles = 0;
+  selectedIndex = 0;
 }
 
 void TPC::FileSelector::add(TPC::Filesystem::DirectoryEntry * file) {
   uint8_t _numFiles = numFiles;
   if (_numFiles < TPC::Config::MAX_NUM_FILES) {
     files[_numFiles] = file;
+    if (file == previousSelection) {
+      selectedIndex = _numFiles;
+      previousSelection = nullptr;
+      LOG("[FileSelector] restored selection ", file);
+    }
     numFiles = _numFiles + 1;
   }
-  selectedIndex = 0;
 }
 
 void TPC::FileSelector::selectNext() {
