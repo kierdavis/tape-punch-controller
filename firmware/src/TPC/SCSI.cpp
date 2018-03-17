@@ -275,7 +275,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   return ok(commandBlock);
 }
 
-static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
+static bool handleModeSense(MS_CommandBlockWrapper_t * const commandBlock, const uint16_t allocationLength) {
   typedef struct {
     uint8_t dataLength; // Length of the response, not including this byte.
     uint8_t mediumType;
@@ -292,16 +292,27 @@ static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
 
   // Number of bytes that the host has allocated for the response (allocation
   // length).
-  const uint8_t destLength = commandBlock->SCSICommandData[4];
+  const uint16_t destLength = allocationLength;
   // Maximum number of bytes that we can return.
-  const uint8_t srcLength = sizeof(Header);
+  const uint16_t srcLength = sizeof(Header);
   // Number of bytes that we'll transfer.
-  const uint8_t transferLength = TPC::Util::min(destLength, srcLength);
+  const uint16_t transferLength = TPC::Util::min(destLength, srcLength);
 
   // Send response to client.
   Endpoint_Write_PStream_LE(&header, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
   return ok(commandBlock);
+}
+
+static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
+  const uint16_t allocationLength = commandBlock->SCSICommandData[4];
+  return handleModeSense(commandBlock, allocationLength);
+}
+
+static bool handleModeSense10(MS_CommandBlockWrapper_t * const commandBlock) {
+  uint16_t allocationLength;
+  TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &allocationLength);
+  return handleModeSense(commandBlock, allocationLength);
 }
 
 static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -426,7 +437,7 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
       return handleModeSense6(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_10: {
-      return handleUnimplemented(commandBlock);
+      return handleModeSense10(commandBlock);
     }
     case SCSI_CMD_READ_FORMAT_CAPACITIES: {
       return handleReadFormatCapacities(commandBlock);
