@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include "TPC/BootCode.hpp"
 #include "TPC/Filesystem.hpp"
 
 namespace TPC {
@@ -15,6 +16,7 @@ namespace TPC {
     public:
       uint8_t bootJump[3];
       TPC::Filesystem::Header filesystemHeader;
+      uint8_t bootCode[TPC_BOOT_CODE_LEN];
     };
 
     static constexpr Header header = {
@@ -23,6 +25,7 @@ namespace TPC {
       // bytes shouldn't be changed from their current values.
       .bootJump = {0xEB, 0x3C, 0x90},
       .filesystemHeader = TPC::Filesystem::header,
+      .bootCode = TPC_BOOT_CODE,
     };
 
     void send(const uint8_t addr);
