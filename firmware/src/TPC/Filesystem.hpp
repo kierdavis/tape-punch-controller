@@ -51,7 +51,7 @@ namespace TPC {
     static_assert(sizeof(Header) == (0x03e - 0x003), "Header should be 59 bytes long");
 
     static constexpr Header header = {
-      .vendorStr = {'S','O','T','O','N','U','N','I'},
+      .vendorStr = {' ',' ',' ',' ',' ',' ',' ',' '},
       .bytesPerSector = BYTES_PER_SECTOR,
       .sectorsPerCluster = SECTORS_PER_CLUSTER,
       .numReservedSectors = NUM_RESERVED_SECTORS,

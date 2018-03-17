@@ -94,7 +94,7 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
     .WideBus16Bit = false,
     .WideBus32Bit = false,
     .RelAddr = false,
-    .VendorID = {'S','O','T','O','N','U','N','I'},
+    .VendorID = {0,0,0,0,0,0,0,0},
     .ProductID = {'T','A','P','E',' ','P','U','N','C','H',0,0,0,0,0,0},
     .RevisionID = {'0','.','1',0},
   };
