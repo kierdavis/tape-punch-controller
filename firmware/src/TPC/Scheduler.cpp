@@ -9,6 +9,7 @@
 #include "TPC/UI.hpp"
 #include "TPC/USBDriver.hpp"
 
+using TPC::Scheduler::NUM_TASKS;
 using TPC::Scheduler::TaskID;
 using TPC::Timekeeping::Interval;
 using TPC::Timekeeping::Timestamp;
@@ -18,6 +19,7 @@ protected:
   uint8_t bitSet;
 public:
   static constexpr uint8_t CAPACITY = sizeof(bitSet) * 8;
+  static_assert(CAPACITY >= NUM_TASKS, "ScheduledTaskSet capacity too low; consider increasing width of ScheduledTaskSet::bitSet");
   ScheduledTaskSet() : bitSet(0) {}
   void clear() {
     bitSet = 0;
@@ -43,8 +45,6 @@ public:
     }
   }
 };
-
-static constexpr uint8_t NUM_TASKS = ScheduledTaskSet::CAPACITY;
 
 class TimestampMap {
 protected:

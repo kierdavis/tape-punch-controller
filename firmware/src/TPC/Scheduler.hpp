@@ -14,7 +14,9 @@ namespace TPC {
       UI_CANCEL_BUTTON,
       UI_CONFIRM_BUTTON,
       USB_DRIVER_SERVICE,
+      _MAX = USB_DRIVER_SERVICE
     };
+    static constexpr uint8_t NUM_TASKS = ((uint8_t) TaskID::_MAX) + 1;
 
     void init();
     void schedule(TaskID taskID, TPC::Timekeeping::Timestamp when);
