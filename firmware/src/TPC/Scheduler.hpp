@@ -8,7 +8,7 @@
 namespace TPC {
   namespace Scheduler {
     enum class TaskID : uint8_t {
-      TP_JOB_MANAGER_SERVICE,
+      TP_DATA_PROVIDER_SERVICE,
       UI_BOTH_BUTTONS,
       UI_CANCEL_BUTTON,
       UI_CONFIRM_BUTTON,

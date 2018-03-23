@@ -10,7 +10,7 @@
 #include "TPC/Timekeeping.hpp"
 #include "TPC/TPDataBuffer.hpp"
 #include "TPC/TPCoding.hpp"
-#include "TPC/TPJobManager.hpp"
+#include "TPC/TPDataProvider.hpp"
 #include "TPC/Util.hpp"
 
 enum class State : uint8_t {
@@ -85,40 +85,40 @@ static void refillBodyBuffer_IE() {
 
 static void scheduleTask() {
   TPC::Scheduler::schedule(
-    TPC::Scheduler::TaskID::TP_JOB_MANAGER_SERVICE,
+    TPC::Scheduler::TaskID::TP_DATA_PROVIDER_SERVICE,
     TPC::Timekeeping::Interval::fromMilliseconds(50)
   );
 }
 
-void TPC::TPJobManager::init() {
+void TPC::TPDataProvider::init() {
   scheduleTask();
 }
 
-void TPC::TPJobManager::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
+void TPC::TPDataProvider::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
   bodyReader = reader;
   bodyLength = length;
   refillBodyBuffer_IE();
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     goToLeader_ID();
   }
-  LOG("[TPJobManager] job added or changed");
+  LOG("[TPDataProvider] job added or changed");
 }
 
-void TPC::TPJobManager::clearJob_IE() {
+void TPC::TPDataProvider::clearJob_IE() {
   bodyLength = 0;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     TPC::TPDataBuffer::reset_ID();
     goToIdle_ID();
   }
-  LOG("[TPJobManager] job cleared");
+  LOG("[TPDataProvider] job cleared");
 }
 
-void TPC::TPJobManager::serviceTask_IE() {
+void TPC::TPDataProvider::serviceTask_IE() {
   refillBodyBuffer_IE();
   scheduleTask();
 }
 
-TPC::Util::MaybeUint8 TPC::TPJobManager::nextByte_ID() {
+TPC::Util::MaybeUint8 TPC::TPDataProvider::nextByte_ID() {
   switch (state) {
     case State::IDLE: {
       return TPC::Util::MaybeUint8(false);

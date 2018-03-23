@@ -6,7 +6,7 @@
 #include "TPC/Config.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/TPController.hpp"
-#include "TPC/TPJobManager.hpp"
+#include "TPC/TPDataProvider.hpp"
 #include "TPC/TPMotorDriver.hpp"
 #include "TPC/TPSolenoidsDriver.hpp"
 #include "TPC/TPSyncDriver.hpp"
@@ -22,7 +22,7 @@ void TPC::TPController::init() {
   TPC::TPSyncDriver::init();
   TPC::TPTimerDriver::init();
   TPC::TPMotorDriver::init();
-  TPC::TPJobManager::init();
+  TPC::TPDataProvider::init();
 }
 
 static void switchOn_IE() {
@@ -55,14 +55,14 @@ bool TPC::TPController::isOn_IE() {
 }
 
 void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
-  TPC::TPJobManager::setJob_IE(reader, length);
+  TPC::TPDataProvider::setJob_IE(reader, length);
   if (!isOn_IE()) {
     switchOn_IE();
   }
 }
 
 void TPC::TPController::clearJob_IE() {
-  TPC::TPJobManager::clearJob_IE();
+  TPC::TPDataProvider::clearJob_IE();
   switchOff_IE();
 }
 
@@ -75,7 +75,7 @@ void TPC::TPController::Hooks::energiseSolenoids_ID() {
     waitCount = waitCount_ - 1;
     return;
   }
-  TPC::Util::MaybeUint8 result = TPC::TPJobManager::nextByte_ID();
+  TPC::Util::MaybeUint8 result = TPC::TPDataProvider::nextByte_ID();
   if (result.hasValue) {
     TPC::TPSolenoidsDriver::energise(result.value);
   } else {

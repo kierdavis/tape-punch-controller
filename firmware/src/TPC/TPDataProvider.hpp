@@ -1,5 +1,5 @@
-#ifndef __TPC_TP_JOB_MANAGER_HPP
-#define __TPC_TP_JOB_MANAGER_HPP
+#ifndef __TPC_TP_DATA_PROVIDER_HPP
+#define __TPC_TP_DATA_PROVIDER_HPP
 
 #include <stdint.h>
 
@@ -7,7 +7,7 @@
 #include "TPC/Util.hpp"
 
 namespace TPC {
-  namespace TPJobManager {
+  namespace TPDataProvider {
     void init();
     void setJob_IE(TPC::Filesystem::Reader reader, uint16_t length);
     void clearJob_IE();
