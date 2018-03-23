@@ -4,6 +4,7 @@
 #include "TPC/Scheduler.hpp"
 #include "TPC/Timekeeping.hpp"
 
+#include "TPC/Application.hpp"
 #include "TPC/TPDataProvider.hpp"
 #include "TPC/UI.hpp"
 #include "TPC/USBDriver.hpp"
@@ -93,6 +94,10 @@ void TPC::Scheduler::cancel(TaskID taskID) {
 
 static void serviceTask(TaskID taskID) {
   switch (taskID) {
+    case TaskID::APPLICATION_SERVICE: {
+      TPC::Application::serviceTask_IE();
+      break;
+    }
     case TaskID::TP_DATA_PROVIDER_SERVICE: {
       TPC::TPDataProvider::serviceTask_IE();
       break;
@@ -107,10 +112,6 @@ static void serviceTask(TaskID taskID) {
     }
     case TaskID::UI_CONFIRM_BUTTON: {
       TPC::UI::handleConfirmButton_IE();
-      break;
-    }
-    case TaskID::UI_SERVICE: {
-      TPC::UI::serviceTask_IE();
       break;
     }
     case TaskID::USB_DRIVER_SERVICE: {
