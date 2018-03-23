@@ -62,9 +62,9 @@ void TPC::Application::tryStartPrinting_IE(bool ignoreLowTape) {
 }
 
 void TPC::Application::stopPrinting_IE() {
+  LOG("[Application] printing cancelled");
   TPC::TPController::clearJob_IE();
   setState_IE(State::IDLE);
-  LOG("[Application] printing cancelled");
 }
 
 void TPC::Application::selectNextFile_IE() {
