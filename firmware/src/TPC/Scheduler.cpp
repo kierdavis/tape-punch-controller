@@ -123,7 +123,7 @@ static void serviceTask(TaskID taskID) {
 void TPC::Scheduler::serviceTasks() {
   for (uint8_t i = 0; i < NUM_TASKS; i++) {
     TaskID taskID = (TaskID) i;
-    if (scheduledTasks.contains(taskID) && timestamps.get(taskID).isBefore(Timestamp::now())) {
+    if (scheduledTasks.contains(taskID) && timestamps.get(taskID).isBeforeOrEqual(Timestamp::now())) {
       scheduledTasks.remove(taskID);
       serviceTask(taskID);
     }

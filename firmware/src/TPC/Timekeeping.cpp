@@ -27,8 +27,16 @@ bool TPC::Timekeeping::Timestamp::isBefore(Timestamp other) const {
   return until(other).ticks > 0;
 }
 
+bool TPC::Timekeeping::Timestamp::isBeforeOrEqual(Timestamp other) const {
+  return until(other).ticks >= 0;
+}
+
 bool TPC::Timekeeping::Timestamp::isAfter(Timestamp other) const {
   return since(other).ticks > 0;
+}
+
+bool TPC::Timekeeping::Timestamp::isAfterOrEqual(Timestamp other) const {
+  return since(other).ticks >= 0;
 }
 
 Interval TPC::Timekeeping::Timestamp::since(Timestamp other) const {

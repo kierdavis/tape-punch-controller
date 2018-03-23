@@ -22,7 +22,9 @@ namespace TPC {
       Timestamp(int16_t _ticks = 0);
       static Timestamp now();
       bool isBefore(Timestamp other) const;
+      bool isBeforeOrEqual(Timestamp other) const;
       bool isAfter(Timestamp other) const;
+      bool isAfterOrEqual(Timestamp other) const;
       Interval since(Timestamp other) const;
       Interval until(Timestamp other) const;
       Timestamp add(Interval offset) const;
