@@ -5,6 +5,7 @@
 
 #include "TPC/Config.hpp"
 #include "TPC/Filesystem.hpp"
+#include "TPC/Scheduler.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPDataProvider.hpp"
 #include "TPC/TPMotorDriver.hpp"
@@ -27,13 +28,10 @@ void TPC::TPController::init() {
   TPC::TPDataProvider::init();
 }
 
-static void switchOn_IE() {
+static void switchOn_ID() {
   TPC::TPMotorDriver::on();
-  ATOMIC_BLOCK(ATOMIC_FORCEON) {
-    // Interrupts disabled.
-    on = true;
-    waitCount = TPC::Config::STARTUP_CYCLES;
-  }
+  on = true;
+  waitCount = TPC::Config::STARTUP_CYCLES;
 }
 
 static void switchOff_ID() {
@@ -41,31 +39,22 @@ static void switchOff_ID() {
   on = false;
 }
 
-static void switchOff_IE() {
-  TPC::TPMotorDriver::off();
-  ATOMIC_BLOCK(ATOMIC_FORCEON) {
-    on = false;
-  }
-}
-
-bool TPC::TPController::isOn_IE() {
-  bool on_;
-  ATOMIC_BLOCK(ATOMIC_FORCEON) {
-    on_ = on;
-  }
-  return on_;
-}
-
 void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
   TPC::TPDataProvider::setJob_IE(reader, length);
-  if (!isOn_IE()) {
-    switchOn_IE();
+  ATOMIC_BLOCK(ATOMIC_FORCEON) {
+    if (!on) {
+      switchOn_ID();
+    }
   }
 }
 
 void TPC::TPController::clearJob_IE() {
   TPC::TPDataProvider::clearJob_IE();
-  switchOff_IE();
+  ATOMIC_BLOCK(ATOMIC_FORCEON) {
+    if (on) {
+      switchOff_ID();
+    }
+  }
 }
 
 bool TPC::TPController::readNoTapeSensor() {
@@ -90,6 +79,7 @@ void TPC::TPController::Hooks::energiseSolenoids_ID() {
     TPC::TPSolenoidsDriver::energise(result.value);
   } else {
     switchOff_ID();
+    TPC::Scheduler::schedule(TPC::Scheduler::TaskID::PRINTING_COMPLETE);
   }
 }
 

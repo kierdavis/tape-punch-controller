@@ -4,8 +4,6 @@
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
-#include "TPC/Scheduler.hpp"
-#include "TPC/Timekeeping.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/UI.hpp"
 #include "TPC/USBDriver.hpp"
@@ -23,20 +21,12 @@ static void setState_IE(State newState) {
   TPC::UI::refresh_IE();
 }
 
-static void scheduleTask() {
-  TPC::Scheduler::schedule(
-    TPC::Scheduler::TaskID::APPLICATION_SERVICE,
-    TPC::Timekeeping::Interval::fromMilliseconds(100)
-  );
-}
-
 void TPC::Application::init() {
   TPC::Filesystem::init();
   TPC::USBDriver::init();
   TPC::TPController::init();
   TPC::UI::init();
   setState_IE(State::IDLE);
-  scheduleTask();
 }
 
 void TPC::Application::returnToIdle_IE() {
@@ -82,25 +72,7 @@ void TPC::Application::selectNextFile_IE() {
   TPC::UI::refresh_IE();
 }
 
-static void checkIfDonePrinting_IE() {
-  if (!TPC::TPController::isOn_IE()) {
-    LOG("[Application] printing complete");
-    setState_IE(State::IDLE);
-  }
-}
-
-void TPC::Application::serviceTask_IE() {
-  switch (TPC::Application::getState_IE()) {
-    case State::IDLE:
-    case State::IDLE_NO_TAPE_WARNING:
-    case State::IDLE_LOW_TAPE_WARNING: {
-      // Do nothing.
-      break;
-    }
-    case State::PRINT: {
-      checkIfDonePrinting_IE();
-      break;
-    }
-  }
-  scheduleTask();
+void TPC::Application::printingComplete_IE() {
+  LOG("[Application] printing complete");
+  setState_IE(State::IDLE);
 }

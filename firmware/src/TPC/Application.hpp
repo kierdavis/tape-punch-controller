@@ -19,7 +19,7 @@ namespace TPC {
     void tryStartPrinting_IE(bool ignoreLowTape = false);
     void stopPrinting_IE();
     void selectNextFile_IE();
-    void serviceTask_IE();
+    void printingComplete_IE();
   }
 }
 
