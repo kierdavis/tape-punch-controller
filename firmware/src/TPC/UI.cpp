@@ -33,6 +33,17 @@ void TPC::UI::refresh_IE() {
       }
       break;
     }
+    case State::IDLE_NO_TAPE_WARNING: {
+      LCD_WRITE_AT(0, 0, "No tape!");
+      LCD_WRITE_AT(1, 16-4, "[OK]");
+      break;
+    }
+    case State::IDLE_LOW_TAPE_WARNING: {
+      LCD_WRITE_AT(0, 0, "Low tape! Proceed?");
+      LCD_WRITE_AT(1, 0, "[NO]");
+      LCD_WRITE_AT(1, 16-5, "[YES]");
+      break;
+    }
     case State::PRINT: {
       LCD_WRITE_AT(0, 0, "Printing");
       break;
@@ -44,7 +55,15 @@ void TPC::UI::handleConfirmButton_IE() {
   LOG("[UI] CONFIRM pressed");
   switch (TPC::Application::getState_IE()) {
     case State::IDLE: {
-      TPC::Application::startPrinting_IE();
+      TPC::Application::tryStartPrinting_IE();
+      break;
+    }
+    case State::IDLE_NO_TAPE_WARNING: {
+      TPC::Application::returnToIdle_IE();
+      break;
+    }
+    case State::IDLE_LOW_TAPE_WARNING: {
+      TPC::Application::tryStartPrinting_IE(true);
       break;
     }
     case State::PRINT: {
@@ -59,6 +78,11 @@ void TPC::UI::handleCancelButton_IE() {
   switch (TPC::Application::getState_IE()) {
     case State::IDLE: {
       TPC::Application::selectNextFile_IE();
+      break;
+    }
+    case State::IDLE_NO_TAPE_WARNING:
+    case State::IDLE_LOW_TAPE_WARNING: {
+      TPC::Application::returnToIdle_IE();
       break;
     }
     case State::PRINT: {

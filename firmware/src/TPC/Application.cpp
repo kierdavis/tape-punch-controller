@@ -39,21 +39,35 @@ void TPC::Application::init() {
   scheduleTask();
 }
 
-void TPC::Application::startPrinting_IE() {
+void TPC::Application::returnToIdle_IE() {
+  setState_IE(State::IDLE);
+}
+
+void TPC::Application::tryStartPrinting_IE(bool ignoreLowTape) {
   TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
   if (selectedFile != nullptr) {
-    uint32_t size32 = selectedFile->size;
-    if (size32 > 0xFFFF) {
-      LOG("[Application] WARNING: file larger than 0xFFFF bytes, truncating!");
-      size32 = 0xFFFF;
+    if (TPC::TPController::readNoTapeSensor()) {
+      LOG("[Application] No tape warning");
+      setState_IE(State::IDLE_NO_TAPE_WARNING);
     }
-    uint16_t size = (uint16_t) size32;
-    uint16_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
-    TPC::Filesystem::Reader reader(firstCluster);
-    LOG("[Application] printing ", selectedFile);
-    // TODO: check if already processing a job
-    TPC::TPController::setJob_IE(reader, size);
-    setState_IE(State::PRINT);
+    else if (!ignoreLowTape && TPC::TPController::readLowTapeSensor()) {
+      LOG("[Application] Low tape warning");
+      setState_IE(State::IDLE_LOW_TAPE_WARNING);
+    }
+    else {
+      uint32_t size32 = selectedFile->size;
+      if (size32 > 0xFFFF) {
+        LOG("[Application] WARNING: file larger than 0xFFFF bytes, truncating!");
+        size32 = 0xFFFF;
+      }
+      uint16_t size = (uint16_t) size32;
+      uint16_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
+      TPC::Filesystem::Reader reader(firstCluster);
+      LOG("[Application] printing ", selectedFile);
+      // TODO: check if already processing a job
+      TPC::TPController::setJob_IE(reader, size);
+      setState_IE(State::PRINT);
+    }
   }
 }
 
@@ -77,7 +91,9 @@ static void checkIfDonePrinting_IE() {
 
 void TPC::Application::serviceTask_IE() {
   switch (TPC::Application::getState_IE()) {
-    case State::IDLE: {
+    case State::IDLE:
+    case State::IDLE_NO_TAPE_WARNING:
+    case State::IDLE_LOW_TAPE_WARNING: {
       // Do nothing.
       break;
     }

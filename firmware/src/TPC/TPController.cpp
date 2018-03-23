@@ -8,6 +8,7 @@
 #include "TPC/TPController.hpp"
 #include "TPC/TPDataProvider.hpp"
 #include "TPC/TPMotorDriver.hpp"
+#include "TPC/TPSensorsDriver.hpp"
 #include "TPC/TPSolenoidsDriver.hpp"
 #include "TPC/TPSyncDriver.hpp"
 #include "TPC/TPTimerDriver.hpp"
@@ -22,6 +23,7 @@ void TPC::TPController::init() {
   TPC::TPSyncDriver::init();
   TPC::TPTimerDriver::init();
   TPC::TPMotorDriver::init();
+  TPC::TPSensorsDriver::init();
   TPC::TPDataProvider::init();
 }
 
@@ -64,6 +66,14 @@ void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader, uint16_t lengt
 void TPC::TPController::clearJob_IE() {
   TPC::TPDataProvider::clearJob_IE();
   switchOff_IE();
+}
+
+bool TPC::TPController::readNoTapeSensor() {
+  return TPC::TPSensorsDriver::readNoTapeSensor();
+}
+
+bool TPC::TPController::readLowTapeSensor() {
+  return TPC::TPSensorsDriver::readLowTapeSensor();
 }
 
 void TPC::TPController::Hooks::energiseSolenoids_ID() {
