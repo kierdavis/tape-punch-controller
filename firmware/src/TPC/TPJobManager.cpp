@@ -8,7 +8,7 @@
 #include "TPC/Log.hpp"
 #include "TPC/Scheduler.hpp"
 #include "TPC/Timekeeping.hpp"
-#include "TPC/TPBodyBuffer.hpp"
+#include "TPC/TPDataBuffer.hpp"
 #include "TPC/TPCoding.hpp"
 #include "TPC/TPJobManager.hpp"
 #include "TPC/Util.hpp"
@@ -48,7 +48,7 @@ static void goToTrailer_ID() {
 static void refillBodyBuffer_IE() {
   bool bufferNotFull;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
-    bufferNotFull = !TPC::TPBodyBuffer::full_ID();
+    bufferNotFull = !TPC::TPDataBuffer::full_ID();
   }
 
   while (bufferNotFull && bodyLength && !bodyReader.eof()) {
@@ -73,8 +73,8 @@ static void refillBodyBuffer_IE() {
       default: {
         if (!inComment) {
           ATOMIC_BLOCK(ATOMIC_FORCEON) {
-            TPC::TPBodyBuffer::push_ID(tapeCode);
-            bufferNotFull = !TPC::TPBodyBuffer::full_ID();
+            TPC::TPDataBuffer::push_ID(tapeCode);
+            bufferNotFull = !TPC::TPDataBuffer::full_ID();
           }
         }
         break;
@@ -107,7 +107,7 @@ void TPC::TPJobManager::setJob_IE(TPC::Filesystem::Reader reader, uint16_t lengt
 void TPC::TPJobManager::clearJob_IE() {
   bodyLength = 0;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
-    TPC::TPBodyBuffer::reset_ID();
+    TPC::TPDataBuffer::reset_ID();
     goToIdle_ID();
   }
   LOG("[TPJobManager] job cleared");
@@ -133,7 +133,7 @@ TPC::Util::MaybeUint8 TPC::TPJobManager::nextByte_ID() {
       return TPC::Util::MaybeUint8(true, 0);
     }
     case State::BODY: {
-      TPC::Util::MaybeUint8 result = TPC::TPBodyBuffer::pop_ID();
+      TPC::Util::MaybeUint8 result = TPC::TPDataBuffer::pop_ID();
       if (result.hasValue) {
         return result;
       }

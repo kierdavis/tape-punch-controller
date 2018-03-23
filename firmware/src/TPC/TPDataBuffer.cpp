@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 #include "TPC/Config.hpp"
-#include "TPC/TPBodyBuffer.hpp"
+#include "TPC/TPDataBuffer.hpp"
 #include "TPC/Util.hpp"
 
 using TPC::Config::BODY_BUFFER_SIZE;
@@ -12,13 +12,13 @@ static volatile uint8_t pushIndex = 0;
 static volatile uint8_t popIndex = 0;
 static volatile uint8_t count = 0;
 
-void TPC::TPBodyBuffer::reset_ID() {
+void TPC::TPDataBuffer::reset_ID() {
   pushIndex = 0;
   popIndex = 0;
   count = 0;
 }
 
-void TPC::TPBodyBuffer::push_ID(const uint8_t value) {
+void TPC::TPDataBuffer::push_ID(const uint8_t value) {
   const uint8_t _count = count;
   if (_count < BODY_BUFFER_SIZE) {
     const uint8_t _pushIndex = pushIndex;
@@ -28,7 +28,7 @@ void TPC::TPBodyBuffer::push_ID(const uint8_t value) {
   }
 }
 
-TPC::Util::MaybeUint8 TPC::TPBodyBuffer::pop_ID() {
+TPC::Util::MaybeUint8 TPC::TPDataBuffer::pop_ID() {
   const uint8_t _count = count;
   if (_count > 0) {
     const uint8_t _popIndex = popIndex;
@@ -41,6 +41,6 @@ TPC::Util::MaybeUint8 TPC::TPBodyBuffer::pop_ID() {
   }
 }
 
-bool TPC::TPBodyBuffer::full_ID() {
+bool TPC::TPDataBuffer::full_ID() {
   return count >= BODY_BUFFER_SIZE;
 }
