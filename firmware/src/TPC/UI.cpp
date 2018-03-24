@@ -46,6 +46,12 @@ void TPC::UI::refresh_IE() {
     }
     case State::PRINT: {
       LCD_WRITE_AT(0, 0, "Printing");
+      LCD_WRITE_AT(1, 0, "[CANCEL]");
+      break;
+    }
+    case State::PRINT_LOW_TAPE_WARNING: {
+      LCD_WRITE_AT(0, 0, "Printing (low tape!)");
+      LCD_WRITE_AT(1, 0, "[CANCEL]");
       break;
     }
   }
@@ -66,7 +72,8 @@ void TPC::UI::handleConfirmButton_IE() {
       TPC::Application::tryStartPrinting_IE(true);
       break;
     }
-    case State::PRINT: {
+    case State::PRINT:
+    case State::PRINT_LOW_TAPE_WARNING: {
       // Do nothing.
       break;
     }
@@ -85,7 +92,8 @@ void TPC::UI::handleCancelButton_IE() {
       TPC::Application::returnToIdle_IE();
       break;
     }
-    case State::PRINT: {
+    case State::PRINT:
+    case State::PRINT_LOW_TAPE_WARNING: {
       TPC::Application::stopPrinting_IE();
       break;
     }

@@ -5,6 +5,7 @@
 #include "TPC/Timekeeping.hpp"
 
 #include "TPC/Application.hpp"
+#include "TPC/TPController.hpp"
 #include "TPC/TPDataProvider.hpp"
 #include "TPC/UI.hpp"
 #include "TPC/USBDriver.hpp"
@@ -96,6 +97,10 @@ static void serviceTask(TaskID taskID) {
   switch (taskID) {
     case TaskID::PRINTING_COMPLETE: {
       TPC::Application::printingComplete_IE();
+    }
+    case TaskID::TP_CONTROLLER_SERVICE: {
+      TPC::TPController::serviceTask_IE();
+      break;
     }
     case TaskID::TP_DATA_PROVIDER_SERVICE: {
       TPC::TPDataProvider::serviceTask_IE();

@@ -13,6 +13,7 @@ namespace TPC {
     void clearJob_IE();
     bool readNoTapeSensor();
     bool readLowTapeSensor();
+    void serviceTask_IE();
 
     namespace Hooks {
       void energiseSolenoids_ID();

@@ -3,9 +3,11 @@
 
 #include <util/atomic.h>
 
+#include "TPC/Application.hpp"
 #include "TPC/Config.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Scheduler.hpp"
+#include "TPC/Timekeeping.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPDataProvider.hpp"
 #include "TPC/TPMotorDriver.hpp"
@@ -16,6 +18,17 @@
 #include "TPC/Util.hpp"
 
 static volatile uint16_t waitCount = 0;
+
+static void scheduleTask() {
+  TPC::Scheduler::schedule(
+    TPC::Scheduler::TaskID::TP_CONTROLLER_SERVICE,
+    TPC::Timekeeping::Interval::fromMilliseconds(50)
+  );
+}
+
+static void cancelTask() {
+  TPC::Scheduler::cancel(TPC::Scheduler::TaskID::TP_CONTROLLER_SERVICE);
+}
 
 void TPC::TPController::init() {
   // Initialise our peripherals.
@@ -38,10 +51,12 @@ static void switchOn() {
       waitCount = TPC::Config::STARTUP_CYCLES;
     }
   }
+  scheduleTask();
 }
 
 static void switchOff() {
   TPC::TPMotorDriver::off();
+  cancelTask();
 }
 
 void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
@@ -82,4 +97,30 @@ void TPC::TPController::Hooks::energiseSolenoids_ID() {
 
 void TPC::TPController::Hooks::deenergiseSolenoids_ID() {
   TPC::TPSolenoidsDriver::deenergise();
+}
+
+static void checkNoTapeSensor_IE() {
+  static bool prevState = false;
+  bool currState = TPC::TPController::readNoTapeSensor();
+  if (!prevState && currState) {
+    TPC::Application::warnNoTapeDuringPrint_IE();
+  }
+  prevState = currState;
+}
+
+static void checkLowTapeSensor_IE() {
+  static bool prevState = false;
+  bool currState = TPC::TPController::readLowTapeSensor();
+  if (!prevState && currState) {
+    TPC::Application::warnLowTapeDuringPrint_IE();
+  }
+  prevState = currState;
+}
+
+void TPC::TPController::serviceTask_IE() {
+  if (isOn()) {
+    checkNoTapeSensor_IE();
+    checkLowTapeSensor_IE();
+  }
+  scheduleTask();
 }

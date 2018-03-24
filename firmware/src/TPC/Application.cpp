@@ -67,6 +67,17 @@ void TPC::Application::stopPrinting_IE() {
   setState_IE(State::IDLE);
 }
 
+void TPC::Application::warnNoTapeDuringPrint_IE() {
+  LOG("[Application] no tape warning (during print)")
+  TPC::TPController::clearJob_IE();
+  setState_IE(State::IDLE_NO_TAPE_WARNING);
+}
+
+void TPC::Application::warnLowTapeDuringPrint_IE() {
+  LOG("[Application] low tape warning (during print)")
+  setState_IE(State::PRINT_LOW_TAPE_WARNING);
+}
+
 void TPC::Application::selectNextFile_IE() {
   TPC::FileSelector::selectNext();
   TPC::UI::refresh_IE();
