@@ -5,6 +5,7 @@
 #include "TPC/Timekeeping.hpp"
 
 #include "TPC/Application.hpp"
+#include "TPC/Filesystem.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPDataProvider.hpp"
 #include "TPC/UI.hpp"
@@ -97,6 +98,11 @@ static void serviceTask(TaskID taskID) {
   switch (taskID) {
     case TaskID::PRINTING_COMPLETE: {
       TPC::Application::printingComplete_IE();
+      break;
+    }
+    case TaskID::SCAN_FILESYSTEM: {
+      TPC::Filesystem::scanFilesystem();
+      break;
     }
     case TaskID::TP_CONTROLLER_SERVICE: {
       TPC::TPController::serviceTask_IE();

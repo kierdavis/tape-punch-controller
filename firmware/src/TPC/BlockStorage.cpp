@@ -7,6 +7,7 @@
 #include "TPC/BlockStorage.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
+#include "TPC/Scheduler.hpp"
 
 using namespace TPC::BlockStorage;
 using TPC::Filesystem::NUM_RESERVED_SECTORS;
@@ -31,7 +32,14 @@ static void sendNullBlock() {
 
 static void receiveMutableBlock(const uint8_t maddr) {
   Endpoint_Read_Stream_LE(&mutableBlocks[maddr][0], BYTES_PER_BLOCK, NULL);
-  TPC::Filesystem::scanFilesystem();
+  // Schedule a filesystem scan for a few milliseconds into the future. This
+  // reduces number of times the filesystem scan gets run when many blocks are
+  // written in quick succession, since the scheduled time is pushed forward
+  // every time another block is written.
+  TPC::Scheduler::schedule(
+    TPC::Scheduler::TaskID::SCAN_FILESYSTEM,
+    TPC::Timekeeping::Interval::fromMilliseconds(10)
+  );
 }
 
 static void receiveNullBlock() {

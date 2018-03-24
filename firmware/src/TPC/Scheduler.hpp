@@ -9,6 +9,7 @@ namespace TPC {
   namespace Scheduler {
     enum class TaskID : uint8_t {
       PRINTING_COMPLETE,
+      SCAN_FILESYSTEM,
       TP_CONTROLLER_SERVICE,
       TP_DATA_PROVIDER_SERVICE,
       UI_BOTH_BUTTONS,
