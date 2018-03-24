@@ -11,9 +11,9 @@
 
 using namespace TPC::Filesystem;
 
-static constexpr uint8_t BOOT_SECTOR = 0;
-static constexpr uint8_t FAT_SECTOR = BOOT_SECTOR + NUM_RESERVED_SECTORS;
-static constexpr uint8_t ROOT_DIR_SECTOR = FAT_SECTOR + SECTORS_PER_FAT*NUM_FATS;
+static const BlockNumber BOOT_SECTOR = BlockNumber::fromBlock(0);
+static const BlockNumber FAT_SECTOR = BlockNumber::fromSector(0);
+static const BlockNumber ROOT_DIR_SECTOR = BlockNumber::fromSector(SECTORS_PER_FAT*NUM_FATS);
 
 uint8_t TPC::Filesystem::DirectoryEntry::formatName(char * buffer, uint8_t bufferLen) {
   // Leave room for a null terminator.
@@ -49,8 +49,8 @@ static void scanFile(DirectoryEntry * entry) {
   LOG(DEBUG_VERBOSE, "[Filesystem]   discovered file ", entry);
 }
 
-static void scanDirectory(uint8_t cluster) {
-  Reader reader(cluster);
+static void scanDirectory(BlockNumber blockNum) {
+  Reader reader(blockNum);
 
   static constexpr char END_OF_DIR_MARKER = '\x00';
   static constexpr char UNOCCUPIED_MARKER = '\xE5';
@@ -88,7 +88,7 @@ static void scanDirectory(uint8_t cluster) {
         }
         else if (attributes & SUBDIR_ATTR) {
           // This entry is for a subdirectory.
-          scanDirectory(entry->startCluster + NUM_RESERVED_SECTORS);
+          scanDirectory(BlockNumber::fromCluster(entry->startCluster));
         }
         else {
           // This entry is for a file.
@@ -163,25 +163,25 @@ void TPC::Filesystem::scanFilesystem() {
 
 // Always reports EOF.
 TPC::Filesystem::Reader::Reader()
-  : cluster(0xFFF), offset(0) {}
+  : blockNum(BlockNumber::fromBlock(0)), eofFlag(true), offset(0) {}
 
-TPC::Filesystem::Reader::Reader(uint16_t _cluster)
-  : cluster(_cluster), offset(0) {}
+TPC::Filesystem::Reader::Reader(BlockNumber _blockNum)
+  : blockNum(_blockNum), eofFlag(false), offset(0) {}
 
 bool TPC::Filesystem::Reader::eof() const {
-  return cluster >= 0xFF8 && cluster <= 0xFFF;
+  return eofFlag;
 }
 
 const uint8_t * TPC::Filesystem::Reader::pointer() const {
-  if (eof()) {
+  if (eofFlag) {
     return nullptr;
   }
-  const uint8_t * const clusterData = TPC::BlockStorage::get(cluster);
-  return &clusterData[offset];
+  const uint8_t * const blockData = TPC::BlockStorage::get(blockNum);
+  return &blockData[offset];
 }
 
 uint16_t TPC::Filesystem::Reader::usableLength() const {
-  if (eof()) {
+  if (eofFlag) {
     return 0;
   }
   return BYTES_PER_CLUSTER - offset;
@@ -190,8 +190,14 @@ uint16_t TPC::Filesystem::Reader::usableLength() const {
 void TPC::Filesystem::Reader::advance(uint16_t amount) {
   while (amount >= usableLength()) {
     amount -= usableLength();
-    cluster = readFATEntry(cluster);
+    uint16_t entry = readFATEntry(blockNum.toCluster());
+    if (entry >= 0xFF8 && entry <= 0xFFF) {
+      eofFlag = true;
+      return;
+    }
+    blockNum = BlockNumber::fromCluster(entry);
     offset = 0;
+    LOG(DEBUG, "[Filesystem] advanced to block 0x", blockNum.toBlock());
   }
   offset += amount;
 }

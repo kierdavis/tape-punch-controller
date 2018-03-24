@@ -6,6 +6,7 @@
 #include <LUFA/Drivers/USB/USB.h>
 
 #include "TPC/BlockStorage.hpp"
+#include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/SCSI.hpp"
 #include "TPC/Util.hpp"
@@ -237,7 +238,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
 
     // Receive a block.
     const uint8_t addr = startAddr + i;
-    TPC::BlockStorage::receive(addr);
+    TPC::BlockStorage::receive(TPC::Filesystem::BlockNumber::fromBlock(addr));
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
   }
 
@@ -268,7 +269,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
 
     // Send a block.
     const uint8_t addr = startAddr + i;
-    TPC::BlockStorage::send(addr);
+    TPC::BlockStorage::send(TPC::Filesystem::BlockNumber::fromBlock(addr));
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
   }
 

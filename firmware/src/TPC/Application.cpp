@@ -51,8 +51,8 @@ void TPC::Application::tryStartPrinting_IE(bool ignoreLowTape) {
         size32 = 0xFFFF;
       }
       uint16_t size = (uint16_t) size32;
-      uint16_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
-      TPC::Filesystem::Reader reader(firstCluster);
+      TPC::Filesystem::BlockNumber start = TPC::Filesystem::BlockNumber::fromCluster(selectedFile->startCluster);
+      TPC::Filesystem::Reader reader(start);
       LOG(INFO, "[Application] printing ", selectedFile);
       // TODO: check if already processing a job
       TPC::TPController::setJob_IE(reader, size);

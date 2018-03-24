@@ -10,6 +10,7 @@
 #include "TPC/Scheduler.hpp"
 
 using namespace TPC::BlockStorage;
+using TPC::Filesystem::BlockNumber;
 using TPC::Filesystem::NUM_RESERVED_SECTORS;
 
 static uint8_t mutableBlocks[NUM_MUTABLE_BLOCKS][BYTES_PER_BLOCK];
@@ -46,46 +47,43 @@ static void receiveNullBlock() {
   Endpoint_Discard_Stream(BYTES_PER_BLOCK, NULL);
 }
 
-void TPC::BlockStorage::send(const uint8_t addr) {
-  LOG(DEBUG, "[BlockStorage] read 0x", addr);
-  if (addr < NUM_RESERVED_SECTORS) {
+void TPC::BlockStorage::send(const BlockNumber blockNum) {
+  LOG(DEBUG, "[BlockStorage] read 0x", blockNum.toBlock());
+  if (blockNum.toBlock() < NUM_RESERVED_SECTORS) {
     sendBootBlock();
     return;
   }
-  const uint8_t maddr = addr - NUM_RESERVED_SECTORS;
-  if (maddr < NUM_MUTABLE_BLOCKS) {
-    sendMutableBlock(maddr);
+  if (blockNum.toSector() < NUM_MUTABLE_BLOCKS) {
+    sendMutableBlock(blockNum.toSector());
     return;
   }
   // Address out of range.
   sendNullBlock();
 }
 
-void TPC::BlockStorage::receive(const uint8_t addr) {
-  LOG(DEBUG, "[BlockStorage] write 0x", addr);
-  if (addr < NUM_RESERVED_SECTORS) {
+void TPC::BlockStorage::receive(const BlockNumber blockNum) {
+  LOG(DEBUG, "[BlockStorage] write 0x", blockNum.toBlock());
+  if (blockNum.toBlock() < NUM_RESERVED_SECTORS) {
     // Boot sector is immutable.
     receiveNullBlock();
     return;
   }
-  const uint8_t maddr = addr - NUM_RESERVED_SECTORS;
-  if (maddr < NUM_MUTABLE_BLOCKS) {
-    receiveMutableBlock(maddr);
+  if (blockNum.toSector() < NUM_MUTABLE_BLOCKS) {
+    receiveMutableBlock(blockNum.toSector());
     return;
   }
   // Address out of range.
   receiveNullBlock();
 }
 
-uint8_t * TPC::BlockStorage::get(const uint8_t addr) {
-  if (addr < NUM_RESERVED_SECTORS) {
+uint8_t * TPC::BlockStorage::get(const BlockNumber blockNum) {
+  if (blockNum.toBlock() < NUM_RESERVED_SECTORS) {
     // Boot sector is immutable, and shouldn't be used by the rest of the
     // firmware anyway.
     return nullptr;
   }
-  const uint8_t maddr = addr - NUM_RESERVED_SECTORS;
-  if (maddr < NUM_MUTABLE_BLOCKS) {
-    return &mutableBlocks[maddr][0];
+  if (blockNum.toSector() < NUM_MUTABLE_BLOCKS) {
+    return &mutableBlocks[blockNum.toSector()][0];
   }
   // Address out of range.
   return nullptr;

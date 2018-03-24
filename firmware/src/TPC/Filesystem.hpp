@@ -91,16 +91,42 @@ namespace TPC {
     void init();
     void scanFilesystem();
 
+    class BlockNumber {
+    protected:
+      uint8_t block;
+      BlockNumber(uint8_t _block) : block(_block) {}
+    public:
+      static BlockNumber fromBlock(uint8_t n) {
+        return BlockNumber(n);
+      }
+      static BlockNumber fromSector(uint8_t n) {
+        return BlockNumber::fromBlock(n + TPC::Filesystem::NUM_RESERVED_SECTORS);
+      }
+      static BlockNumber fromCluster(uint8_t n) {
+        return BlockNumber::fromSector(n * TPC::Filesystem::SECTORS_PER_CLUSTER);
+      }
+      uint8_t toBlock() const {
+        return block;
+      }
+      uint8_t toSector() const {
+        return toBlock() - TPC::Filesystem::NUM_RESERVED_SECTORS;
+      }
+      uint8_t toCluster() const {
+        return toSector() / TPC::Filesystem::SECTORS_PER_CLUSTER;
+      }
+    };
+
     class Reader {
     public:
       Reader();
-      Reader(uint16_t cluster);
+      Reader(BlockNumber blockNum);
       bool eof() const;
       const uint8_t * pointer() const;
       uint16_t usableLength() const;
       void advance(uint16_t amount);
     protected:
-      uint16_t cluster;
+      BlockNumber blockNum;
+      bool eofFlag;
       uint16_t offset;
     };
   }
