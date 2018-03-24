@@ -398,48 +398,63 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
   lastCmd = cmd;
   switch (cmd) {
     case SCSI_CMD_INQUIRY: {
+      LOG(DEBUG_VERBOSE, "[SCSI] inquiry");
       return handleInquiry(commandBlock);
     }
     case SCSI_CMD_REQUEST_SENSE: {
+      LOG(DEBUG_VERBOSE, "[SCSI] request sense");
       return handleRequestSense(commandBlock);
     }
     case SCSI_CMD_TEST_UNIT_READY: {
+      LOG(DEBUG_VERBOSE, "[SCSI] test unit ready");
       return handleTestUnitReady(commandBlock);
     }
     case SCSI_CMD_READ_CAPACITY_10: {
+      LOG(DEBUG_VERBOSE, "[SCSI] read capacity(10)");
       return handleReadCapacity10(commandBlock);
     }
     case SCSI_CMD_START_STOP_UNIT: {
+      LOG(DEBUG_VERBOSE, "[SCSI] start/stop unit");
       return handleStartStopUnit(commandBlock);
     }
     case SCSI_CMD_SEND_DIAGNOSTIC: {
+      LOG(DEBUG_VERBOSE, "[SCSI] send diagnostic");
       return handleSendDiagnostic(commandBlock);
     }
     case SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL: {
+      LOG(DEBUG_VERBOSE, "[SCSI] prevent/allow medium removal");
       return handlePreventAllowMediumRemoval(commandBlock);
     }
     case SCSI_CMD_WRITE_10: {
+      LOG(DEBUG_VERBOSE, "[SCSI] write(10)");
       return handleWrite10(commandBlock);
     }
     case SCSI_CMD_READ_10: {
+      LOG(DEBUG_VERBOSE, "[SCSI] read(10)");
       return handleRead10(commandBlock);
     }
     case SCSI_CMD_WRITE_6: {
+      LOG(DEBUG_VERBOSE, "[SCSI] write(6)");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_READ_6: {
+      LOG(DEBUG_VERBOSE, "[SCSI] read(6)");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_VERIFY_10: {
+      LOG(DEBUG_VERBOSE, "[SCSI] verify(10)");
       return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_6: {
+      LOG(DEBUG_VERBOSE, "[SCSI] mode sense(6)");
       return handleModeSense6(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_10: {
+      LOG(DEBUG_VERBOSE, "[SCSI] mode sense(10)");
       return handleModeSense10(commandBlock);
     }
     case SCSI_CMD_READ_FORMAT_CAPACITIES: {
+      LOG(DEBUG_VERBOSE, "[SCSI] read format capacities");
       return handleReadFormatCapacities(commandBlock);
     }
     default: {
