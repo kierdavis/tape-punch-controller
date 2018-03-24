@@ -33,3 +33,7 @@ void TPC::TPMotorDriver::on() {
 void TPC::TPMotorDriver::off() {
   setPin(false);
 }
+
+bool TPC::TPMotorDriver::isOn() {
+  return PORT->OUT & PIN_MASK;
+}
