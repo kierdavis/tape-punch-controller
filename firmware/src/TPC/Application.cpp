@@ -37,11 +37,11 @@ void TPC::Application::tryStartPrinting_IE(bool ignoreLowTape) {
   TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
   if (selectedFile != nullptr) {
     if (TPC::TPController::readNoTapeSensor()) {
-      LOG("[Application] No tape warning");
+      LOG("[Application] no tape warning");
       setState_IE(State::IDLE_NO_TAPE_WARNING);
     }
     else if (!ignoreLowTape && TPC::TPController::readLowTapeSensor()) {
-      LOG("[Application] Low tape warning");
+      LOG("[Application] low tape warning");
       setState_IE(State::IDLE_LOW_TAPE_WARNING);
     }
     else {
