@@ -69,7 +69,6 @@ extern "C" {
     } else {
       LOG(INFO, "[USB] configuration change failed");
     }
-    // TODO: actually handle `success`?
   }
 
   void EVENT_USB_Device_ControlRequest() {
