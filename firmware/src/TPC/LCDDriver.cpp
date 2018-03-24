@@ -182,27 +182,3 @@ void TPC::LCDDriver::init() {
   // Turn the display on.
   setDisplayMode(DISPLAY_MODE_ENABLE_DISPLAY);
 }
-
-void TPC::LCDDriver::clear() {
-  clearDisplay();
-}
-
-void TPC::LCDDriver::writeAt(const uint8_t row, const uint8_t col, const char * str) {
-  setCursorPos(row, col);
-  while (1) {
-    char c = *str;
-    if (c == '\0') { break; }
-    writeData(c);
-    str++;
-  }
-}
-
-void TPC::LCDDriver::writeAtP(const uint8_t row, const uint8_t col, PGM_P str) {
-  setCursorPos(row, col);
-  while (1) {
-    char c = pgm_read_byte(str);
-    if (c == '\0') { break; }
-    writeData(c);
-    str++;
-  }
-}
