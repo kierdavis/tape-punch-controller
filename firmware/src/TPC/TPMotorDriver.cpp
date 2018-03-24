@@ -9,29 +9,19 @@ static volatile PORT_t * const PORT = &PORTE;
 static uint8_t constexpr PIN = 6;
 static uint8_t constexpr PIN_MASK = _BV(PIN);
 
-static void configurePin() {
-  PORT->DIRSET = PIN_MASK;
-}
-
-static void setPin(bool value) {
-  if (value) {
-    PORT->OUTSET = PIN_MASK;
-  } else {
-    PORT->OUTCLR = PIN_MASK;
-  }
-}
-
 void TPC::TPMotorDriver::init() {
-  configurePin();
-  setPin(false);
+  // Configure pin as an output.
+  PORT->DIRSET = PIN_MASK;
+  // Set pin low.
+  PORT->OUTCLR = PIN_MASK;
 }
 
 void TPC::TPMotorDriver::on() {
-  setPin(true);
+  PORT->OUTSET = PIN_MASK;
 }
 
 void TPC::TPMotorDriver::off() {
-  setPin(false);
+  PORT->OUTCLR = PIN_MASK;
 }
 
 bool TPC::TPMotorDriver::isOn() {
