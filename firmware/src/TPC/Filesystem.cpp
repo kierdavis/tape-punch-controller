@@ -155,10 +155,9 @@ void TPC::Filesystem::init() {
 }
 
 void TPC::Filesystem::scanFilesystem() {
-  LOG(DEBUG_VERBOSE, "[Filesystem] scanning...");
+  LOG(DEBUG, "[Filesystem] scanning");
   TPC::FileSelector::reset();
   scanDirectory(ROOT_DIR_SECTOR);
-  LOG(DEBUG_VERBOSE, "[Filesystem] scan complete");
   TPC::UI::refresh_IE();
 }
 
