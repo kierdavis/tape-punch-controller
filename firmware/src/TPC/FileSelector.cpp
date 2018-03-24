@@ -23,7 +23,7 @@ void TPC::FileSelector::add(TPC::Filesystem::DirectoryEntry * file) {
     if (file == previousSelection) {
       selectedIndex = _numFiles;
       previousSelection = nullptr;
-      LOG(DEBUG, "[FileSelector] restored selection ", file);
+      LOG(DEBUG_VERBOSE, "[FileSelector] restored selection ", file);
     }
     numFiles = _numFiles + 1;
   }
