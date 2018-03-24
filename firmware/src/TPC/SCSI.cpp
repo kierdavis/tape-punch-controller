@@ -39,10 +39,10 @@ static void resetSenseData() {
 }
 
 static bool error(MS_CommandBlockWrapper_t * const commandBlock, const uint8_t key, const uint8_t addCode, const uint8_t addQual) {
-  LOG("[SCSI] sending error response; most recent command was 0x", lastCmd);
-  LOG("[SCSI]   key: 0x", key);
-  LOG("[SCSI]   ac: 0x", addCode);
-  LOG("[SCSI]   aq: 0x", addQual);
+  LOG(INFO, "[SCSI] sending error response; most recent command was 0x", lastCmd);
+  LOG(DEBUG, "[SCSI]   key: 0x", key);
+  LOG(DEBUG, "[SCSI]   ac: 0x", addCode);
+  LOG(DEBUG, "[SCSI]   aq: 0x", addQual);
   senseData.SenseKey = key;
   senseData.AdditionalSenseCode = addCode;
   senseData.AdditionalSenseQualifier = addQual;
@@ -367,7 +367,7 @@ static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandB
 }
 
 static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
-  LOG("[SCSI] unrecognised command 0x", lastCmd);
+  LOG(INFO, "[SCSI] unrecognised command 0x", lastCmd);
   return error(
     commandBlock,
     SCSI_SENSE_KEY_ILLEGAL_REQUEST,
@@ -377,7 +377,7 @@ static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
-  LOG("[SCSI] recognised but unimplemented command 0x", lastCmd);
+  LOG(INFO, "[SCSI] recognised but unimplemented command 0x", lastCmd);
   return error(
     commandBlock,
     SCSI_SENSE_KEY_ILLEGAL_REQUEST,

@@ -37,23 +37,23 @@ void TPC::Application::tryStartPrinting_IE(bool ignoreLowTape) {
   TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
   if (selectedFile != nullptr) {
     if (TPC::TPController::readNoTapeSensor()) {
-      LOG("[Application] no tape warning");
+      LOG(INFO, "[Application] no tape warning");
       setState_IE(State::IDLE_NO_TAPE_WARNING);
     }
     else if (!ignoreLowTape && TPC::TPController::readLowTapeSensor()) {
-      LOG("[Application] low tape warning");
+      LOG(INFO, "[Application] low tape warning");
       setState_IE(State::IDLE_LOW_TAPE_WARNING);
     }
     else {
       uint32_t size32 = selectedFile->size;
       if (size32 > 0xFFFF) {
-        LOG("[Application] WARNING: file larger than 0xFFFF bytes, truncating!");
+        LOG(IMPORTANT, "[Application] WARNING: file larger than 0xFFFF bytes, truncating!");
         size32 = 0xFFFF;
       }
       uint16_t size = (uint16_t) size32;
       uint16_t firstCluster = selectedFile->startCluster + TPC::Filesystem::NUM_RESERVED_SECTORS;
       TPC::Filesystem::Reader reader(firstCluster);
-      LOG("[Application] printing ", selectedFile);
+      LOG(INFO, "[Application] printing ", selectedFile);
       // TODO: check if already processing a job
       TPC::TPController::setJob_IE(reader, size);
       setState_IE(State::PRINT);
@@ -62,19 +62,19 @@ void TPC::Application::tryStartPrinting_IE(bool ignoreLowTape) {
 }
 
 void TPC::Application::stopPrinting_IE() {
-  LOG("[Application] printing cancelled");
+  LOG(INFO, "[Application] printing cancelled");
   TPC::TPController::clearJob_IE();
   setState_IE(State::IDLE);
 }
 
 void TPC::Application::warnNoTapeDuringPrint_IE() {
-  LOG("[Application] no tape warning (during print)")
+  LOG(INFO, "[Application] no tape warning (during print)")
   TPC::TPController::clearJob_IE();
   setState_IE(State::IDLE_NO_TAPE_WARNING);
 }
 
 void TPC::Application::warnLowTapeDuringPrint_IE() {
-  LOG("[Application] low tape warning (during print)")
+  LOG(INFO, "[Application] low tape warning (during print)")
   setState_IE(State::PRINT_LOW_TAPE_WARNING);
 }
 
@@ -84,6 +84,6 @@ void TPC::Application::selectNextFile_IE() {
 }
 
 void TPC::Application::printingComplete_IE() {
-  LOG("[Application] printing complete");
+  LOG(INFO, "[Application] printing complete");
   setState_IE(State::IDLE);
 }

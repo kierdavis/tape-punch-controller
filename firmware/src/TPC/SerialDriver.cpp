@@ -48,8 +48,8 @@ void TPC::SerialDriver::init() {
   USART->BAUDCTRLA = BAUDCTRLA;
   USART->BAUDCTRLB = BAUDCTRLB;
 
-  // LOG("[SerialDriver] BSCALE = 0x", (uint8_t) (BSCALE & 0xF));
-  // LOG("[SerialDriver] BSEL = 0x", BSEL);
+  LOG(DEBUG_VERBOSE, "[SerialDriver] BSCALE = 0x", (uint8_t) (BSCALE & 0xF));
+  LOG(DEBUG_VERBOSE, "[SerialDriver] BSEL = 0x", BSEL);
 }
 
 static bool transmitBufferEmpty() {

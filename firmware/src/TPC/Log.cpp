@@ -1,7 +1,9 @@
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <avr/pgmspace.h>
 
+#include "TPC/Config.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/SerialDriver.hpp"
@@ -62,6 +64,10 @@ void TPC::Log::writeHex8(uint8_t val) {
 void TPC::Log::writeHex16(uint16_t val) {
   writeHex8(val >> 8);
   writeHex8(val);
+}
+
+bool TPC::Log::shouldLog(TPC::Log::Level level) {
+  return ((uint8_t) level) <= ((uint8_t) TPC::Config::LOG_LEVEL);
 }
 
 void TPC::Log::log(PGM_P str) {

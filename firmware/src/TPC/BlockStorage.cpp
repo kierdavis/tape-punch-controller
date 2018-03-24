@@ -39,7 +39,7 @@ static void receiveNullBlock() {
 }
 
 void TPC::BlockStorage::send(const uint8_t addr) {
-  LOG("[BlockStorage] read 0x", addr);
+  LOG(DEBUG, "[BlockStorage] read 0x", addr);
   if (addr < NUM_RESERVED_SECTORS) {
     sendBootBlock();
     return;
@@ -54,7 +54,7 @@ void TPC::BlockStorage::send(const uint8_t addr) {
 }
 
 void TPC::BlockStorage::receive(const uint8_t addr) {
-  LOG("[BlockStorage] write 0x", addr);
+  LOG(DEBUG, "[BlockStorage] write 0x", addr);
   if (addr < NUM_RESERVED_SECTORS) {
     // Boot sector is immutable.
     receiveNullBlock();

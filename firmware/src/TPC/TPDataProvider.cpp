@@ -101,7 +101,7 @@ void TPC::TPDataProvider::setJob_IE(TPC::Filesystem::Reader reader, uint16_t len
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     goToLeader_ID();
   }
-  LOG("[TPDataProvider] job added or changed");
+  LOG(DEBUG, "[TPDataProvider] job added or changed");
 }
 
 void TPC::TPDataProvider::clearJob_IE() {
@@ -110,7 +110,7 @@ void TPC::TPDataProvider::clearJob_IE() {
     TPC::TPDataBuffer::reset_ID();
     goToIdle_ID();
   }
-  LOG("[TPDataProvider] job cleared");
+  LOG(DEBUG, "[TPDataProvider] job cleared");
 }
 
 void TPC::TPDataProvider::serviceTask_IE() {

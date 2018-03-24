@@ -46,7 +46,7 @@ uint8_t TPC::Filesystem::DirectoryEntry::formatName(char * buffer, uint8_t buffe
 
 static void scanFile(DirectoryEntry * entry) {
   TPC::FileSelector::add(entry);
-  LOG("[Filesystem]   discovered file ", entry);
+  LOG(DEBUG_VERBOSE, "[Filesystem]   discovered file ", entry);
 }
 
 static void scanDirectory(uint8_t cluster) {
@@ -155,10 +155,10 @@ void TPC::Filesystem::init() {
 }
 
 void TPC::Filesystem::scanFilesystem() {
-  LOG("[Filesystem] scanning...");
+  LOG(DEBUG_VERBOSE, "[Filesystem] scanning...");
   TPC::FileSelector::reset();
   scanDirectory(ROOT_DIR_SECTOR);
-  LOG("[Filesystem] scan complete");
+  LOG(DEBUG_VERBOSE, "[Filesystem] scan complete");
   TPC::UI::refresh_IE();
 }
 

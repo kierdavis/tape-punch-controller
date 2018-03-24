@@ -55,19 +55,19 @@ void TPC::USBDriver::serviceTask() {
 
 extern "C" {
   void EVENT_USB_Device_Connect() {
-    LOG("[USB] enumerating");
+    LOG(DEBUG, "[USB] enumerating");
   }
 
   void EVENT_USB_Device_Disconnect() {
-    LOG("[USB] disconnected");
+    LOG(INFO, "[USB] disconnected");
   }
 
   void EVENT_USB_Device_ConfigurationChanged() {
     bool success = MS_Device_ConfigureEndpoints(&msdInfo);
     if (success) {
-      LOG("[USB] configuration change successful");
+      LOG(INFO, "[USB] connected");
     } else {
-      LOG("[USB] configuration change failed");
+      LOG(INFO, "[USB] configuration change failed");
     }
     // TODO: actually handle `success`?
   }

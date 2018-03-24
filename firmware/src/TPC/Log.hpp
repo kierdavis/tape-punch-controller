@@ -1,6 +1,7 @@
 #ifndef __TPC_LOG_HPP
 #define __TPC_LOG_HPP
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <avr/pgmspace.h>
@@ -9,6 +10,14 @@
 
 namespace TPC {
   namespace Log {
+    enum class Level : uint8_t {
+      SILENT,
+      IMPORTANT,
+      INFO,
+      DEBUG,
+      DEBUG_VERBOSE,
+    };
+
     void init();
 
     void writeChar(char c);
@@ -21,6 +30,7 @@ namespace TPC {
     void writeHex8(uint8_t val);
     void writeHex16(uint16_t val);
 
+    bool shouldLog(Level level);
     void log(PGM_P str);
     void log(PGM_P str, uint8_t val);
     void log(PGM_P str, uint16_t val);
@@ -29,7 +39,7 @@ namespace TPC {
   }
 }
 
-#define LOG(STR, ...) { \
+#define LOG(LEVEL, STR, ...) if (TPC::Log::shouldLog(TPC::Log::Level::LEVEL)) { \
   static const char str[] PROGMEM = STR; \
   TPC::Log::log(str,##__VA_ARGS__); \
 }

@@ -103,7 +103,7 @@ void TPC::MicrocontrollerDriver::logResetSource() {
     (status & RST_SRF_bm)   ? 'S' : '.',
     '\0'
   };
-  LOG("[MicrocontrollerDriver] reset source(s): ", (const char *) statusStr);
+  LOG(DEBUG, "[MicrocontrollerDriver] reset source(s): ", (const char *) statusStr);
   // Clear all reset flags.
   RST.STATUS = RST_PORF_bm | RST_EXTRF_bm | RST_BORF_bm
              | RST_WDRF_bm | RST_PDIRF_bm | RST_SRF_bm;

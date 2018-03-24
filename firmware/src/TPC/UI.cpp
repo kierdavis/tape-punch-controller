@@ -58,7 +58,7 @@ void TPC::UI::refresh_IE() {
 }
 
 void TPC::UI::handleConfirmButton_IE() {
-  LOG("[UI] CONFIRM pressed");
+  LOG(DEBUG, "[UI] CONFIRM pressed");
   switch (TPC::Application::getState_IE()) {
     case State::IDLE: {
       TPC::Application::tryStartPrinting_IE();
@@ -81,7 +81,7 @@ void TPC::UI::handleConfirmButton_IE() {
 }
 
 void TPC::UI::handleCancelButton_IE() {
-  LOG("[UI] CANCEL pressed");
+  LOG(DEBUG, "[UI] CANCEL pressed");
   switch (TPC::Application::getState_IE()) {
     case State::IDLE: {
       TPC::Application::selectNextFile_IE();
@@ -101,5 +101,5 @@ void TPC::UI::handleCancelButton_IE() {
 }
 
 void TPC::UI::handleBothButtons_IE() {
-  LOG("[UI] CONFIRM+CANCEL pressed");
+  LOG(DEBUG, "[UI] CONFIRM+CANCEL pressed");
 }

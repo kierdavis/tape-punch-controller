@@ -10,14 +10,14 @@ int main() {
   // First stage init.
   TPC::MicrocontrollerDriver::init();
   TPC::Log::init();
-  LOG("[main] initialising...");
+  LOG(INFO, "[main] initialising...");
 
   // Second stage init.
   TPC::MicrocontrollerDriver::logResetSource();
   TPC::Scheduler::init();
   TPC::Application::init();
   sei();
-  LOG("[main] ready");
+  LOG(IMPORTANT, "[main] ready");
 
   while (1) {
     TPC::Scheduler::serviceTasks();

@@ -23,7 +23,7 @@ void TPC::FileSelector::add(TPC::Filesystem::DirectoryEntry * file) {
     if (file == previousSelection) {
       selectedIndex = _numFiles;
       previousSelection = nullptr;
-      LOG("[FileSelector] restored selection ", file);
+      LOG(DEBUG, "[FileSelector] restored selection ", file);
     }
     numFiles = _numFiles + 1;
   }
@@ -37,7 +37,7 @@ void TPC::FileSelector::selectNext() {
   if (_selectedIndex == _numFiles) {
     _selectedIndex = 0;
   }
-  LOG("[FileSelector] selected ", files[_selectedIndex]);
+  LOG(DEBUG, "[FileSelector] selected ", files[_selectedIndex]);
   selectedIndex = _selectedIndex;
 }
 
@@ -49,7 +49,7 @@ void TPC::FileSelector::selectPrev() {
     _selectedIndex = _numFiles;
   }
   _selectedIndex--;
-  LOG("[FileSelector] selected ", files[_selectedIndex]);
+  LOG(DEBUG, "[FileSelector] selected ", files[_selectedIndex]);
   selectedIndex = _selectedIndex;
 }
 
