@@ -9,6 +9,8 @@ namespace TPC {
   namespace LCDDriver {
     void init();
     void clear();
+    void setCursorPos(const uint8_t row, const uint8_t col);
+    void writeData(const uint8_t data);
     void writeAt(const uint8_t row, const uint8_t col, const char * str);
     void writeAtP(const uint8_t row, const uint8_t col, PGM_P str);
   }

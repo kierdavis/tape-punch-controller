@@ -6,6 +6,7 @@
 
 #include "TPC/Application.hpp"
 #include "TPC/Filesystem.hpp"
+#include "TPC/LCDStatusLine.hpp"
 #include "TPC/TPController.hpp"
 #include "TPC/TPDataProvider.hpp"
 #include "TPC/UI.hpp"
@@ -18,7 +19,7 @@ using TPC::Timekeeping::Timestamp;
 
 class ScheduledTaskSet {
 protected:
-  uint8_t bitSet;
+  uint16_t bitSet;
 public:
   static constexpr uint8_t CAPACITY = sizeof(bitSet) * 8;
   static_assert(CAPACITY >= NUM_TASKS, "ScheduledTaskSet capacity too low; consider increasing width of ScheduledTaskSet::bitSet");
@@ -96,6 +97,10 @@ void TPC::Scheduler::cancel(TaskID taskID) {
 
 static void serviceTask(TaskID taskID) {
   switch (taskID) {
+    case TaskID::LCD_STATUS_LINE_SCROLL: {
+      TPC::LCDStatusLine::scroll();
+      break;
+    }
     case TaskID::PRINTING_COMPLETE: {
       TPC::Application::printingComplete_IE();
       break;

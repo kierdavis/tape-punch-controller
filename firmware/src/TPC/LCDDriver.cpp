@@ -135,7 +135,7 @@ static void setDDRAMAddr(const uint8_t addr) {
   _delay_us(50);
 }
 
-static void setCursorPos(const uint8_t row, const uint8_t col) {
+void TPC::LCDDriver::setCursorPos(const uint8_t row, const uint8_t col) {
   uint8_t addr = col;
   switch (row) {
     case 0: {
@@ -154,7 +154,7 @@ static void setCursorPos(const uint8_t row, const uint8_t col) {
   setDDRAMAddr(addr);
 }
 
-static void writeData(const uint8_t data) {
+void TPC::LCDDriver::writeData(const uint8_t data) {
   write8(RS::DATA, data);
   _delay_us(50);
 }

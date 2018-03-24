@@ -5,6 +5,7 @@
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/LCDDriver.hpp"
+#include "TPC/LCDStatusLine.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/UI.hpp"
 
@@ -21,36 +22,38 @@ void TPC::UI::refresh_IE() {
     case State::IDLE: {
       TPC::Filesystem::DirectoryEntry * selectedFile = TPC::FileSelector::selected();
       if (selectedFile == nullptr) {
-        LCD_WRITE_AT(0, 0, "No files present");
+        SET_LCD_STATUS_LINE("No files loaded");
       }
       else {
         static constexpr uint8_t NAME_BUFFER_LEN = 17;
         char nameBuffer[NAME_BUFFER_LEN];
         selectedFile->formatName(nameBuffer, NAME_BUFFER_LEN);
-        TPC::LCDDriver::writeAt(0, 0, nameBuffer);
+        TPC::LCDStatusLine::clear();
+        TPC::LCDStatusLine::append(nameBuffer);
+        TPC::LCDStatusLine::finishAppending();
         LCD_WRITE_AT(1, 0, "[NEXT]");
         LCD_WRITE_AT(1, 16-7, "[PRINT]");
       }
       break;
     }
     case State::IDLE_NO_TAPE_WARNING: {
-      LCD_WRITE_AT(0, 0, "No tape!");
+      SET_LCD_STATUS_LINE("Out of tape!");
       LCD_WRITE_AT(1, 16-4, "[OK]");
       break;
     }
     case State::IDLE_LOW_TAPE_WARNING: {
-      LCD_WRITE_AT(0, 0, "Low tape! Proceed?");
+      SET_LCD_STATUS_LINE("Low on tape, proceed?");
       LCD_WRITE_AT(1, 0, "[NO]");
       LCD_WRITE_AT(1, 16-5, "[YES]");
       break;
     }
     case State::PRINT: {
-      LCD_WRITE_AT(0, 0, "Printing");
+      SET_LCD_STATUS_LINE("Printing...");
       LCD_WRITE_AT(1, 0, "[CANCEL]");
       break;
     }
     case State::PRINT_LOW_TAPE_WARNING: {
-      LCD_WRITE_AT(0, 0, "Printing (low tape!)");
+      SET_LCD_STATUS_LINE("Printing... (low on tape)");
       LCD_WRITE_AT(1, 0, "[CANCEL]");
       break;
     }
