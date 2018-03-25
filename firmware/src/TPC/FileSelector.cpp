@@ -4,11 +4,16 @@
 #include "TPC/FileSelector.hpp"
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
+#include "TPC/Scheduler.hpp"
 
 static TPC::Filesystem::DirectoryEntry * files[TPC::Config::MAX_NUM_FILES];
 static uint8_t numFiles = 0;
 static uint8_t selectedIndex = 0; // considered invalid when numFiles == 0.
 static TPC::Filesystem::DirectoryEntry * previousSelection = nullptr;
+
+static void expediteScan() {
+  TPC::Scheduler::expedite(TPC::Scheduler::TaskID::SCAN_FILESYSTEM);
+}
 
 void TPC::FileSelector::reset() {
   previousSelection = selected();
@@ -30,6 +35,7 @@ void TPC::FileSelector::add(TPC::Filesystem::DirectoryEntry * file) {
 }
 
 void TPC::FileSelector::selectNext() {
+  expediteScan();
   uint8_t _numFiles = numFiles;
   if (_numFiles == 0) { return; }
   uint8_t _selectedIndex = selectedIndex;
@@ -42,6 +48,7 @@ void TPC::FileSelector::selectNext() {
 }
 
 void TPC::FileSelector::selectPrev() {
+  expediteScan();
   uint8_t _numFiles = numFiles;
   if (_numFiles == 0) { return; }
   uint8_t _selectedIndex = selectedIndex;
@@ -54,5 +61,6 @@ void TPC::FileSelector::selectPrev() {
 }
 
 TPC::Filesystem::DirectoryEntry * TPC::FileSelector::selected() {
+  expediteScan();
   return (numFiles == 0) ? nullptr : files[selectedIndex];
 }
