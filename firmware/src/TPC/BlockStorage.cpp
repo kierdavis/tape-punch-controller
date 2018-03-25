@@ -8,6 +8,7 @@
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/Scheduler.hpp"
+#include "TPC/Timekeeping.hpp"
 
 using namespace TPC::BlockStorage;
 using TPC::Filesystem::BlockNumber;
