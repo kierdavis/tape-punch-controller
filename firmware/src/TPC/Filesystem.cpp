@@ -44,63 +44,6 @@ uint8_t TPC::Filesystem::DirectoryEntry::formatName(char * buffer, uint8_t buffe
   return bufferPos;
 }
 
-static void scanFile(DirectoryEntry * entry) {
-  TPC::FileSelector::add(entry);
-  LOG(DEBUG_VERBOSE, "[Filesystem]   discovered file ", entry);
-}
-
-static void scanDirectory(BlockNumber blockNum) {
-  Reader reader(blockNum);
-
-  static constexpr char END_OF_DIR_MARKER = '\x00';
-  static constexpr char UNOCCUPIED_MARKER = '\xE5';
-
-  static constexpr uint8_t LFN_ATTRS = 0x0F;
-  static constexpr uint8_t HIDDEN_ATTR = 0x02;
-  static constexpr uint8_t VOLUME_LABEL_ATTR = 0x08;
-  static constexpr uint8_t SUBDIR_ATTR = 0x10;
-
-  bool endOfDirReached = false;
-  while (!endOfDirReached && !reader.eof()) {
-    DirectoryEntry * entry = (DirectoryEntry *) reader.pointer();
-    switch (entry->name[0]) {
-      case END_OF_DIR_MARKER: {
-        endOfDirReached = true;
-        break;
-      }
-      case UNOCCUPIED_MARKER: {
-        break;
-      }
-      case '.': {
-        // This entry is a hidden file or directory; do nothing.
-        break;
-      }
-      default: {
-        const uint8_t attributes = entry->attributes;
-        if (attributes == LFN_ATTRS) {
-          // This entry is a VFAT long filename prefix.
-        }
-        else if (attributes & HIDDEN_ATTR) {
-          // This entry is a hidden file or directory; do nothing.
-        }
-        else if (attributes & VOLUME_LABEL_ATTR) {
-          // This entry is the volume label; do nothing.
-        }
-        else if (attributes & SUBDIR_ATTR) {
-          // This entry is for a subdirectory.
-          scanDirectory(BlockNumber::fromCluster(entry->startCluster));
-        }
-        else {
-          // This entry is for a file.
-          scanFile(entry);
-        }
-        break;
-      }
-    }
-    reader.advance(sizeof(DirectoryEntry));
-  }
-}
-
 static uint16_t readFATEntry(const uint16_t index) {
   uint8_t * const fat = TPC::BlockStorage::get(FAT_SECTOR);
   const uint16_t pairIndex = index / 2;
@@ -152,6 +95,71 @@ void TPC::Filesystem::init() {
   writeFATEntry(0, 0xF00 | MEDIA_TYPE);
   writeFATEntry(1, 0xFFF);
   initVolumeLabel();
+}
+
+static void scanFile(DirectoryEntry * entry) {
+  TPC::FileSelector::add(entry);
+  LOG(DEBUG_VERBOSE, "[Filesystem]   discovered file ", entry);
+}
+
+static void scanDirectory(BlockNumber blockNum);
+
+static bool scanEntry(DirectoryEntry * entry) {
+  static constexpr char END_OF_DIR_MARKER = '\x00';
+  static constexpr char UNOCCUPIED_MARKER = '\xE5';
+
+  static constexpr uint8_t LFN_ATTRS = 0x0F;
+  static constexpr uint8_t HIDDEN_ATTR = 0x02;
+  static constexpr uint8_t VOLUME_LABEL_ATTR = 0x08;
+  static constexpr uint8_t SUBDIR_ATTR = 0x10;
+
+  switch (entry->name[0]) {
+    case END_OF_DIR_MARKER: {
+      return true;
+    }
+    case UNOCCUPIED_MARKER: {
+      break;
+    }
+    case '.': {
+      // This entry is a hidden file or directory; do nothing.
+      break;
+    }
+    default: {
+      const uint8_t attributes = entry->attributes;
+      if (attributes == LFN_ATTRS) {
+        // This entry is a VFAT long filename prefix.
+      }
+      else if (attributes & HIDDEN_ATTR) {
+        // This entry is a hidden file or directory; do nothing.
+      }
+      else if (attributes & VOLUME_LABEL_ATTR) {
+        // This entry is the volume label; do nothing.
+      }
+      else if (attributes & SUBDIR_ATTR) {
+        // This entry is for a subdirectory.
+        scanDirectory(BlockNumber::fromCluster(entry->startCluster));
+      }
+      else {
+        // This entry is for a file.
+        scanFile(entry);
+      }
+      break;
+    }
+  }
+
+  return false;
+}
+
+static void scanDirectory(BlockNumber blockNum) {
+  Reader reader(blockNum);
+  while (!reader.eof()) {
+    DirectoryEntry * entry = (DirectoryEntry *) reader.pointer();
+    if (scanEntry(entry)) {
+      // End of directory.
+      break;
+    }
+    reader.advance(sizeof(DirectoryEntry));
+  }
 }
 
 void TPC::Filesystem::scanFilesystem() {
