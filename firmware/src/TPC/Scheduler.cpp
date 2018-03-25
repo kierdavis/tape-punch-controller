@@ -95,7 +95,8 @@ void TPC::Scheduler::cancel(TaskID taskID) {
   scheduledTasks.remove(taskID);
 }
 
-static void serviceTask(TaskID taskID) {
+static void runTask(TaskID taskID) {
+  scheduledTasks.remove(taskID);
   switch (taskID) {
     case TaskID::LCD_STATUS_LINE_SCROLL: {
       TPC::LCDStatusLine::scroll();
@@ -140,8 +141,7 @@ void TPC::Scheduler::serviceTasks() {
   for (uint8_t i = 0; i < NUM_TASKS; i++) {
     TaskID taskID = (TaskID) i;
     if (scheduledTasks.contains(taskID) && timestamps.get(taskID).isBeforeOrEqual(Timestamp::now())) {
-      scheduledTasks.remove(taskID);
-      serviceTask(taskID);
+      runTask(taskID);
     }
   }
 }
