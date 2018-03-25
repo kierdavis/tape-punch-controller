@@ -12,6 +12,8 @@ namespace TPC {
       IDLE_LOW_TAPE_WARNING,
       PRINT,
       PRINT_LOW_TAPE_WARNING,
+      MENU_FEED_OUT,
+      FEED_OUT,
     };
 
     void init();
@@ -23,6 +25,10 @@ namespace TPC {
     void warnLowTapeDuringPrint_IE();
     void selectNextFile_IE();
     void printingComplete_IE();
+    void openMenu_IE();
+    void closeMenu_IE();
+    void startFeedOut_IE();
+    void stopFeedOut_IE();
   }
 }
 

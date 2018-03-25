@@ -9,7 +9,8 @@
 namespace TPC {
   namespace TPDataProvider {
     void init();
-    void setJob_IE(TPC::Filesystem::Reader reader, uint16_t length);
+    void setPrintJob_IE(TPC::Filesystem::Reader reader, uint16_t length);
+    void setFeedOutJob_IE();
     void clearJob_IE();
     void serviceTask_IE();
     TPC::Util::MaybeUint8 nextByte_ID();

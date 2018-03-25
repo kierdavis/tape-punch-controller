@@ -18,6 +18,7 @@ enum class State : uint8_t {
   LEADER,
   BODY,
   TRAILER,
+  FEED_OUT,
 };
 
 static volatile State state = State::IDLE;
@@ -43,6 +44,10 @@ static void goToBody_ID() {
 static void goToTrailer_ID() {
   state = State::TRAILER;
   count = TPC::Config::TRAILER_LENGTH;
+}
+
+static void goToFeedOut_ID() {
+  state = State::FEED_OUT;
 }
 
 static void refillBodyBuffer_IE() {
@@ -94,14 +99,21 @@ void TPC::TPDataProvider::init() {
   scheduleTask();
 }
 
-void TPC::TPDataProvider::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
+void TPC::TPDataProvider::setPrintJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
   bodyReader = reader;
   bodyLength = length;
   refillBodyBuffer_IE();
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     goToLeader_ID();
   }
-  LOG(DEBUG, "[TPDataProvider] job added or changed");
+  LOG(DEBUG, "[TPDataProvider] print job added or changed");
+}
+
+void TPC::TPDataProvider::setFeedOutJob_IE() {
+  ATOMIC_BLOCK(ATOMIC_FORCEON) {
+    goToFeedOut_ID();
+  }
+  LOG(DEBUG, "[TPDataProvider] feed-out job added or changed");
 }
 
 void TPC::TPDataProvider::clearJob_IE() {
@@ -149,6 +161,9 @@ TPC::Util::MaybeUint8 TPC::TPDataProvider::nextByte_ID() {
       } else {
         count = countMinusOne;
       }
+      return TPC::Util::MaybeUint8(true, 0);
+    }
+    case State::FEED_OUT: {
       return TPC::Util::MaybeUint8(true, 0);
     }
   }

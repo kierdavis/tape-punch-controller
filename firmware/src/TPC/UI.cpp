@@ -56,6 +56,16 @@ void TPC::UI::refresh_IE() {
       SET_LCD_ACTION_LINE("CANCEL", "");
       break;
     }
+    case State::MENU_FEED_OUT: {
+      SET_LCD_STATUS_LINE("Menu: feed out");
+      SET_LCD_ACTION_LINE("EXIT", "SELECT");
+      break;
+    }
+    case State::FEED_OUT: {
+      SET_LCD_STATUS_LINE("Feeding tape...");
+      SET_LCD_ACTION_LINE("STOP", "");
+      break;
+    }
   }
 }
 
@@ -79,6 +89,14 @@ void TPC::UI::handleConfirmButton_IE() {
       // Do nothing.
       break;
     }
+    case State::MENU_FEED_OUT: {
+      TPC::Application::startFeedOut_IE();
+      break;
+    }
+    case State::FEED_OUT: {
+      TPC::Application::stopFeedOut_IE();
+      break;
+    }
   }
 }
 
@@ -99,9 +117,33 @@ void TPC::UI::handleCancelButton_IE() {
       TPC::Application::stopPrinting_IE();
       break;
     }
+    case State::MENU_FEED_OUT: {
+      TPC::Application::closeMenu_IE();
+      break;
+    }
+    case State::FEED_OUT: {
+      TPC::Application::stopFeedOut_IE();
+      break;
+    }
   }
 }
 
 void TPC::UI::handleBothButtons_IE() {
   LOG(DEBUG, "[UI] CONFIRM+CANCEL pressed");
+  switch (TPC::Application::getState_IE()) {
+    case State::IDLE:
+    case State::IDLE_NO_TAPE_WARNING:
+    case State::IDLE_LOW_TAPE_WARNING: {
+      TPC::Application::openMenu_IE();
+      break;
+    }
+    case State::MENU_FEED_OUT: {
+      // For now, do nothing.
+      break;
+    }
+    default: {
+      // Do nothing.
+      break;
+    }
+  }
 }

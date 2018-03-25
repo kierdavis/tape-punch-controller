@@ -59,8 +59,13 @@ static void switchOff() {
   cancelTask();
 }
 
-void TPC::TPController::setJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
-  TPC::TPDataProvider::setJob_IE(reader, length);
+void TPC::TPController::setPrintJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
+  TPC::TPDataProvider::setPrintJob_IE(reader, length);
+  switchOn();
+}
+
+void TPC::TPController::setFeedOutJob_IE() {
+  TPC::TPDataProvider::setFeedOutJob_IE();
   switchOn();
 }
 

@@ -55,7 +55,7 @@ void TPC::Application::tryStartPrinting_IE(bool ignoreLowTape) {
       TPC::Filesystem::Reader reader(start);
       LOG(INFO, "[Application] printing ", selectedFile);
       // TODO: check if already processing a job
-      TPC::TPController::setJob_IE(reader, size);
+      TPC::TPController::setPrintJob_IE(reader, size);
       setState_IE(State::PRINT);
     }
   }
@@ -86,4 +86,26 @@ void TPC::Application::selectNextFile_IE() {
 void TPC::Application::printingComplete_IE() {
   LOG(INFO, "[Application] printing complete");
   setState_IE(State::IDLE);
+}
+
+void TPC::Application::openMenu_IE() {
+  LOG(INFO, "[Application] menu opened");
+  setState_IE(State::MENU_FEED_OUT);
+}
+
+void TPC::Application::closeMenu_IE() {
+  LOG(INFO, "[Application] menu closed");
+  setState_IE(State::IDLE);
+}
+
+void TPC::Application::startFeedOut_IE() {
+  LOG(INFO, "[Application] starting feed out");
+  TPC::TPController::setFeedOutJob_IE();
+  setState_IE(State::FEED_OUT);
+}
+
+void TPC::Application::stopFeedOut_IE() {
+  LOG(INFO, "[Application] stopping feed out");
+  TPC::TPController::clearJob_IE();
+  setState_IE(State::MENU_FEED_OUT);
 }

@@ -9,7 +9,8 @@
 namespace TPC {
   namespace TPController {
     void init();
-    void setJob_IE(TPC::Filesystem::Reader reader, uint16_t length);
+    void setPrintJob_IE(TPC::Filesystem::Reader reader, uint16_t length);
+    void setFeedOutJob_IE();
     void clearJob_IE();
     bool readNoTapeSensor();
     bool readLowTapeSensor();
