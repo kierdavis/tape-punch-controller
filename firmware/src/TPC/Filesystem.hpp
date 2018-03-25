@@ -12,7 +12,7 @@ namespace TPC {
     static constexpr uint8_t SECTORS_PER_CLUSTER = 1;
     static constexpr uint16_t NUM_RESERVED_SECTORS = 1;
     static constexpr uint8_t NUM_FATS = 1;
-    static constexpr uint16_t NUM_ROOT_DIR_ENTRIES = 16;
+    static constexpr uint16_t NUM_ROOT_DIR_ENTRIES = 32;
     static constexpr uint16_t SECTORS_PER_FAT = 1;
 
     static constexpr uint32_t ROOT_DIR_SIZE_BYTES = ((uint32_t) NUM_ROOT_DIR_ENTRIES) * 32;
