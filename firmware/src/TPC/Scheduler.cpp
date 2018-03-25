@@ -106,7 +106,7 @@ static void serviceTask(TaskID taskID) {
       break;
     }
     case TaskID::SCAN_FILESYSTEM: {
-      TPC::Filesystem::scanFilesystem();
+      TPC::Filesystem::scan();
       break;
     }
     case TaskID::TP_CONTROLLER_SERVICE: {

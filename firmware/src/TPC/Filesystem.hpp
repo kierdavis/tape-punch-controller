@@ -89,7 +89,7 @@ namespace TPC {
     static_assert(sizeof(DirectoryEntry) == 32, "DirectoryEntry should be 32 bytes long");
 
     void init();
-    void scanFilesystem();
+    void scan();
 
     class BlockNumber {
     protected:

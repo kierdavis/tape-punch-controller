@@ -173,7 +173,7 @@ static void scanRootDirectory() {
   }
 }
 
-void TPC::Filesystem::scanFilesystem() {
+void TPC::Filesystem::scan() {
   LOG(DEBUG, "[Filesystem] scanning");
   TPC::FileSelector::reset();
   scanRootDirectory();
