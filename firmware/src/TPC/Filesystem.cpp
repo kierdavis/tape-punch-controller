@@ -162,10 +162,21 @@ static void scanDirectory(BlockNumber blockNum) {
   }
 }
 
+static void scanRootDirectory() {
+  DirectoryEntry * entry = (DirectoryEntry *) TPC::BlockStorage::get(ROOT_DIR_SECTOR);
+  while (1) {
+    if (scanEntry(entry)) {
+      // End of directory.
+      break;
+    }
+    entry++;
+  }
+}
+
 void TPC::Filesystem::scanFilesystem() {
   LOG(DEBUG, "[Filesystem] scanning");
   TPC::FileSelector::reset();
-  scanDirectory(ROOT_DIR_SECTOR);
+  scanRootDirectory();
   TPC::UI::refresh_IE();
 }
 
