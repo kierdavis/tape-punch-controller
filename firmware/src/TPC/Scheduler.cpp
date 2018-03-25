@@ -145,3 +145,9 @@ void TPC::Scheduler::serviceTasks() {
     }
   }
 }
+
+void TPC::Scheduler::expedite(TaskID taskID) {
+  if (scheduledTasks.contains(taskID)) {
+    runTask(taskID);
+  }
+}

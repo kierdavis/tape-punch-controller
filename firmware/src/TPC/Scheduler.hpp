@@ -25,6 +25,7 @@ namespace TPC {
     void schedule(TaskID taskID, TPC::Timekeeping::Timestamp when);
     void schedule(TaskID taskID, TPC::Timekeeping::Interval delay);
     void schedule(TaskID taskID);
+    void expedite(TaskID taskID);
     void cancel(TaskID taskID);
     void serviceTasks();
   }
