@@ -16,24 +16,89 @@ static const BlockNumber BOOT_SECTOR = BlockNumber::fromBlock(0);
 static const BlockNumber FAT_SECTOR = BlockNumber::fromBlock(NUM_RESERVED_SECTORS);
 static const BlockNumber ROOT_DIR_SECTOR = BlockNumber::fromBlock(NUM_RESERVED_SECTORS + SECTORS_PER_FAT*NUM_FATS);
 
-void TPC::Filesystem::DirectoryEntry::formatName(TPC::Util::CharArray charArray) {
+void TPC::Filesystem::DirectoryEntry::formatLegacyName(TPC::Util::CharArray charArray) {
   uint8_t nameLen = 8;
-  while (nameLen > 0 && name[nameLen-1] == ' ') {
+  while (nameLen > 0 && file.name[nameLen-1] == ' ') {
     nameLen--;
   }
   uint8_t extLen = 3;
-  while (extLen > 0 && extension[extLen-1] == ' ') {
+  while (extLen > 0 && file.extension[extLen-1] == ' ') {
     extLen--;
   }
 
   uint8_t namePos = 0;
   while (namePos < nameLen) {
-    charArray.append(name[namePos++]);
+    charArray.append(file.name[namePos++]);
   }
   charArray.append('.');
   uint8_t extPos = 0;
   while (extPos < extLen) {
-    charArray.append(extension[extPos++]);
+    charArray.append(file.extension[extPos++]);
+  }
+}
+
+static void appendNameChar(TPC::Util::CharArray charArray, uint16_t codepoint) {
+  // codepoint is a UCS-2 codepoint.
+  char c = (codepoint >= 0x20 && codepoint <= 0x7e) ? ((char) codepoint) : '?';
+  charArray.append(c);
+}
+
+// Returns false on EOF.
+static bool appendNameChars(TPC::Util::CharArray charArray, uint16_t * codepoints, uint8_t n) {
+  for (uint8_t i = 0; i < n; i++) {
+    uint16_t codepoint = codepoints[i];
+    if (codepoint == 0) {
+      return false;
+    }
+    appendNameChar(charArray, codepoint);
+  }
+  return true;
+}
+
+static bool appendNameChars(TPC::Util::CharArray charArray, TPC::Filesystem::DirectoryEntry * lfnEntry) {
+  return appendNameChars(charArray, lfnEntry->lfn.chars1, 5)
+      && appendNameChars(charArray, lfnEntry->lfn.chars2, 6)
+      && appendNameChars(charArray, lfnEntry->lfn.chars3, 2);
+}
+
+void TPC::Filesystem::formatName(TPC::Filesystem::DirectoryEntry * entry, TPC::Util::CharArray charArray) {
+  uint8_t originalLength = *charArray.length_p;
+
+  // Calculate checksum of short name.
+  uint8_t checksum = 0;
+  for (uint8_t i = 0; i < 8; i++) {
+    checksum = (checksum >> 1) + ((checksum & 1) << 7);
+    checksum += entry->file.name[i];
+  }
+  for (uint8_t i = 0; i < 3; i++) {
+    checksum = (checksum >> 1) + ((checksum & 1) << 7);
+    checksum += entry->file.extension[i];
+  }
+
+  static constexpr uint8_t LFN_ATTRS = 0x0F;
+
+  uint8_t sequenceNumber = 1;
+  TPC::Filesystem::DirectoryEntry * lfnEntry = entry;
+  while (1) {
+    lfnEntry--;
+    if (lfnEntry->lfn.attributes == LFN_ATTRS && lfnEntry->lfn.checksum == checksum && (lfnEntry->lfn.sequenceNumber & 0x3F) == sequenceNumber) {
+      if (!appendNameChars(charArray, lfnEntry)) {
+        // End of filename (null codepoint encountered).
+        break;
+      }
+      if (lfnEntry->lfn.sequenceNumber & 0x40) {
+        // End of filename (stop flag encountered).
+        break;
+      }
+      sequenceNumber++;
+    }
+    else {
+      // Unexpected/invalid entry (perhaps we crossed a cluster boundary?)
+      // Not sure how to recover from this, other than by falling back to the short name.
+      *charArray.length_p = originalLength;
+      entry->formatLegacyName(charArray);
+      return;
+    }
   }
 }
 
@@ -80,8 +145,8 @@ static void writeFATEntry(const uint16_t index, const uint16_t val) {
 static void initVolumeLabel() {
   static const char label[11] PROGMEM = {'T','A','P','E',' ','P','U','N','C','H',' '};
   DirectoryEntry * entry = (DirectoryEntry *) TPC::BlockStorage::get(ROOT_DIR_SECTOR);
-  memcpy_P(entry->name, label, 11);
-  entry->attributes = 0x08;
+  memcpy_P(entry->file.name, label, 11);
+  entry->file.attributes = 0x08;
 }
 
 void TPC::Filesystem::init() {
@@ -106,7 +171,7 @@ static bool scanEntry(DirectoryEntry * entry) {
   static constexpr uint8_t VOLUME_LABEL_ATTR = 0x08;
   static constexpr uint8_t SUBDIR_ATTR = 0x10;
 
-  switch (entry->name[0]) {
+  switch (entry->file.name[0]) {
     case END_OF_DIR_MARKER: {
       return true;
     }
@@ -118,7 +183,7 @@ static bool scanEntry(DirectoryEntry * entry) {
       break;
     }
     default: {
-      const uint8_t attributes = entry->attributes;
+      const uint8_t attributes = entry->file.attributes;
       if (attributes == LFN_ATTRS) {
         // This entry is a VFAT long filename prefix.
       }
@@ -130,7 +195,7 @@ static bool scanEntry(DirectoryEntry * entry) {
       }
       else if (attributes & SUBDIR_ATTR) {
         // This entry is for a subdirectory.
-        scanDirectory(BlockNumber::fromCluster(entry->startCluster));
+        scanDirectory(BlockNumber::fromCluster(entry->file.startCluster));
       }
       else {
         // This entry is for a file.

@@ -76,19 +76,35 @@ namespace TPC {
 
     class DirectoryEntry {
     public:
-      char name[8];
-      char extension[3];
-      uint8_t attributes;
-      uint8_t reserved;
-      uint8_t createTime[5];
-      uint8_t accessTime[2];
-      uint16_t permissions;
-      uint8_t modifiedTime[4];
-      uint16_t startCluster;
-      uint32_t size;
-      void formatName(TPC::Util::CharArray buffer);
+      union {
+        struct {
+          char name[8];
+          char extension[3];
+          uint8_t attributes;
+          uint8_t reserved;
+          uint8_t createTime[5];
+          uint8_t accessTime[2];
+          uint16_t permissions;
+          uint8_t modifiedTime[4];
+          uint16_t startCluster;
+          uint32_t size;
+        } file;
+        struct {
+          uint8_t sequenceNumber;
+          uint16_t chars1[5];
+          uint8_t attributes;
+          uint8_t reserved;
+          uint8_t checksum;
+          uint16_t chars2[6];
+          uint16_t startCluster;
+          uint16_t chars3[2];
+        } lfn;
+      };
+      void formatLegacyName(TPC::Util::CharArray buffer);
     };
     static_assert(sizeof(DirectoryEntry) == 32, "DirectoryEntry should be 32 bytes long");
+
+    void formatName(DirectoryEntry * entry, TPC::Util::CharArray buffer);
 
     void init();
     void scan();

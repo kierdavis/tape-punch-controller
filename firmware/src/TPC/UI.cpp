@@ -27,7 +27,7 @@ void TPC::UI::refresh_IE() {
       }
       else {
         TPC::LCDStatusLine::clear();
-        selectedFile->formatName(TPC::LCDStatusLine::getBuffer());
+        TPC::Filesystem::formatName(selectedFile, TPC::LCDStatusLine::getBuffer());
         TPC::LCDStatusLine::finishAppending();
         SET_LCD_ACTION_LINE("NEXT", "PRINT");
       }

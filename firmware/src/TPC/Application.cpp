@@ -45,13 +45,13 @@ void TPC::Application::tryStartPrinting_IE(bool ignoreLowTape) {
       setState_IE(State::IDLE_LOW_TAPE_WARNING);
     }
     else {
-      uint32_t size32 = selectedFile->size;
+      uint32_t size32 = selectedFile->file.size;
       if (size32 > 0xFFFF) {
         LOG(IMPORTANT, "[Application] WARNING: file larger than 0xFFFF bytes, truncating!");
         size32 = 0xFFFF;
       }
       uint16_t size = (uint16_t) size32;
-      TPC::Filesystem::BlockNumber start = TPC::Filesystem::BlockNumber::fromCluster(selectedFile->startCluster);
+      TPC::Filesystem::BlockNumber start = TPC::Filesystem::BlockNumber::fromCluster(selectedFile->file.startCluster);
       TPC::Filesystem::Reader reader(start);
       LOG(INFO, "[Application] printing ", selectedFile);
       // TODO: check if already processing a job

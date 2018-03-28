@@ -48,7 +48,7 @@ void TPC::Log::writeFilename(TPC::Filesystem::DirectoryEntry * entry) {
   static constexpr uint8_t BUFFER_LEN = 32;
   char buffer[BUFFER_LEN];
   uint8_t length = 0;
-  entry->formatName(TPC::Util::CharArray(buffer, &length, BUFFER_LEN));
+  TPC::Filesystem::formatName(entry, TPC::Util::CharArray(buffer, &length, BUFFER_LEN));
   writeString(buffer, length);
 }
 
