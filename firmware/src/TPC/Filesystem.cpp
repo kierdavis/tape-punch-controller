@@ -12,8 +12,8 @@
 using namespace TPC::Filesystem;
 
 static const BlockNumber BOOT_SECTOR = BlockNumber::fromBlock(0);
-static const BlockNumber FAT_SECTOR = BlockNumber::fromSector(0);
-static const BlockNumber ROOT_DIR_SECTOR = BlockNumber::fromSector(SECTORS_PER_FAT*NUM_FATS);
+static const BlockNumber FAT_SECTOR = BlockNumber::fromBlock(NUM_RESERVED_SECTORS);
+static const BlockNumber ROOT_DIR_SECTOR = BlockNumber::fromBlock(NUM_RESERVED_SECTORS + SECTORS_PER_FAT*NUM_FATS);
 
 uint8_t TPC::Filesystem::DirectoryEntry::formatName(char * buffer, uint8_t bufferLen) {
   // Leave room for a null terminator.

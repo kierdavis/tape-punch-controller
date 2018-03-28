@@ -99,20 +99,14 @@ namespace TPC {
       static BlockNumber fromBlock(uint8_t n) {
         return BlockNumber(n);
       }
-      static BlockNumber fromSector(uint8_t n) {
-        return BlockNumber::fromBlock(n + TPC::Filesystem::NUM_RESERVED_SECTORS);
-      }
       static BlockNumber fromCluster(uint8_t n) {
-        return BlockNumber::fromSector(n * TPC::Filesystem::SECTORS_PER_CLUSTER);
+        return BlockNumber(n * TPC::Filesystem::SECTORS_PER_CLUSTER + TPC::Filesystem::NUM_RESERVED_SECTORS + 1);
       }
       uint8_t toBlock() const {
         return block;
       }
-      uint8_t toSector() const {
-        return toBlock() - TPC::Filesystem::NUM_RESERVED_SECTORS;
-      }
       uint8_t toCluster() const {
-        return toSector() / TPC::Filesystem::SECTORS_PER_CLUSTER;
+        return (block - TPC::Filesystem::NUM_RESERVED_SECTORS - 1) / TPC::Filesystem::SECTORS_PER_CLUSTER;
       }
     };
 

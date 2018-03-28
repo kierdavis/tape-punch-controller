@@ -54,8 +54,9 @@ void TPC::BlockStorage::send(const BlockNumber blockNum) {
     sendBootBlock();
     return;
   }
-  if (blockNum.toSector() < NUM_MUTABLE_BLOCKS) {
-    sendMutableBlock(blockNum.toSector());
+  uint8_t mutableBlockNum = blockNum.toBlock() - NUM_RESERVED_SECTORS;
+  if (mutableBlockNum < NUM_MUTABLE_BLOCKS) {
+    sendMutableBlock(mutableBlockNum);
     return;
   }
   // Address out of range.
@@ -69,8 +70,9 @@ void TPC::BlockStorage::receive(const BlockNumber blockNum) {
     receiveNullBlock();
     return;
   }
-  if (blockNum.toSector() < NUM_MUTABLE_BLOCKS) {
-    receiveMutableBlock(blockNum.toSector());
+  uint8_t mutableBlockNum = blockNum.toBlock() - NUM_RESERVED_SECTORS;
+  if (mutableBlockNum < NUM_MUTABLE_BLOCKS) {
+    receiveMutableBlock(mutableBlockNum);
     return;
   }
   // Address out of range.
@@ -83,8 +85,9 @@ uint8_t * TPC::BlockStorage::get(const BlockNumber blockNum) {
     // firmware anyway.
     return nullptr;
   }
-  if (blockNum.toSector() < NUM_MUTABLE_BLOCKS) {
-    return &mutableBlocks[blockNum.toSector()][0];
+  uint8_t mutableBlockNum = blockNum.toBlock() - NUM_RESERVED_SECTORS;
+  if (mutableBlockNum < NUM_MUTABLE_BLOCKS) {
+    return &mutableBlocks[mutableBlockNum][0];
   }
   // Address out of range.
   return nullptr;
