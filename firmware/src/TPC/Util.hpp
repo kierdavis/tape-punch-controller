@@ -25,6 +25,20 @@ namespace TPC {
       MaybeUint8(bool _hasValue = false, uint8_t _value = 0)
         : hasValue(_hasValue), value(_value) {}
     };
+
+    class CharArray {
+    public:
+      char * pointer;
+      uint8_t * length_p;
+      uint8_t capacity;
+      CharArray(char * _pointer, uint8_t * _length_p, uint8_t _capacity)
+        : pointer(_pointer), length_p(_length_p), capacity(_capacity) {}
+      void append(char c) {
+        if (*length_p < capacity) {
+          pointer[(*length_p)++] = c;
+        }
+      }
+    };
   }
 }
 

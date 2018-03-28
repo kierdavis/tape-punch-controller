@@ -7,6 +7,7 @@
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/SerialDriver.hpp"
+#include "TPC/Util.hpp"
 
 void TPC::Log::init() {
   TPC::SerialDriver::init();
@@ -46,8 +47,9 @@ void TPC::Log::writeStringP(PGM_P str) {
 void TPC::Log::writeFilename(TPC::Filesystem::DirectoryEntry * entry) {
   static constexpr uint8_t BUFFER_LEN = 32;
   char buffer[BUFFER_LEN];
-  entry->formatName(buffer, BUFFER_LEN);
-  writeString(buffer);
+  uint8_t length = 0;
+  entry->formatName(TPC::Util::CharArray(buffer, &length, BUFFER_LEN));
+  writeString(buffer, length);
 }
 
 void TPC::Log::writeHex4(uint8_t val) {

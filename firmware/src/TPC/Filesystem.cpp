@@ -8,6 +8,7 @@
 #include "TPC/Filesystem.hpp"
 #include "TPC/Log.hpp"
 #include "TPC/UI.hpp"
+#include "TPC/Util.hpp"
 
 using namespace TPC::Filesystem;
 
@@ -15,10 +16,7 @@ static const BlockNumber BOOT_SECTOR = BlockNumber::fromBlock(0);
 static const BlockNumber FAT_SECTOR = BlockNumber::fromBlock(NUM_RESERVED_SECTORS);
 static const BlockNumber ROOT_DIR_SECTOR = BlockNumber::fromBlock(NUM_RESERVED_SECTORS + SECTORS_PER_FAT*NUM_FATS);
 
-uint8_t TPC::Filesystem::DirectoryEntry::formatName(char * buffer, uint8_t bufferLen) {
-  // Leave room for a null terminator.
-  uint8_t usableBufferLen = bufferLen - 1;
-
+void TPC::Filesystem::DirectoryEntry::formatName(TPC::Util::CharArray charArray) {
   uint8_t nameLen = 8;
   while (nameLen > 0 && name[nameLen-1] == ' ') {
     nameLen--;
@@ -28,20 +26,15 @@ uint8_t TPC::Filesystem::DirectoryEntry::formatName(char * buffer, uint8_t buffe
     extLen--;
   }
 
-  uint8_t bufferPos = 0;
   uint8_t namePos = 0;
-  while (bufferPos < usableBufferLen && namePos < nameLen) {
-    buffer[bufferPos++] = name[namePos++];
+  while (namePos < nameLen) {
+    charArray.append(name[namePos++]);
   }
-  if (bufferPos < usableBufferLen) {
-    buffer[bufferPos++] = '.';
-  }
+  charArray.append('.');
   uint8_t extPos = 0;
-  while (bufferPos < usableBufferLen && extPos < extLen) {
-    buffer[bufferPos++] = extension[extPos++];
+  while (extPos < extLen) {
+    charArray.append(extension[extPos++]);
   }
-  buffer[bufferPos] = '\0';
-  return bufferPos;
 }
 
 static uint16_t readFATEntry(const uint16_t index) {

@@ -26,11 +26,8 @@ void TPC::UI::refresh_IE() {
         SET_LCD_ACTION_LINE("", "");
       }
       else {
-        static constexpr uint8_t NAME_BUFFER_LEN = 17;
-        char nameBuffer[NAME_BUFFER_LEN];
-        selectedFile->formatName(nameBuffer, NAME_BUFFER_LEN);
         TPC::LCDStatusLine::clear();
-        TPC::LCDStatusLine::append(nameBuffer);
+        selectedFile->formatName(TPC::LCDStatusLine::getBuffer());
         TPC::LCDStatusLine::finishAppending();
         SET_LCD_ACTION_LINE("NEXT", "PRINT");
       }

@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "TPC/Util.hpp"
+
 namespace TPC {
   namespace Filesystem {
     // Together these define the memory requirement.
@@ -84,7 +86,7 @@ namespace TPC {
       uint8_t modifiedTime[4];
       uint16_t startCluster;
       uint32_t size;
-      uint8_t formatName(char * buffer, uint8_t bufferLen);
+      void formatName(TPC::Util::CharArray buffer);
     };
     static_assert(sizeof(DirectoryEntry) == 32, "DirectoryEntry should be 32 bytes long");
 

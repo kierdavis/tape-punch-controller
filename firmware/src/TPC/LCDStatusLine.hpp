@@ -3,11 +3,14 @@
 
 #include <avr/pgmspace.h>
 
+#include "TPC/Util.hpp"
+
 namespace TPC {
   namespace LCDStatusLine {
     void clear();
     void append(const char * str);
     void appendP(PGM_P str);
+    TPC::Util::CharArray getBuffer();
     void finishAppending();
     void scroll();
   }

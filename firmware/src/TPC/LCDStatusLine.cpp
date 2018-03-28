@@ -7,6 +7,7 @@
 #include "TPC/Log.hpp"
 #include "TPC/Scheduler.hpp"
 #include "TPC/Timekeeping.hpp"
+#include "TPC/Util.hpp"
 
 static constexpr uint8_t BUFFER_SIZE = 32;
 static char text[BUFFER_SIZE];
@@ -65,6 +66,10 @@ void TPC::LCDStatusLine::appendP(const char * str) {
     }
     text[textLength++] = c;
   }
+}
+
+TPC::Util::CharArray TPC::LCDStatusLine::getBuffer() {
+  return TPC::Util::CharArray(text, &textLength, BUFFER_SIZE);
 }
 
 void TPC::LCDStatusLine::finishAppending() {
