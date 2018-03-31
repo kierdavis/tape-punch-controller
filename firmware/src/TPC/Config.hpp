@@ -25,7 +25,7 @@ namespace TPC {
     static double constexpr DEENERGISE_REL_ANGLE = normaliseAngle(DEENERGISE_ANGLE - SYNC_ANGLE);
     static double constexpr DEENERGISE_DELAY = (DEENERGISE_REL_ANGLE / 360.0) * SHAFT_PERIOD;
 
-    static uint16_t constexpr STARTUP_CYCLES = 50;
+    static uint8_t constexpr STARTUP_CYCLES = 50;
     static uint16_t constexpr LEADER_LENGTH = 100;
     static uint16_t constexpr TRAILER_LENGTH = 150;
 

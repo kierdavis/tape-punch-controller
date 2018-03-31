@@ -17,7 +17,7 @@
 #include "TPC/TPTimerDriver.hpp"
 #include "TPC/Util.hpp"
 
-static volatile uint16_t waitCount = 0;
+static volatile uint8_t waitCount = 0;
 
 static void scheduleTask() {
   TPC::Scheduler::schedule(
@@ -86,7 +86,7 @@ void TPC::TPController::Hooks::energiseSolenoids_ID() {
   if (!isOn()) {
     return;
   }
-  uint16_t waitCount_ = waitCount;
+  uint8_t waitCount_ = waitCount;
   if (waitCount_ != 0) {
     waitCount = waitCount_ - 1;
     return;
