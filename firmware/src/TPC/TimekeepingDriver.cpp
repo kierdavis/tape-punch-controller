@@ -50,7 +50,7 @@ void TPC::TimekeepingDriver::init() {
 }
 
 int16_t TPC::TimekeepingDriver::getCount() {
-  // Atomic read from TCF0.CNT.
+  // (not very) atomic read from TCF0.CNT.
   union {
     int16_t word;
     struct {
@@ -59,6 +59,6 @@ int16_t TPC::TimekeepingDriver::getCount() {
     } bytes;
   } u;
   u.bytes.low = TCF0.CNTL; // CNTH is copied into TEMP as a side effect.
-  u.bytes.high = TCF0.CNTH;
+  u.bytes.high = TCF0.CNTH; // TODO: should this be TEMP?
   return u.word;
 }
