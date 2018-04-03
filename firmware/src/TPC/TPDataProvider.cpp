@@ -50,7 +50,7 @@ static void goToFeedOut_ID() {
   state = State::FEED_OUT;
 }
 
-static void refillBodyBuffer_IE() {
+static void refillDataBuffer_IE() {
   bool bufferNotFull;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     bufferNotFull = !TPC::TPDataBuffer::full_ID();
@@ -102,7 +102,7 @@ void TPC::TPDataProvider::init() {
 void TPC::TPDataProvider::setPrintJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
   bodyReader = reader;
   bodyLength = length;
-  refillBodyBuffer_IE();
+  refillDataBuffer_IE();
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
     goToLeader_ID();
   }
@@ -126,7 +126,7 @@ void TPC::TPDataProvider::clearJob_IE() {
 }
 
 void TPC::TPDataProvider::serviceTask_IE() {
-  refillBodyBuffer_IE();
+  refillDataBuffer_IE();
   scheduleTask();
 }
 

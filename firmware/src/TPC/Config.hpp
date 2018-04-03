@@ -29,7 +29,7 @@ namespace TPC {
     static uint16_t constexpr LEADER_LENGTH = 100;
     static uint16_t constexpr TRAILER_LENGTH = 150;
 
-    static uint8_t constexpr BODY_BUFFER_SIZE = 16;
+    static uint8_t constexpr DATA_BUFFER_SIZE = 16;
 
     static uint32_t constexpr SERIAL_BAUD_RATE = 115200;
     static TPC::Log::Level constexpr LOG_LEVEL = TPC::Log::Level::DEBUG;
