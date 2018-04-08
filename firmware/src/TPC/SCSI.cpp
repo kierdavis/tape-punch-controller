@@ -54,8 +54,6 @@ static constexpr SenseTriple GENERIC_ABORTED_ERROR = {
   .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
 };
 
-static SenseTriple prevResult = OK;
-
 static SenseTriple handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   static constexpr uint8_t EVPD_MASK = 1 << 0;
   static constexpr uint8_t UNIT_SERIAL_NUMBER_PAGE_CODE = 0x80;
@@ -143,7 +141,7 @@ static SenseTriple handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) 
   return OK;
 }
 
-static SenseTriple handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock, SenseTriple prevResult) {
   SCSI_Request_Sense_Response_t response = {
     .ResponseCode = 0x70,
     .SegmentNumber = 0,
@@ -385,11 +383,13 @@ static void cleanUp(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
+  static SenseTriple prevResult = OK;
+  SenseTriple result = INVALID_COMMAND;
+
   // Some commands aren't supported by LUFA.
   static constexpr uint8_t SCSI_CMD_READ_FORMAT_CAPACITIES = 0x23;
 
   const uint8_t cmd = commandBlock->SCSICommandData[0];
-  SenseTriple result = INVALID_COMMAND;
   switch (cmd) {
     case SCSI_CMD_INQUIRY: {
       LOG(DEBUG_VERBOSE, "[SCSI] inquiry");
@@ -397,7 +397,7 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
     }
     case SCSI_CMD_REQUEST_SENSE: {
       LOG(DEBUG_VERBOSE, "[SCSI] request sense");
-      result = handleRequestSense(commandBlock);
+      result = handleRequestSense(commandBlock, prevResult);
     }
     case SCSI_CMD_TEST_UNIT_READY: {
       LOG(DEBUG_VERBOSE, "[SCSI] test unit ready");
