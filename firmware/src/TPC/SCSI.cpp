@@ -48,6 +48,12 @@ static constexpr SenseTriple ADDRESS_OUT_OF_RANGE = {
   .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
 };
 
+static constexpr SenseTriple GENERIC_ABORTED_ERROR = {
+  .key = SCSI_SENSE_KEY_ABORTED_COMMAND,
+  .additionalCode = SCSI_ASENSE_NO_ADDITIONAL_INFORMATION,
+  .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+};
+
 static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
   .ResponseCode = 0x70,
   .SegmentNumber = 0,
@@ -254,7 +260,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   for (uint8_t i = 0; i < numBlocks; i++) {
     // Wait until endpoint is ready to send more daya.
     if (Endpoint_WaitUntilReady() != ENDPOINT_READYWAIT_NoError) {
-      return false;
+      return respond(commandBlock, GENERIC_ABORTED_ERROR);
     }
 
     // Receive a block.
@@ -280,7 +286,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   for (uint8_t i = 0; i < numBlocks; i++) {
     // Wait until endpoint is ready to accept more data.
     if (Endpoint_WaitUntilReady() != ENDPOINT_READYWAIT_NoError) {
-      return false;
+      return respond(commandBlock, GENERIC_ABORTED_ERROR);
     }
 
     // Send a block.
