@@ -33,14 +33,13 @@ static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
 
 static SCSI_Request_Sense_Response_t senseData = initialSenseData;
 
-static uint8_t lastCmd = 0;
-
 static void resetSenseData() {
   memcpy_P(&senseData, &initialSenseData, sizeof(senseData));
 }
 
 static bool error(MS_CommandBlockWrapper_t * const commandBlock, const uint8_t key, const uint8_t addCode, const uint8_t addQual) {
-  LOG(INFO, "[SCSI] sending error response; most recent command was 0x", lastCmd);
+  const uint8_t cmd = commandBlock->SCSICommandData[0];
+  LOG(INFO, "[SCSI] sending error response; most recent command was 0x", cmd);
   LOG(DEBUG, "[SCSI]   key: 0x", key);
   LOG(DEBUG, "[SCSI]   ac: 0x", addCode);
   LOG(DEBUG, "[SCSI]   aq: 0x", addQual);
@@ -368,7 +367,8 @@ static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandB
 }
 
 static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
-  LOG(INFO, "[SCSI] unrecognised command 0x", lastCmd);
+  const uint8_t cmd = commandBlock->SCSICommandData[0];
+  LOG(INFO, "[SCSI] unrecognised command 0x", cmd);
   return error(
     commandBlock,
     SCSI_SENSE_KEY_ILLEGAL_REQUEST,
@@ -378,7 +378,8 @@ static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
-  LOG(INFO, "[SCSI] recognised but unimplemented command 0x", lastCmd);
+  const uint8_t cmd = commandBlock->SCSICommandData[0];
+  LOG(INFO, "[SCSI] recognised but unimplemented command 0x", cmd);
   return error(
     commandBlock,
     SCSI_SENSE_KEY_ILLEGAL_REQUEST,
@@ -396,7 +397,6 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
   static constexpr uint8_t SCSI_CMD_READ_FORMAT_CAPACITIES = 0x23;
 
   const uint8_t cmd = commandBlock->SCSICommandData[0];
-  lastCmd = cmd;
   switch (cmd) {
     case SCSI_CMD_INQUIRY: {
       LOG(DEBUG_VERBOSE, "[SCSI] inquiry");
