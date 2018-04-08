@@ -54,28 +54,7 @@ static constexpr SenseTriple GENERIC_ABORTED_ERROR = {
   .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
 };
 
-static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
-  .ResponseCode = 0x70,
-  .SegmentNumber = 0,
-  .SenseKey = OK.key,
-  .Reserved = false,
-  .ILI = false,
-  .EOM = false,
-  .FileMark = false,
-  .Information = {0, 0, 0, 0},
-  .AdditionalLength = 0x0A,
-  .CmdSpecificInformation = {0, 0, 0, 0},
-  .AdditionalSenseCode = OK.additionalCode,
-  .AdditionalSenseQualifier = OK.additionalQualifier,
-  .FieldReplaceableUnitCode = 0,
-  .SenseKeySpecific = {0, 0, 0}
-};
-
-static SCSI_Request_Sense_Response_t senseData = initialSenseData;
-
-static void resetSenseData() {
-  memcpy_P(&senseData, &initialSenseData, sizeof(senseData));
-}
+static SenseTriple prevResult = OK;
 
 static SenseTriple handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   static constexpr uint8_t EVPD_MASK = 1 << 0;
@@ -165,16 +144,33 @@ static SenseTriple handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) 
 }
 
 static SenseTriple handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
+  SCSI_Request_Sense_Response_t response = {
+    .ResponseCode = 0x70,
+    .SegmentNumber = 0,
+    .SenseKey = prevResult.key,
+    .Reserved = false,
+    .ILI = false,
+    .EOM = false,
+    .FileMark = false,
+    .Information = {0, 0, 0, 0},
+    .AdditionalLength = 0x0A,
+    .CmdSpecificInformation = {0, 0, 0, 0},
+    .AdditionalSenseCode = prevResult.additionalCode,
+    .AdditionalSenseQualifier = prevResult.additionalQualifier,
+    .FieldReplaceableUnitCode = 0,
+    .SenseKeySpecific = {0, 0, 0}
+  };
+
   // Number of bytes that the host has allocated for the response (allocation
   // length).
   const uint8_t destLength = commandBlock->SCSICommandData[4];
   // Maximum numner of bytes that we can return.
-  const uint8_t srcLength = sizeof(senseData);
+  const uint8_t srcLength = sizeof(response);
   // Number of bytes that we'll transfer.
   const uint8_t transferLength = TPC::Util::min(destLength, srcLength);
 
   // Send response to client.
-  Endpoint_Write_Stream_LE(&senseData, transferLength, NULL);
+  Endpoint_Write_Stream_LE(&response, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
   return OK;
 }
@@ -389,10 +385,6 @@ static void cleanUp(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
-  // Initialise sense data to "okay", but it should be overwritten in the event
-  // of an error.
-  resetSenseData();
-
   // Some commands aren't supported by LUFA.
   static constexpr uint8_t SCSI_CMD_READ_FORMAT_CAPACITIES = 0x23;
 
@@ -471,9 +463,7 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
     LOG(DEBUG, "[SCSI]   ac: 0x", result.additionalCode);
     LOG(DEBUG, "[SCSI]   aq: 0x", result.additionalQualifier);
   }
-  senseData.SenseKey = result.key;
-  senseData.AdditionalSenseCode = result.additionalCode;
-  senseData.AdditionalSenseQualifier = result.additionalQualifier;
+  prevResult = result;
 
   cleanUp(commandBlock);
 
