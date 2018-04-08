@@ -117,7 +117,7 @@ static bool respond(MS_CommandBlockWrapper_t * const commandBlock, const SenseTr
   }
 }
 
-static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   static constexpr uint8_t EVPD_MASK = 1 << 0;
   static constexpr uint8_t UNIT_SERIAL_NUMBER_PAGE_CODE = 0x80;
 
@@ -179,7 +179,7 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
       }
       default: {
         // This VPD page isn't supported.
-        return respond(commandBlock, INVALID_FIELD);
+        return INVALID_FIELD;
       }
     }
   }
@@ -201,10 +201,10 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   // Send response to client.
   Endpoint_Write_PStream_LE(responsePtr, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
   // Number of bytes that the host has allocated for the response (allocation
   // length).
   const uint8_t destLength = commandBlock->SCSICommandData[4];
@@ -216,15 +216,15 @@ static bool handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
   // Send response to client.
   Endpoint_Write_Stream_LE(&senseData, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleTestUnitReady(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleTestUnitReady(MS_CommandBlockWrapper_t * const commandBlock) {
   // We're always ready to accept data transfer commands, so just return "yes".
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) {
   const uint32_t addrOfLastBlock = NUM_BLOCKS - 1;
   const uint32_t blockSize = BYTES_PER_BLOCK;
 
@@ -233,26 +233,26 @@ static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) 
   TPC::Util::toBigEndian(blockSize, &buffer[4]);
   Endpoint_Write_Stream_LE(buffer, 8, NULL);
   commandBlock->DataTransferLength -= 8;
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleStartStopUnit(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleStartStopUnit(MS_CommandBlockWrapper_t * const commandBlock) {
   // No operation required.
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) {
   // TODO - maybe support some of these modes?
-  return respond(commandBlock, INVALID_FIELD);
+  return INVALID_FIELD;
 }
 
-static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   uint32_t startAddr32;
   uint16_t numBlocks16;
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
-    return respond(commandBlock, ADDRESS_OUT_OF_RANGE);
+    return ADDRESS_OUT_OF_RANGE;
   }
   const uint8_t startAddr = startAddr32;
   const uint8_t numBlocks = numBlocks16;
@@ -260,7 +260,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   for (uint8_t i = 0; i < numBlocks; i++) {
     // Wait until endpoint is ready to send more daya.
     if (Endpoint_WaitUntilReady() != ENDPOINT_READYWAIT_NoError) {
-      return respond(commandBlock, GENERIC_ABORTED_ERROR);
+      return GENERIC_ABORTED_ERROR;
     }
 
     // Receive a block.
@@ -269,16 +269,16 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
   }
 
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   uint32_t startAddr32;
   uint16_t numBlocks16;
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
-    return respond(commandBlock, ADDRESS_OUT_OF_RANGE);
+    return ADDRESS_OUT_OF_RANGE;
   }
   const uint8_t startAddr = startAddr32;
   const uint8_t numBlocks = numBlocks16;
@@ -286,7 +286,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   for (uint8_t i = 0; i < numBlocks; i++) {
     // Wait until endpoint is ready to accept more data.
     if (Endpoint_WaitUntilReady() != ENDPOINT_READYWAIT_NoError) {
-      return respond(commandBlock, GENERIC_ABORTED_ERROR);
+      return GENERIC_ABORTED_ERROR;
     }
 
     // Send a block.
@@ -295,10 +295,10 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
   }
 
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleModeSense(MS_CommandBlockWrapper_t * const commandBlock, const uint16_t allocationLength) {
+static SenseTriple handleModeSense(MS_CommandBlockWrapper_t * const commandBlock, const uint16_t allocationLength) {
   typedef struct {
     uint8_t dataLength; // Length of the response, not including this byte.
     uint8_t mediumType;
@@ -324,21 +324,21 @@ static bool handleModeSense(MS_CommandBlockWrapper_t * const commandBlock, const
   // Send response to client.
   Endpoint_Write_PStream_LE(&header, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
   const uint16_t allocationLength = commandBlock->SCSICommandData[4];
   return handleModeSense(commandBlock, allocationLength);
 }
 
-static bool handleModeSense10(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleModeSense10(MS_CommandBlockWrapper_t * const commandBlock) {
   uint16_t allocationLength;
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &allocationLength);
   return handleModeSense(commandBlock, allocationLength);
 }
 
-static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandBlock) {
   // http://www.usb.org/developers/docs/devclass_docs/usbmass-ufi10.pdf section 4.10.
 
   static constexpr uint32_t NUM_BLOCKS = TPC::BlockStorage::NUM_BLOCKS;
@@ -386,19 +386,19 @@ static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandB
   // Send response to client.
   Endpoint_Write_PStream_LE(&response, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
-  return respond(commandBlock, OK);
+  return OK;
 }
 
-static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   LOG(INFO, "[SCSI] unrecognised command 0x", cmd);
-  return respond(commandBlock, INVALID_COMMAND);
+  return INVALID_COMMAND;
 }
 
-static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
+static SenseTriple handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   LOG(INFO, "[SCSI] recognised but unimplemented command 0x", cmd);
-  return respond(commandBlock, INVALID_COMMAND);
+  return INVALID_COMMAND;
 }
 
 bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -410,72 +410,72 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
   static constexpr uint8_t SCSI_CMD_READ_FORMAT_CAPACITIES = 0x23;
 
   const uint8_t cmd = commandBlock->SCSICommandData[0];
+  SenseTriple result = INVALID_COMMAND;
   switch (cmd) {
     case SCSI_CMD_INQUIRY: {
       LOG(DEBUG_VERBOSE, "[SCSI] inquiry");
-      return handleInquiry(commandBlock);
+      result = handleInquiry(commandBlock);
     }
     case SCSI_CMD_REQUEST_SENSE: {
       LOG(DEBUG_VERBOSE, "[SCSI] request sense");
-      return handleRequestSense(commandBlock);
+      result = handleRequestSense(commandBlock);
     }
     case SCSI_CMD_TEST_UNIT_READY: {
       LOG(DEBUG_VERBOSE, "[SCSI] test unit ready");
-      return handleTestUnitReady(commandBlock);
+      result = handleTestUnitReady(commandBlock);
     }
     case SCSI_CMD_READ_CAPACITY_10: {
       LOG(DEBUG_VERBOSE, "[SCSI] read capacity(10)");
-      return handleReadCapacity10(commandBlock);
+      result = handleReadCapacity10(commandBlock);
     }
     case SCSI_CMD_START_STOP_UNIT: {
       LOG(DEBUG_VERBOSE, "[SCSI] start/stop unit");
-      return handleStartStopUnit(commandBlock);
+      result = handleStartStopUnit(commandBlock);
     }
     case SCSI_CMD_SEND_DIAGNOSTIC: {
       LOG(DEBUG_VERBOSE, "[SCSI] send diagnostic");
-      return handleSendDiagnostic(commandBlock);
+      result = handleSendDiagnostic(commandBlock);
     }
     case SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL: {
       LOG(DEBUG_VERBOSE, "[SCSI] prevent/allow medium removal");
-      return handleUnimplemented(commandBlock);
+      result = handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_WRITE_10: {
       LOG(DEBUG_VERBOSE, "[SCSI] write(10)");
-      return handleWrite10(commandBlock);
+      result = handleWrite10(commandBlock);
     }
     case SCSI_CMD_READ_10: {
       LOG(DEBUG_VERBOSE, "[SCSI] read(10)");
-      return handleRead10(commandBlock);
+      result = handleRead10(commandBlock);
     }
     case SCSI_CMD_WRITE_6: {
       LOG(DEBUG_VERBOSE, "[SCSI] write(6)");
-      return handleUnimplemented(commandBlock);
+      result = handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_READ_6: {
       LOG(DEBUG_VERBOSE, "[SCSI] read(6)");
-      return handleUnimplemented(commandBlock);
+      result = handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_VERIFY_10: {
       LOG(DEBUG_VERBOSE, "[SCSI] verify(10)");
-      return handleUnimplemented(commandBlock);
+      result = handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_6: {
       LOG(DEBUG_VERBOSE, "[SCSI] mode sense(6)");
-      return handleModeSense6(commandBlock);
+      result = handleModeSense6(commandBlock);
     }
     case SCSI_CMD_MODE_SENSE_10: {
       LOG(DEBUG_VERBOSE, "[SCSI] mode sense(10)");
-      return handleModeSense10(commandBlock);
+      result = handleModeSense10(commandBlock);
     }
     case SCSI_CMD_READ_FORMAT_CAPACITIES: {
       LOG(DEBUG_VERBOSE, "[SCSI] read format capacities");
-      return handleReadFormatCapacities(commandBlock);
+      result = handleReadFormatCapacities(commandBlock);
     }
     default: {
-      return handleInvalid(commandBlock);
+      result = handleInvalid(commandBlock);
     }
   }
 
-  // Unreachable.
-  return false;
+  return respond(commandBlock, result);
 }
