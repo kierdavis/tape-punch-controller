@@ -62,7 +62,7 @@ static SenseTriple handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) 
     .DeviceType = 0x0, // block device
     .PeripheralQualifier = 0x0, // peripheral with given device type is connected
     .Reserved = 0,
-    .Removable = true,
+    .Removable = false,
     .Version = 0x0, // does not claim conformance to any standard
     .ResponseDataFormat = 2,
     .Reserved2 = 0,
