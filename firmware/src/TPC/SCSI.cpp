@@ -14,6 +14,13 @@
 using TPC::BlockStorage::BYTES_PER_BLOCK;
 using TPC::BlockStorage::NUM_BLOCKS;
 
+class SenseTriple {
+public:
+  const uint8_t key;
+  const uint8_t additionalCode;
+  const uint8_t additionalQualifier;
+};
+
 static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
   .ResponseCode = 0x70,
   .SegmentNumber = 0,
@@ -37,15 +44,15 @@ static void resetSenseData() {
   memcpy_P(&senseData, &initialSenseData, sizeof(senseData));
 }
 
-static bool error(MS_CommandBlockWrapper_t * const commandBlock, const uint8_t key, const uint8_t addCode, const uint8_t addQual) {
+static bool error(MS_CommandBlockWrapper_t * const commandBlock, const SenseTriple info) {
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   LOG(INFO, "[SCSI] sending error response; most recent command was 0x", cmd);
-  LOG(DEBUG, "[SCSI]   key: 0x", key);
-  LOG(DEBUG, "[SCSI]   ac: 0x", addCode);
-  LOG(DEBUG, "[SCSI]   aq: 0x", addQual);
-  senseData.SenseKey = key;
-  senseData.AdditionalSenseCode = addCode;
-  senseData.AdditionalSenseQualifier = addQual;
+  LOG(DEBUG, "[SCSI]   key: 0x", info.key);
+  LOG(DEBUG, "[SCSI]   ac: 0x", info.additionalCode);
+  LOG(DEBUG, "[SCSI]   aq: 0x", info.additionalQualifier);
+  senseData.SenseKey = info.key;
+  senseData.AdditionalSenseCode = info.additionalCode;
+  senseData.AdditionalSenseQualifier = info.additionalQualifier;
   // DataTransferLength represents the number of bytes left to send. If we don't
   // clear it, LUFA assumes we want to temporarily stall rather than abort with
   // an error.
@@ -133,9 +140,11 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
         // This VPD page isn't supported.
         return error(
           commandBlock,
-          SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-          SCSI_ASENSE_INVALID_FIELD_IN_CDB,
-          SCSI_ASENSEQ_NO_QUALIFIER
+          {
+            .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+            .additionalCode = SCSI_ASENSE_INVALID_FIELD_IN_CDB,
+            .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+          }
         );
       }
     }
@@ -202,9 +211,11 @@ static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) 
   // TODO - maybe support some of these modes?
   return error(
     commandBlock,
-    SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-    SCSI_ASENSE_INVALID_FIELD_IN_CDB,
-    SCSI_ASENSEQ_NO_QUALIFIER
+    {
+      .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+      .additionalCode = SCSI_ASENSE_INVALID_FIELD_IN_CDB,
+      .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+    }
   );
 }
 
@@ -216,9 +227,11 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
     return error(
       commandBlock,
-      SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-      SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
-      SCSI_ASENSEQ_NO_QUALIFIER
+      {
+        .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+        .additionalCode = SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
+        .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+      }
     );
   }
   const uint8_t startAddr = startAddr32;
@@ -247,9 +260,11 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
     return error(
       commandBlock,
-      SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-      SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
-      SCSI_ASENSEQ_NO_QUALIFIER
+      {
+        .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+        .additionalCode = SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
+        .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+      }
     );
   }
   const uint8_t startAddr = startAddr32;
@@ -366,9 +381,11 @@ static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
   LOG(INFO, "[SCSI] unrecognised command 0x", cmd);
   return error(
     commandBlock,
-    SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-    SCSI_ASENSE_INVALID_COMMAND,
-    SCSI_ASENSEQ_NO_QUALIFIER
+    {
+      .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+      .additionalCode = SCSI_ASENSE_INVALID_COMMAND,
+      .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+    }
   );
 }
 
@@ -377,9 +394,11 @@ static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
   LOG(INFO, "[SCSI] recognised but unimplemented command 0x", cmd);
   return error(
     commandBlock,
-    SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-    SCSI_ASENSE_INVALID_COMMAND,
-    SCSI_ASENSEQ_NO_QUALIFIER
+    {
+      .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+      .additionalCode = SCSI_ASENSE_INVALID_COMMAND,
+      .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+    }
   );
 }
 
