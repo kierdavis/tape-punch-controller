@@ -16,9 +16,9 @@ using TPC::BlockStorage::NUM_BLOCKS;
 
 class SenseTriple {
 public:
-  const uint8_t key;
-  const uint8_t additionalCode;
-  const uint8_t additionalQualifier;
+  uint8_t key;
+  uint8_t additionalCode;
+  uint8_t additionalQualifier;
   bool ok() const {
     return key == SCSI_SENSE_KEY_GOOD;
   }
