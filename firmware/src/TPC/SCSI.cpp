@@ -77,46 +77,6 @@ static void resetSenseData() {
   memcpy_P(&senseData, &initialSenseData, sizeof(senseData));
 }
 
-static bool error(MS_CommandBlockWrapper_t * const commandBlock, const SenseTriple info) {
-  const uint8_t cmd = commandBlock->SCSICommandData[0];
-  LOG(INFO, "[SCSI] sending error response; most recent command was 0x", cmd);
-  LOG(DEBUG, "[SCSI]   key: 0x", info.key);
-  LOG(DEBUG, "[SCSI]   ac: 0x", info.additionalCode);
-  LOG(DEBUG, "[SCSI]   aq: 0x", info.additionalQualifier);
-  senseData.SenseKey = info.key;
-  senseData.AdditionalSenseCode = info.additionalCode;
-  senseData.AdditionalSenseQualifier = info.additionalQualifier;
-  // DataTransferLength represents the number of bytes left to send. If we don't
-  // clear it, LUFA assumes we want to temporarily stall rather than abort with
-  // an error.
-  commandBlock->DataTransferLength = 0;
-  return false;
-}
-
-static bool ok(MS_CommandBlockWrapper_t * const commandBlock) {
-  if (commandBlock->DataTransferLength != 0) {
-    // Fill the rest of the host's buffer with null bytes.
-    Endpoint_Null_Stream(commandBlock->DataTransferLength, NULL);
-    commandBlock->DataTransferLength = 0;
-  }
-  if (Endpoint_BytesInEndpoint()) {
-    if (USB_Endpoint_SelectedEndpoint & ENDPOINT_DIR_IN) {
-      Endpoint_ClearIN();
-    } else {
-      Endpoint_ClearOUT();
-    }
-  }
-  return true;
-}
-
-static bool respond(MS_CommandBlockWrapper_t * const commandBlock, const SenseTriple info) {
-  if (info.ok()) {
-    return ok(commandBlock);
-  } else {
-    return error(commandBlock, info);
-  }
-}
-
 static SenseTriple handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   static constexpr uint8_t EVPD_MASK = 1 << 0;
   static constexpr uint8_t UNIT_SERIAL_NUMBER_PAGE_CODE = 0x80;
@@ -401,6 +361,33 @@ static SenseTriple handleUnimplemented(MS_CommandBlockWrapper_t * const commandB
   return INVALID_COMMAND;
 }
 
+static void cleanUp(MS_CommandBlockWrapper_t * const commandBlock) {
+  if (USB_Endpoint_SelectedEndpoint & ENDPOINT_DIR_IN) {
+    // Deal with any untransferred data.
+    if (commandBlock->DataTransferLength != 0) {
+      // Discard the rest of the buffer.
+      Endpoint_Discard_Stream(commandBlock->DataTransferLength, NULL);
+      commandBlock->DataTransferLength = 0;
+    }
+    // Clear the endpoint if needed.
+    if (Endpoint_BytesInEndpoint()) {
+      Endpoint_ClearIN();
+    }
+  }
+  else {
+    // Deal with any untransferred data.
+    if (commandBlock->DataTransferLength != 0) {
+      // Fill the rest of the buffer with null bytes.
+      Endpoint_Null_Stream(commandBlock->DataTransferLength, NULL);
+      commandBlock->DataTransferLength = 0;
+    }
+    // Clear the endpoint if needed.
+    if (Endpoint_BytesInEndpoint()) {
+      Endpoint_ClearOUT();
+    }
+  }
+}
+
 bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
   // Initialise sense data to "okay", but it should be overwritten in the event
   // of an error.
@@ -477,5 +464,18 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
     }
   }
 
-  return respond(commandBlock, result);
+  // Save error details in senseData, ready for the next Request Sense command.
+  if (!result.ok()) {
+    LOG(INFO, "[SCSI] sending error response; most recent command was 0x", cmd);
+    LOG(DEBUG, "[SCSI]   key: 0x", result.key);
+    LOG(DEBUG, "[SCSI]   ac: 0x", result.additionalCode);
+    LOG(DEBUG, "[SCSI]   aq: 0x", result.additionalQualifier);
+  }
+  senseData.SenseKey = result.key;
+  senseData.AdditionalSenseCode = result.additionalCode;
+  senseData.AdditionalSenseQualifier = result.additionalQualifier;
+
+  cleanUp(commandBlock);
+
+  return result.ok();
 }
