@@ -21,10 +21,34 @@ public:
   const uint8_t additionalQualifier;
 };
 
+static constexpr SenseTriple OK = {
+  .key = SCSI_SENSE_KEY_GOOD,
+  .additionalCode = SCSI_ASENSE_NO_ADDITIONAL_INFORMATION,
+  .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+};
+
+static constexpr SenseTriple INVALID_COMMAND = {
+  .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+  .additionalCode = SCSI_ASENSE_INVALID_COMMAND,
+  .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+};
+
+static constexpr SenseTriple INVALID_FIELD = {
+  .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+  .additionalCode = SCSI_ASENSE_INVALID_FIELD_IN_CDB,
+  .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+};
+
+static constexpr SenseTriple ADDRESS_OUT_OF_RANGE = {
+  .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
+  .additionalCode = SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
+  .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
+};
+
 static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
   .ResponseCode = 0x70,
   .SegmentNumber = 0,
-  .SenseKey = SCSI_SENSE_KEY_GOOD,
+  .SenseKey = OK.key,
   .Reserved = false,
   .ILI = false,
   .EOM = false,
@@ -32,8 +56,8 @@ static constexpr SCSI_Request_Sense_Response_t initialSenseData PROGMEM = {
   .Information = {0, 0, 0, 0},
   .AdditionalLength = 0x0A,
   .CmdSpecificInformation = {0, 0, 0, 0},
-  .AdditionalSenseCode = SCSI_ASENSE_NO_ADDITIONAL_INFORMATION,
-  .AdditionalSenseQualifier = SCSI_ASENSEQ_NO_QUALIFIER,
+  .AdditionalSenseCode = OK.additionalCode,
+  .AdditionalSenseQualifier = OK.additionalQualifier,
   .FieldReplaceableUnitCode = 0,
   .SenseKeySpecific = {0, 0, 0}
 };
@@ -138,14 +162,7 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
       }
       default: {
         // This VPD page isn't supported.
-        return error(
-          commandBlock,
-          {
-            .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-            .additionalCode = SCSI_ASENSE_INVALID_FIELD_IN_CDB,
-            .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
-          }
-        );
+        return error(commandBlock, INVALID_FIELD);
       }
     }
   }
@@ -209,14 +226,7 @@ static bool handleStartStopUnit(MS_CommandBlockWrapper_t * const commandBlock) {
 
 static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) {
   // TODO - maybe support some of these modes?
-  return error(
-    commandBlock,
-    {
-      .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-      .additionalCode = SCSI_ASENSE_INVALID_FIELD_IN_CDB,
-      .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
-    }
-  );
+  return error(commandBlock, INVALID_FIELD);
 }
 
 static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -225,14 +235,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
-    return error(
-      commandBlock,
-      {
-        .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-        .additionalCode = SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
-        .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
-      }
-    );
+    return error(commandBlock, ADDRESS_OUT_OF_RANGE);
   }
   const uint8_t startAddr = startAddr32;
   const uint8_t numBlocks = numBlocks16;
@@ -258,14 +261,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
-    return error(
-      commandBlock,
-      {
-        .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-        .additionalCode = SCSI_ASENSE_LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,
-        .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
-      }
-    );
+    return error(commandBlock, ADDRESS_OUT_OF_RANGE);
   }
   const uint8_t startAddr = startAddr32;
   const uint8_t numBlocks = numBlocks16;
@@ -379,27 +375,13 @@ static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandB
 static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   LOG(INFO, "[SCSI] unrecognised command 0x", cmd);
-  return error(
-    commandBlock,
-    {
-      .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-      .additionalCode = SCSI_ASENSE_INVALID_COMMAND,
-      .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
-    }
-  );
+  return error(commandBlock, INVALID_COMMAND);
 }
 
 static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   LOG(INFO, "[SCSI] recognised but unimplemented command 0x", cmd);
-  return error(
-    commandBlock,
-    {
-      .key = SCSI_SENSE_KEY_ILLEGAL_REQUEST,
-      .additionalCode = SCSI_ASENSE_INVALID_COMMAND,
-      .additionalQualifier = SCSI_ASENSEQ_NO_QUALIFIER
-    }
-  );
+  return error(commandBlock, INVALID_COMMAND);
 }
 
 bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
