@@ -177,7 +177,7 @@ static bool handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
 }
 
 static bool handleTestUnitReady(MS_CommandBlockWrapper_t * const commandBlock) {
-  // TODO
+  // We're always ready to accept data transfer commands, so just return "yes".
   return ok(commandBlock);
 }
 
