@@ -208,11 +208,6 @@ static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) 
   );
 }
 
-static bool handlePreventAllowMediumRemoval(MS_CommandBlockWrapper_t * const commandBlock) {
-  // TODO
-  return ok(commandBlock);
-}
-
 static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   uint32_t startAddr32;
   uint16_t numBlocks16;
@@ -424,7 +419,7 @@ bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
     }
     case SCSI_CMD_PREVENT_ALLOW_MEDIUM_REMOVAL: {
       LOG(DEBUG_VERBOSE, "[SCSI] prevent/allow medium removal");
-      return handlePreventAllowMediumRemoval(commandBlock);
+      return handleUnimplemented(commandBlock);
     }
     case SCSI_CMD_WRITE_10: {
       LOG(DEBUG_VERBOSE, "[SCSI] write(10)");
