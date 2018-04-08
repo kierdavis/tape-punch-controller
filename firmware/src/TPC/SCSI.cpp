@@ -19,6 +19,9 @@ public:
   const uint8_t key;
   const uint8_t additionalCode;
   const uint8_t additionalQualifier;
+  bool ok() const {
+    return key == SCSI_SENSE_KEY_GOOD;
+  }
 };
 
 static constexpr SenseTriple OK = {
@@ -100,6 +103,14 @@ static bool ok(MS_CommandBlockWrapper_t * const commandBlock) {
   return true;
 }
 
+static bool respond(MS_CommandBlockWrapper_t * const commandBlock, const SenseTriple info) {
+  if (info.ok()) {
+    return ok(commandBlock);
+  } else {
+    return error(commandBlock, info);
+  }
+}
+
 static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   static constexpr uint8_t EVPD_MASK = 1 << 0;
   static constexpr uint8_t UNIT_SERIAL_NUMBER_PAGE_CODE = 0x80;
@@ -162,7 +173,7 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
       }
       default: {
         // This VPD page isn't supported.
-        return error(commandBlock, INVALID_FIELD);
+        return respond(commandBlock, INVALID_FIELD);
       }
     }
   }
@@ -184,7 +195,7 @@ static bool handleInquiry(MS_CommandBlockWrapper_t * const commandBlock) {
   // Send response to client.
   Endpoint_Write_PStream_LE(responsePtr, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -199,12 +210,12 @@ static bool handleRequestSense(MS_CommandBlockWrapper_t * const commandBlock) {
   // Send response to client.
   Endpoint_Write_Stream_LE(&senseData, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleTestUnitReady(MS_CommandBlockWrapper_t * const commandBlock) {
   // We're always ready to accept data transfer commands, so just return "yes".
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -216,17 +227,17 @@ static bool handleReadCapacity10(MS_CommandBlockWrapper_t * const commandBlock) 
   TPC::Util::toBigEndian(blockSize, &buffer[4]);
   Endpoint_Write_Stream_LE(buffer, 8, NULL);
   commandBlock->DataTransferLength -= 8;
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleStartStopUnit(MS_CommandBlockWrapper_t * const commandBlock) {
   // No operation required.
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleSendDiagnostic(MS_CommandBlockWrapper_t * const commandBlock) {
   // TODO - maybe support some of these modes?
-  return error(commandBlock, INVALID_FIELD);
+  return respond(commandBlock, INVALID_FIELD);
 }
 
 static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -235,7 +246,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
-    return error(commandBlock, ADDRESS_OUT_OF_RANGE);
+    return respond(commandBlock, ADDRESS_OUT_OF_RANGE);
   }
   const uint8_t startAddr = startAddr32;
   const uint8_t numBlocks = numBlocks16;
@@ -252,7 +263,7 @@ static bool handleWrite10(MS_CommandBlockWrapper_t * const commandBlock) {
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
   }
 
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -261,7 +272,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[2], &startAddr32);
   TPC::Util::fromBigEndian(&commandBlock->SCSICommandData[7], &numBlocks16);
   if (startAddr32 >= NUM_BLOCKS || (startAddr32 + numBlocks16) > NUM_BLOCKS) {
-    return error(commandBlock, ADDRESS_OUT_OF_RANGE);
+    return respond(commandBlock, ADDRESS_OUT_OF_RANGE);
   }
   const uint8_t startAddr = startAddr32;
   const uint8_t numBlocks = numBlocks16;
@@ -278,7 +289,7 @@ static bool handleRead10(MS_CommandBlockWrapper_t * const commandBlock) {
     commandBlock->DataTransferLength -= BYTES_PER_BLOCK;
   }
 
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleModeSense(MS_CommandBlockWrapper_t * const commandBlock, const uint16_t allocationLength) {
@@ -307,7 +318,7 @@ static bool handleModeSense(MS_CommandBlockWrapper_t * const commandBlock, const
   // Send response to client.
   Endpoint_Write_PStream_LE(&header, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleModeSense6(MS_CommandBlockWrapper_t * const commandBlock) {
@@ -369,19 +380,19 @@ static bool handleReadFormatCapacities(MS_CommandBlockWrapper_t * const commandB
   // Send response to client.
   Endpoint_Write_PStream_LE(&response, transferLength, NULL);
   commandBlock->DataTransferLength -= transferLength;
-  return ok(commandBlock);
+  return respond(commandBlock, OK);
 }
 
 static bool handleInvalid(MS_CommandBlockWrapper_t * const commandBlock) {
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   LOG(INFO, "[SCSI] unrecognised command 0x", cmd);
-  return error(commandBlock, INVALID_COMMAND);
+  return respond(commandBlock, INVALID_COMMAND);
 }
 
 static bool handleUnimplemented(MS_CommandBlockWrapper_t * const commandBlock) {
   const uint8_t cmd = commandBlock->SCSICommandData[0];
   LOG(INFO, "[SCSI] recognised but unimplemented command 0x", cmd);
-  return error(commandBlock, INVALID_COMMAND);
+  return respond(commandBlock, INVALID_COMMAND);
 }
 
 bool TPC::SCSI::handle(MS_CommandBlockWrapper_t * const commandBlock) {
