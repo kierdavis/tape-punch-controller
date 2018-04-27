@@ -102,10 +102,11 @@ void TPC::TPDataProvider::init() {
 void TPC::TPDataProvider::setPrintJob_IE(TPC::Filesystem::Reader reader, uint16_t length) {
   bodyReader = reader;
   bodyLength = length;
-  refillDataBuffer_IE();
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
+    TPC::TPDataBuffer::reset_ID();
     goToLeader_ID();
   }
+  refillDataBuffer_IE();
   LOG(DEBUG, "[TPDataProvider] print job added or changed");
 }
 
