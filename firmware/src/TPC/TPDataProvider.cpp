@@ -51,12 +51,12 @@ static void goToFeedOut_ID() {
 }
 
 static void refillDataBuffer_IE() {
-  bool bufferNotFull;
+  bool bufferFull;
   ATOMIC_BLOCK(ATOMIC_FORCEON) {
-    bufferNotFull = !TPC::TPDataBuffer::full_ID();
+    bufferFull = TPC::TPDataBuffer::full_ID();
   }
 
-  while (bufferNotFull && bodyLength && !bodyReader.eof()) {
+  while (!bufferFull && bodyLength && !bodyReader.eof()) {
     const uint8_t asciiChar = *bodyReader.pointer();
     bodyReader.advance(1);
     bodyLength--;
@@ -79,7 +79,7 @@ static void refillDataBuffer_IE() {
         if (!inComment) {
           ATOMIC_BLOCK(ATOMIC_FORCEON) {
             TPC::TPDataBuffer::push_ID(tapeCode);
-            bufferNotFull = !TPC::TPDataBuffer::full_ID();
+            bufferFull = TPC::TPDataBuffer::full_ID();
           }
         }
         break;
