@@ -32,7 +32,7 @@ namespace TPC {
     static uint8_t constexpr DATA_BUFFER_SIZE = 16;
 
     static uint32_t constexpr SERIAL_BAUD_RATE = 115200;
-    static TPC::Log::Level constexpr LOG_LEVEL = TPC::Log::Level::DEBUG;
+    static TPC::Log::Level constexpr LOG_LEVEL = TPC::Log::Level::IMPORTANT;
 
     static uint16_t constexpr USB_VENDOR_ID = 0x1BDA; // University of Southampton
     static uint16_t constexpr USB_PRODUCT_ID = 0xE184; // Tape punch interface
