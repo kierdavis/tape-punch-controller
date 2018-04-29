@@ -15,3 +15,7 @@ The project involves designing a system that can interface a restored [Teletype 
 [tapepunch]: http://www.computinghistory.org.uk/det/2312/teletype-brpe-20-high-speed-tape-punch/
 [repo-schematic]: https://github.com/kierdavis/tape-punch-controller/tree/master/schematic
 [repo-lasercut]: https://github.com/kierdavis/tape-punch-controller/tree/master/lasercut
+
+## License
+
+The contents of this repository are licensed under the terms of the MIT license. See the [LICENSE](LICENSE) file for more details.
