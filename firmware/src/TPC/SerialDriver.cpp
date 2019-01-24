@@ -37,7 +37,7 @@ static constexpr uint16_t calculateBSEL() {
 
 static uint16_t constexpr BSEL = calculateBSEL();
 static uint8_t constexpr BAUDCTRLA = (uint8_t) BSEL;
-static uint8_t constexpr BAUDCTRLB = (((uint8_t) (BSCALE << 4)) & 0xF0)
+static uint8_t constexpr BAUDCTRLB = (((uint8_t) ((BSCALE & 0x0F) << 4)) & 0xF0)
                                    | (((uint8_t) (BSEL >> 8)) & 0x0F);
 
 void TPC::SerialDriver::init() {
